@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 协同写作 | 曾经渐行远，未免心戚戚]]></title>
+  <link href="http://aluenkinglee.github.io/blog/categories/xie-tong-xie-zuo/atom.xml" rel="self"/>
+  <link href="http://aluenkinglee.github.io/"/>
+  <updated>2013-11-13T23:56:04+08:00</updated>
+  <id>http://aluenkinglee.github.io/</id>
+  <author>
+    <name><![CDATA[Aluen King Lee]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[在不同PC上协同写作同一个Octopress博客]]></title>
+    <link href="http://aluenkinglee.github.io/blog/2013/11/13/co-write-same-octopress-blog-on-different-pc/"/>
+    <updated>2013-11-13T15:20:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2013/11/13/co-write-same-octopress-blog-on-different-pc</id>
+    <content type="html"><![CDATA[<p>因为需要在不同的地方写博客，在加上之前错误的操作，所以有了这篇文章。</p>
+
+<p>假设已经学会了然后安装Octopress博客。</p>
+
+<h2 id="octopress-">Octopress 分支说明</h2>
+
+<p>Octopress的git仓库(repository)有两个分支，分别是<code>master</code>和<code>source</code>，其中：</p>
+
+<ol>
+  <li>
+    <p><code>master</code>存储的是博客网站本身，github基于此对页面渲染。该分支根目录处在<code>_deploy</code>文件夹，由<code>rake deploy</code>命令推送到服务器，一般而言，我们不需要对<code>master</code>做任何操作。</p>
+  </li>
+  <li>
+    <p><code>source</code>存储的是生成博客的源文件（各种markdown文件）,写作博客是在这个分支。每次写完之后，记得推送到服务器。这样就不用担心我们的备份了。</p>
+  </li>
+</ol>
+
+<h2 id="git">克隆服务器上的git到新机器</h2>
+
+<p>将博客的源文件clone到本地的（假设就叫做）octopress文件夹内。</p>
+
+<p><code>
+$ git clone -b source git@github.com:username/username.github.com.git octopress
+</code>
+接下来这步骤是最重要的，当初栽在这儿了。(会出现<code>No such file or directory - _deploy</code>)</p>
+
+<p><code>
+$ cd octopress
+$ git clone git@github.com:username/username.github.com.git _deploy 
+</code></p>
+
+<p>还是要安装博客的。</p>
+
+<p><code>
+$ gem install bundler
+$ rbenv rehash    		# If you use rbenv, rehash to be able to run the bundle command
+$ bundle install
+$ rake setup_github_pages	#执行初始化
+</code></p>
+
+<p>然后会提示输入仓库的ssh url。</p>
+
+<p><code>
+Enter the read/write url for your repository
+(For example, 'git@github.com:your_username/your_username.github.com)
+</code></p>
+
+<h2 id="co-write-">Co-write 协同写作博客</h2>
+
+<p>如果你是和别人合作博客，或者自己同时在好几个电脑上写博客，每次开始之前，git pull origin source获得最新的文件,rake generate生成新的页面.更新master并不是必须的，因为你更改源文件之后还是需要rake generate的.</p>
+
+<p><code>
+$ cd octopress
+$ git pull origin source  	# update the local source branch
+$ cd ./_deploy
+$ git pull origin master  	# update the local master branch
+</code></p>
+
+<p>在source分支做了博客的发布，或者改变了博客的设置之后</p>
+
+<p>```
+$ rake generate		 	#生成新的页面</p>
+
+<p>$ git add .
+$ git commit -am “Some comment here.” 
+$ git push origin source  	# 上面三行是更新远端source分支</p>
+
+<p>$ rake deploy             	# 更新远端master分支，文章就发布到了博客中
+```</p>
+
+<h2 id="reference">Reference</h2>
+
+<ol>
+  <li>
+    <p><a href="http://williamherry.com/blog/2012/07/20/octopress-setup/">Octopress - 像黑客一样写博客</a></p>
+  </li>
+  <li>
+    <p><a href="http://code.dblock.org/octopress-setting-up-a-blog-and-contributing-to-an-existing-one">Setting up a Blog and Contributing to an Existing One</a></p>
+  </li>
+  <li>
+    <p><a href="http://boboshone.com/blog/2013/06/05/write-octopress-blog-on-multiple-machines/">在多台电脑上写Octopress博客</a></p>
+  </li>
+  <li>
+    <p><a href="http://www.whispering.co/blog/2011/12/03/octopress-for-freshman/">Octopress: 新手教程</a></p>
+  </li>
+</ol>
+]]></content>
+  </entry>
+  
+</feed>
