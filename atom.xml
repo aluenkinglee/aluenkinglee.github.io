@@ -1,0 +1,1182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[曾经渐行远，未免心戚戚]]></title>
+  <link href="http://aluenkinglee.github.io/atom.xml" rel="self"/>
+  <link href="http://aluenkinglee.github.io/"/>
+  <updated>2013-11-13T15:52:24+08:00</updated>
+  <id>http://aluenkinglee.github.io/</id>
+  <author>
+    <name><![CDATA[Aluen King Lee]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[install nox on debian-bug fixed]]></title>
+    <link href="http://aluenkinglee.github.io/blog/2013/11/13/install-nox-on-debian-bug-fixed/"/>
+    <updated>2013-11-13T22:44:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2013/11/13/install-nox-on-debian-bug-fixed</id>
+    <content type="html"><![CDATA[<p>首先需要声明的一点是，到目前（2013/11）Nox在所有SDN控制器中不是最火的（相比Pox，floodlight），但是作为最先开发的一个SDN而言，还是有研究意义的。</p>
+
+<!--more-->
+
+<h5 id="section">安装提示</h5>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">cd /etc/apt/sources.list.d/
+</span><span class="line">sudo wget http://openflowswitch.org/downloads/debian/nox.list
+</span><span class="line">sudo apt-get update
+</span><span class="line">sudo apt-get install nox-dependencies
+</span><span class="line">sudo apt-get install libtbb-dev
+</span><span class="line">sudo apt-get install libboost-serialization-dev libboost-all-dev</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>然后在你想放置Nox源码的地方做如下操作：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">git clone git://github.com/noxrepo/nox
+</span><span class="line">cd nox
+</span><span class="line">./boot.sh
+</span><span class="line">mkdir build
+</span><span class="line">cd build
+</span><span class="line">../configure
+</span><span class="line">make -j 5
+</span><span class="line">make install</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>很不幸，遇到了如下的错误：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">../../src/builtin/component.cc:414:1: required from here
+</span><span class="line">/usr/include/boost/property_tree/detail/json_parser_read.hpp:105:17: error:
+</span><span class="line">no matching function for call to ‘boost::property_tree::basic_ptree
+</span><span class="line">std::basic_string&lt;char, std::basic_string &gt;::push_back(std::pair
+</span><span class="line">std::basic_string&lt;char, std::basic_string &gt;)’
+</span><span class="line">/usr/include/boost/property_tree/detail/json_parser_read.hpp:105:17: note:
+</span><span class="line">candidate is:
+</span><span class="line">In file included from /usr/include/boost/property_tree/ptree.hpp:516:0,
+</span><span class="line">from ../../src/include/component.hh:35,
+</span><span class="line">from ../../src/builtin/component.cc:18:
+</span><span class="line">/usr/include/boost/property_tree/detail/ptree_implementation.hpp:362:9:
+</span><span class="line">note: boost::property_tree::basic_ptree::iterator
+</span><span class="line">boost::property_tree::basic_ptree::push_back(const value_type&amp;) [with Key =
+</span><span class="line">std::basic_string; Data = std::basic_string; KeyCompare = std::less
+</span><span class="line">std::basic_string&lt;char &gt;; boost::property_tree::basic_ptree::value_type =
+</span><span class="line">std::pair, boost::property_tree::basic_ptreestd::basic_string&lt;char,
+</span><span class="line">std::basic_string &gt; &gt;]
+</span><span class="line">/usr/include/boost/property_tree/detail/ptree_implementation.hpp:362:9:
+</span><span class="line">note: no known conversion for argument 1 from ‘std::pair
+</span><span class="line">std::basic_string&lt;char, std::basic_string &gt;’ to ‘const value_type&amp; {aka
+</span><span class="line">const std::pair, boost::property_tree::basic_ptreestd::basic_string&lt;char,
+</span><span class="line">std::basic_string &gt; &gt;&amp;}’
+</span><span class="line">make[4]: *** [nox_core-component.o] Error 1</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>这个错误来源于nox依赖的boost库版本（1.49）的错误.注意错误原因是：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">/usr/include/boost/property_tree/detail/json_parser_read.hpp:105
+</span><span class="line">error:
+</span><span class="line">no matching function for call to ‘boost::property_tree::basic_ptree
+</span><span class="line">std::basic_string&lt;char, std::basic_string &gt;::push_back(std::pair
+</span><span class="line">std::basic_string&lt;char, std::basic_string &gt;)’</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>同样的问题点击<a href="http://lists.noxrepo.org/pipermail/nox-dev-noxrepo.org/2013-February/000668.html" title="[nox-dev] Nox build fails">这里</a></p>
+
+<p>解决方法：<code>/usr/include/boost/property_tree/detail/json_parser_read.hpp</code>找到这个文件。定位到<code>105行，</code></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">c.stack.back()-&gt;push_back(std::make_pair(c.name, Str(b, e)));</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>换成</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">c.stack.back()-&gt;push_back(std::make_pair(c.name, Ptree(Str(b, e))));</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>重新make&amp;&amp; make install 即可。</p>
+
+<h5 id="reference">Reference</h5>
+
+<ol>
+  <li>
+    <p><a href="https://svn.boost.org/trac/boost/ticket/6785">read_json does not compile on GCC 4.7.0 with std=c++11</a></p>
+  </li>
+  <li>
+    <p><a href="http://lists.noxrepo.org/pipermail/nox-dev-noxrepo.org/2013-February/000668.html">nox-dev Nox build fails</a></p>
+  </li>
+</ol>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[在不同PC上协同写作同一个Octopress博客]]></title>
+    <link href="http://aluenkinglee.github.io/blog/2013/11/13/co-write-same-octopress-blog-on-different-pc/"/>
+    <updated>2013-11-13T15:20:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2013/11/13/co-write-same-octopress-blog-on-different-pc</id>
+    <content type="html"><![CDATA[<p>因为需要在不同的地方写博客，在加上之前错误的操作，所以有了这篇文章。</p>
+
+<p>假设已经学会了然后安装Octopress博客。</p>
+
+<h2 id="octopress-">Octopress 分支说明</h2>
+
+<p>Octopress的git仓库(repository)有两个分支，分别是<code>master</code>和<code>source</code>，其中：</p>
+
+<ol>
+  <li>
+    <p><code>master</code>存储的是博客网站本身，github基于此对页面渲染。该分支根目录处在<code>_deploy</code>文件夹，由<code>rake deploy</code>命令推送到服务器，一般而言，我们不需要对<code>master</code>做任何操作。</p>
+  </li>
+  <li>
+    <p><code>source</code>存储的是生成博客的源文件（各种markdown文件）,写作博客是在这个分支。每次写完之后，记得推送到服务器。这样就不用担心我们的备份了。</p>
+  </li>
+</ol>
+
+<h2 id="git">克隆服务器上的git到新机器</h2>
+
+<p>将博客的源文件clone到本地的（假设就叫做）octopress文件夹内。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">$ git clone -b source git@github.com:username/username.github.com.git octopress</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>接下来这步骤是最重要的，当初栽在这儿了。(会出现<code>No such file or directory - _deploy</code>)</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">$ cd octopress
+</span><span class="line">$ git clone git@github.com:username/username.github.com.git _deploy </span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>还是要安装博客的。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">$ gem install bundler
+</span><span class="line">$ rbenv rehash    		# If you use rbenv, rehash to be able to run the bundle command
+</span><span class="line">$ bundle install
+</span><span class="line">$ rake setup_github_pages	#执行初始化</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>然后会提示输入仓库的ssh url。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">Enter the read/write url for your repository
+</span><span class="line">(For example, 'git@github.com:your_username/your_username.github.com)</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="co-write-">Co-write 协同写作博客</h2>
+
+<p>如果你是和别人合作博客，或者自己同时在好几个电脑上写博客，每次开始之前，git pull origin source获得最新的文件,rake generate生成新的页面.更新master并不是必须的，因为你更改源文件之后还是需要rake generate的.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">$ cd octopress
+</span><span class="line">$ git pull origin source  	# update the local source branch
+</span><span class="line">$ cd ./_deploy
+</span><span class="line">$ git pull origin master  	# update the local master branch</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>在source分支做了博客的发布，或者改变了博客的设置之后</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">$ rake generate		 	#生成新的页面
+</span><span class="line">
+</span><span class="line">$ git add .
+</span><span class="line">$ git commit -am "Some comment here." 
+</span><span class="line">$ git push origin source  	# 上面三行是更新远端source分支
+</span><span class="line">
+</span><span class="line">$ rake deploy             	# 更新远端master分支，文章就发布到了博客中</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="reference">Reference</h2>
+
+<ol>
+  <li>
+    <p><a href="http://williamherry.com/blog/2012/07/20/octopress-setup/">Octopress - 像黑客一样写博客</a></p>
+  </li>
+  <li>
+    <p><a href="http://code.dblock.org/octopress-setting-up-a-blog-and-contributing-to-an-existing-one">Setting up a Blog and Contributing to an Existing One</a></p>
+  </li>
+  <li>
+    <p><a href="http://boboshone.com/blog/2013/06/05/write-octopress-blog-on-multiple-machines/">在多台电脑上写Octopress博客</a></p>
+  </li>
+  <li>
+    <p><a href="http://www.whispering.co/blog/2011/12/03/octopress-for-freshman/">Octopress: 新手教程</a></p>
+  </li>
+</ol>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Use MathJax in Octopress to Write beautiful LaTex]]></title>
+    <link href="http://aluenkinglee.github.io/blog/2013/11/13/use-mathjax-in-octopress-to-write-beautiful-latex/"/>
+    <updated>2013-11-13T12:37:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2013/11/13/use-mathjax-in-octopress-to-write-beautiful-latex</id>
+    <content type="html"><![CDATA[<h4 id="latex">首先看下$\LaTeX$的例子</h4>
+
+<ul>
+  <li>块状的$\LaTeX$ 数学公式 (1)</li>
+</ul>
+
+<script type="math/tex; mode=display">% &lt;![CDATA[
+
+\begin{align*}
+  & \phi(x,y) = \phi \left(\sum_{i=1}^n x_ie_i, \sum_{j=1}^n y_je_j \right)
+  = \sum_{i=1}^n \sum_{j=1}^n x_i y_j \phi(e_i, e_j) = \\
+  & (x_1, \ldots, x_n) \left( \begin{array}{ccc}
+      \phi(e_1, e_1) & \cdots & \phi(e_1, e_n) \\
+      \vdots & \ddots & \vdots \\
+      \phi(e_n, e_1) & \cdots & \phi(e_n, e_n)
+    \end{array} \right)
+  \left( \begin{array}{c}
+      y_1 \\
+      \vdots \\
+      y_n
+    \end{array} \right)
+\end{align*}
+ %]]&gt;</script>
+
+<!--more-->
+
+<ul>
+  <li>块状的$\LaTeX$ 数学公式 (2)</li>
+</ul>
+
+<p>另外一个例子<a href="http://en.wikipedia.org/wiki/Multivariate_normal_distribution" title="Multivariate normal distribution">Multivariate normal distribution</a>:</p>
+
+<script type="math/tex; mode=display">
+f_x(x_1,...,x_k)=\frac{1}{(2\pi)^{k/2}|\Sigma|^{1/2}}exp(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu))
+</script>
+
+<ul>
+  <li>内联$\LaTeX$ 数学公式 (3)</li>
+</ul>
+
+<p>在段内插入LaTeX代码： $\exp(-\frac{x^2}{2})$ 。</p>
+
+<h4 id="latex-support">$\LaTeX$ support</h4>
+
+<p>为了能够使用MathJax对数学公式渲染，还是得使用几个步骤的。</p>
+
+<ul>
+  <li>添加ramdown组件</li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">gem install kramdown</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>找到<code>source/_includes/custom/head.html</code>这个文件，加入以下内容</li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">&lt;script type="text/x-mathjax-config"&gt;
+</span><span class="line">MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
+</span><span class="line">          MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
+</span><span class="line">                  data.math = data.math.replace(/^\s*&lt;!\[CDATA\[\s*((?:\n|.)*)\s*\]\]&gt;\s*$/m,"$1");
+</span><span class="line">                    });
+</span><span class="line">          });
+</span><span class="line">&lt;/script&gt;
+</span><span class="line">
+</span><span class="line">&lt;script type="text/x-mathjax-config"&gt;
+</span><span class="line">  MathJax.Hub.Config({
+</span><span class="line">    tex2jax: {
+</span><span class="line">      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+</span><span class="line">      processEscapes: true
+</span><span class="line">    }
+</span><span class="line">  });
+</span><span class="line">&lt;/script&gt;
+</span><span class="line">
+</span><span class="line">&lt;script type="text/x-mathjax-config"&gt;
+</span><span class="line">    MathJax.Hub.Config({
+</span><span class="line">      tex2jax: {
+</span><span class="line">        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+</span><span class="line">      }
+</span><span class="line">    });
+</span><span class="line">&lt;/script&gt;
+</span><span class="line">
+</span><span class="line">&lt;script type="text/x-mathjax-config"&gt;
+</span><span class="line">    MathJax.Hub.Queue(function() {
+</span><span class="line">        var all = MathJax.Hub.getAllJax(), i;
+</span><span class="line">        for(i=0; i &lt; all.length; i += 1) {
+</span><span class="line">            all[i].SourceElement().parentNode.className += ' has-jax';
+</span><span class="line">        }
+</span><span class="line">    });
+</span><span class="line">&lt;/script&gt;
+</span><span class="line">
+</span><span class="line">&lt;script type="text/javascript"
+</span><span class="line">   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"&gt;
+</span><span class="line">&lt;/script&gt;
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>
+    <p>修改_config.yml 文件 把markdown的渲染引擎从<code>rdiscount</code> 变为<code>kramdown</code></p>
+  </li>
+  <li>
+    <p>对于内联的$\LaTeX$ 数学公式，只需简单使用<code>$</code>…<code>$</code>即可。</p>
+  </li>
+</ul>
+
+<p>就像这样：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">在段内插入LaTeX代码： $\exp(-\frac{x^2}{2})$ 。</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>对于块状的$\LaTeX$ 数学公式，只需简单使用<code>$$</code>…<code>$$</code>即可。
+就像这样：</li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">$$
+</span><span class="line">f_x(x_1,...,x_k)=\frac{1}{(2\pi)^{k/2}|\Sigma|^{1/2}}exp(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu))
+</span><span class="line">$$</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="reference">Reference</h4>
+
+<p><a href="http://kkx.github.io/blog/2012/05/05/zai-octopresszhong-shi-yong-latex/" title="在octopress中使用latex">在octopress中使用latex</a></p>
+
+<p><a href="http://kqueue.org/blog/2012/01/05/hello-world/" title="Hello world">Hello world</a></p>
+
+<p><a href="http://hungmingwu-blog.logdown.com/posts/14279-latex-on-octopress" title="在Octopress中使用Latex">在Octopress中使用Latex</a></p>
+
+<p><a href="http://yanping.me/cn/blog/2012/03/10/octopress-with-latex/" title="在Octopress中使用Latex">在Octopress中使用Latex</a></p>
+
+<p><a href="http://wowubuntu.com/markdown/#p" title="Markdown 语法说明 (简体中文版)">Markdown 语法说明 (简体中文版)</a></p>
+
+<p><a href="http://kramdown.gettalong.org/syntax.html#math-blocks" title="kramdown Syntax">kramdown Syntax</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[C++前置声明和复制控制]]></title>
+    <link href="http://aluenkinglee.github.io/blog/2013/10/24/c-plus-plus-forward-declaration-and-copy-control/"/>
+    <updated>2013-10-24T05:33:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2013/10/24/c-plus-plus-forward-declaration-and-copy-control</id>
+    <content type="html"><![CDATA[<p>突然有兴致想起了看会C++，因为最近一直是python，java，python的节奏…在这样下去，C++水平恐怕就停留在了只会编算法的地儿了…</p>
+
+<p>随手一翻，看到了复制控制。对于这章，印象里的记忆是：
+» 如果一个类它有形如指针或者申请了其他的系统资源成员，这个时候就得注意了，如申请资源，如何释放资源，复制的时候应该注意这些成员的行为是怎么样的。</p>
+
+<p>然后，就不是很清楚了。大概看了看 其实也差不多…好吧是差很多。编程的过程中出现了一些问题。在这里记录下来&gt;.&lt; 真实忘不了了！</p>
+
+<h5 id="section">复制构造函数</h5>
+<p>它是一个特殊的构造函数，而且形参常用const Type&amp; 来修饰(如果凶残点，用指针也不是不行，但一定得是这两种！想想是为什么？)</p>
+
+<!--more-->
+<p>有两种情况会调用它：</p>
+
+<ol>
+  <li>定义一个新对象，并用一个同类型的对象对它初始化，就像这样 <code>string fileDesp(filename);</code>此处的filename是已经定义好的对象。’显示调用’</li>
+  <li>复制一个对象，并把它作为实参传给一个函数。’隐式调用’</li>
+  <li>从函数返回时复制一个对象。’隐式调用’</li>
+  <li>初始化顺序容器中的元素。’隐式调用’</li>
+  <li>根据元素初始化列表初始化数组元素。’隐式调用’</li>
+</ol>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">string book = "ISBN-2323-23234";</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>创建book对象时，编译器首先会接受一个C语言风格形参的string构造函数，创建一个临时对象，然后调用string的复制构造函数将book初始化那个临时对象的副本。（但是我感觉更像是’临时对象-&gt;赋值操作’..这里需要编码测试一下）</p>
+
+<p>和java，python创建对象的方法来比,C++方法真心多…</p>
+
+<h5 id="section-1">合成的复制构造函数</h5>
+<p>就是自个没写编译器默认提供的复制构造函数，完成的功能很简单，数据成员逐个初始化，（<code>static</code>成员例外！！因为他们是属于类的！！）</p>
+
+<h5 id="explicit">关于explicit的复制构造函数</h5>
+<p>(以后加上，真心没写过，只知道IO类型的复制构造函数都是explicit的)</p>
+
+<h5 id="section-2">赋值重载</h5>
+<p>=是个二元运算符，所以有两个形参，分别对应左操作数和右操作数(const引用),当为成员函数时就是左操作数默认绑定到this指针上了。返回值为同一类型的引用。</p>
+
+<h5 id="section-3">关于析构函数</h5>
+<p>析构函数就是用来回收那些申请的系统资源的。所以自个度量何时该自己写给类的析构函数吧。</p>
+
+<h5 id="section-4">关于何时调用析构函数</h5>
+<ol>
+  <li>撤销类的对象自动调用</li>
+  <li>动态分配的对象只有在删除指向该指针时，才会运行析构函数！！否则会导致内存泄漏，小心啦。</li>
+</ol>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">string filename * p = new string();
+</span><span class="line">delete p;</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>上述删除的行为不会销毁属于类的成员对象——static成员！其实挺好理解的啊。</p>
+
+<p>下面是个例子。现在先在这里贴下代码，以后放到github里面去。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+<span class="line-number">53</span>
+<span class="line-number">54</span>
+<span class="line-number">55</span>
+<span class="line-number">56</span>
+<span class="line-number">57</span>
+<span class="line-number">58</span>
+<span class="line-number">59</span>
+<span class="line-number">60</span>
+<span class="line-number">61</span>
+<span class="line-number">62</span>
+<span class="line-number">63</span>
+<span class="line-number">64</span>
+<span class="line-number">65</span>
+<span class="line-number">66</span>
+<span class="line-number">67</span>
+<span class="line-number">68</span>
+<span class="line-number">69</span>
+<span class="line-number">70</span>
+<span class="line-number">71</span>
+<span class="line-number">72</span>
+<span class="line-number">73</span>
+<span class="line-number">74</span>
+<span class="line-number">75</span>
+<span class="line-number">76</span>
+<span class="line-number">77</span>
+<span class="line-number">78</span>
+<span class="line-number">79</span>
+<span class="line-number">80</span>
+<span class="line-number">81</span>
+<span class="line-number">82</span>
+<span class="line-number">83</span>
+<span class="line-number">84</span>
+<span class="line-number">85</span>
+<span class="line-number">86</span>
+<span class="line-number">87</span>
+<span class="line-number">88</span>
+<span class="line-number">89</span>
+<span class="line-number">90</span>
+<span class="line-number">91</span>
+<span class="line-number">92</span>
+<span class="line-number">93</span>
+<span class="line-number">94</span>
+<span class="line-number">95</span>
+<span class="line-number">96</span>
+<span class="line-number">97</span>
+<span class="line-number">98</span>
+<span class="line-number">99</span>
+<span class="line-number">100</span>
+<span class="line-number">101</span>
+<span class="line-number">102</span>
+<span class="line-number">103</span>
+<span class="line-number">104</span>
+<span class="line-number">105</span>
+<span class="line-number">106</span>
+<span class="line-number">107</span>
+<span class="line-number">108</span>
+<span class="line-number">109</span>
+<span class="line-number">110</span>
+<span class="line-number">111</span>
+<span class="line-number">112</span>
+<span class="line-number">113</span>
+<span class="line-number">114</span>
+<span class="line-number">115</span>
+<span class="line-number">116</span>
+<span class="line-number">117</span>
+<span class="line-number">118</span>
+<span class="line-number">119</span>
+<span class="line-number">120</span>
+<span class="line-number">121</span>
+<span class="line-number">122</span>
+<span class="line-number">123</span>
+<span class="line-number">124</span>
+<span class="line-number">125</span>
+<span class="line-number">126</span>
+<span class="line-number">127</span>
+<span class="line-number">128</span>
+<span class="line-number">129</span>
+<span class="line-number">130</span>
+<span class="line-number">131</span>
+<span class="line-number">132</span>
+<span class="line-number">133</span>
+<span class="line-number">134</span>
+<span class="line-number">135</span>
+<span class="line-number">136</span>
+<span class="line-number">137</span>
+<span class="line-number">138</span>
+<span class="line-number">139</span>
+<span class="line-number">140</span>
+<span class="line-number">141</span>
+<span class="line-number">142</span>
+<span class="line-number">143</span>
+<span class="line-number">144</span>
+<span class="line-number">145</span>
+<span class="line-number">146</span>
+<span class="line-number">147</span>
+<span class="line-number">148</span>
+<span class="line-number">149</span>
+<span class="line-number">150</span>
+<span class="line-number">151</span>
+<span class="line-number">152</span>
+<span class="line-number">153</span>
+<span class="line-number">154</span>
+<span class="line-number">155</span>
+<span class="line-number">156</span>
+<span class="line-number">157</span>
+<span class="line-number">158</span>
+<span class="line-number">159</span>
+<span class="line-number">160</span>
+<span class="line-number">161</span>
+<span class="line-number">162</span>
+<span class="line-number">163</span>
+<span class="line-number">164</span>
+<span class="line-number">165</span>
+<span class="line-number">166</span>
+<span class="line-number">167</span>
+<span class="line-number">168</span>
+<span class="line-number">169</span>
+<span class="line-number">170</span>
+<span class="line-number">171</span>
+<span class="line-number">172</span>
+<span class="line-number">173</span>
+<span class="line-number">174</span>
+<span class="line-number">175</span>
+<span class="line-number">176</span>
+<span class="line-number">177</span>
+<span class="line-number">178</span>
+<span class="line-number">179</span>
+<span class="line-number">180</span>
+<span class="line-number">181</span>
+<span class="line-number">182</span>
+<span class="line-number">183</span>
+<span class="line-number">184</span>
+<span class="line-number">185</span>
+<span class="line-number">186</span>
+<span class="line-number">187</span>
+<span class="line-number">188</span>
+<span class="line-number">189</span>
+<span class="line-number">190</span>
+<span class="line-number">191</span>
+<span class="line-number">192</span>
+<span class="line-number">193</span>
+<span class="line-number">194</span>
+<span class="line-number">195</span>
+<span class="line-number">196</span>
+<span class="line-number">197</span>
+<span class="line-number">198</span>
+<span class="line-number">199</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">
+</span><span class="line">#include &lt;iostream&gt;
+</span><span class="line">#include &lt;set&gt;
+</span><span class="line">
+</span><span class="line">using std::string;
+</span><span class="line">using std::set;
+</span><span class="line">using std::cout;
+</span><span class="line">using std::endl;
+</span><span class="line">//predeclaration of Message
+</span><span class="line">class Message;
+</span><span class="line">
+</span><span class="line">class Folder
+</span><span class="line">{
+</span><span class="line">public:
+</span><span class="line">    Folder(){
+</span><span class="line">    	cout &lt;&lt; "Folder" &lt;&lt;endl;
+</span><span class="line">    }
+</span><span class="line">    Folder(const Folder&amp;);
+</span><span class="line">    Folder&amp; operator=(const Folder &amp;);
+</span><span class="line">    ~Folder();
+</span><span class="line">
+</span><span class="line">    void save(Message&amp;);
+</span><span class="line">    void remove(Message&amp;);
+</span><span class="line">    void addMsg(Message*);
+</span><span class="line">    void remMsg(Message*);
+</span><span class="line">
+</span><span class="line">private:
+</span><span class="line">    set&lt;Message*&gt; messages;
+</span><span class="line">
+</span><span class="line">    void put_Folder_in_Message(const set&lt;Message*&gt;&amp;);
+</span><span class="line">    void remove_Folder_from_Message();
+</span><span class="line">
+</span><span class="line">};
+</span><span class="line">
+</span><span class="line">class Message
+</span><span class="line">{
+</span><span class="line">public:
+</span><span class="line">    Message(const string &amp; str=""):
+</span><span class="line">        contents(str)
+</span><span class="line">        {}
+</span><span class="line">    Message(const Message&amp;);
+</span><span class="line">    Message&amp; operator=(const Message &amp;);
+</span><span class="line">    ~Message();
+</span><span class="line">
+</span><span class="line">    void save(Folder&amp;);
+</span><span class="line">    void remove(Folder&amp;);
+</span><span class="line">    void addFldr(Folder*);
+</span><span class="line">    void remFldr(Folder*);
+</span><span class="line">
+</span><span class="line">private:
+</span><span class="line">    string contents;
+</span><span class="line">    set&lt;Folder*&gt; folders;
+</span><span class="line">
+</span><span class="line">    void put_Msg_in_Folders(const set&lt;Folder*&gt;&amp;);
+</span><span class="line">    void remove_Msg_from_Folders();
+</span><span class="line">};
+</span><span class="line">
+</span><span class="line">
+</span><span class="line">Folder::Folder(const Folder&amp; f):
+</span><span class="line">    messages(f.messages)
+</span><span class="line">{
+</span><span class="line">    put_Folder_in_Message(messages);
+</span><span class="line">}
+</span><span class="line">
+</span><span class="line">void Folder::put_Folder_in_Message(const set&lt;Message*&gt; &amp; msg)
+</span><span class="line">{
+</span><span class="line">    for (set&lt;Message*&gt;::const_iterator beg = msg.begin();
+</span><span class="line">            beg != msg.end();
+</span><span class="line">            ++beg)
+</span><span class="line">    {
+</span><span class="line">        (*beg)-&gt;addFldr(this);
+</span><span class="line">    }
+</span><span class="line">}
+</span><span class="line">
+</span><span class="line">Folder&amp; Folder::operator=(const Folder &amp; f)
+</span><span class="line">{
+</span><span class="line">    if (&amp;f != this)
+</span><span class="line">    {
+</span><span class="line">        //先把自己的给清除掉，在加上要赋值的，要不然肯定不一样。。
+</span><span class="line">        //因为Messages不一样。。
+</span><span class="line">        remove_Folder_from_Message();
+</span><span class="line">        messages = f.messages;
+</span><span class="line">        put_Folder_in_Message(messages);
+</span><span class="line">    }
+</span><span class="line">    return *this;
+</span><span class="line">}
+</span><span class="line">
+</span><span class="line">void Folder::remove_Folder_from_Message()
+</span><span class="line">{
+</span><span class="line">    for(set&lt;Message*&gt;::const_iterator beg = this-&gt;messages.begin();
+</span><span class="line">            beg != messages.end();
+</span><span class="line">            ++beg)
+</span><span class="line">    {
+</span><span class="line">        (*beg)-&gt;remFldr(this);
+</span><span class="line">    }
+</span><span class="line">}
+</span><span class="line">
+</span><span class="line">Folder::~Folder()
+</span><span class="line">{
+</span><span class="line">    remove_Folder_from_Message();
+</span><span class="line">}
+</span><span class="line">
+</span><span class="line">void Folder::save(Message &amp; msg)
+</span><span class="line">{
+</span><span class="line">    addMsg(&amp;msg);
+</span><span class="line">    msg.addFldr(this);
+</span><span class="line">}
+</span><span class="line">
+</span><span class="line">void Folder::remove(Message&amp; msg)
+</span><span class="line">{
+</span><span class="line">    remMsg(&amp;msg);
+</span><span class="line">    msg.remFldr(this);
+</span><span class="line">}
+</span><span class="line">
+</span><span class="line">void Folder::addMsg(Message* msg)
+</span><span class="line">{
+</span><span class="line">    messages.insert(msg);
+</span><span class="line">}
+</span><span class="line">
+</span><span class="line">void Folder::remMsg(Message* msg)
+</span><span class="line">{
+</span><span class="line">    messages.erase(msg);
+</span><span class="line">}
+</span><span class="line">
+</span><span class="line">//copy construction ,put the new message into the folders where the msg is pointed.
+</span><span class="line">inline Message::Message(const Message&amp; m):
+</span><span class="line">    contents(m.contents), folders(m.folders)
+</span><span class="line">{
+</span><span class="line">    put_Msg_in_Folders(folders);
+</span><span class="line">}
+</span><span class="line">
+</span><span class="line">void Message::put_Msg_in_Folders(const set&lt;Folder*&gt; &amp;folders)
+</span><span class="line">{
+</span><span class="line">    for(set&lt;Folder*&gt;::const_iterator beg = folders.begin();
+</span><span class="line">            beg != folders.end();
+</span><span class="line">            ++ beg)
+</span><span class="line">    {
+</span><span class="line">        //beg is a pointer to Folder*
+</span><span class="line">        (*beg)-&gt;addMsg(this);
+</span><span class="line">    }
+</span><span class="line">}
+</span><span class="line">
+</span><span class="line">inline Message&amp; Message::operator=(const Message&amp; msg)
+</span><span class="line">{
+</span><span class="line">    if(&amp;msg != this) {
+</span><span class="line">        //首先把自己指向的那些folder都给取消掉
+</span><span class="line">        remove_Msg_from_Folders();
+</span><span class="line">        //消息的内容copy过来
+</span><span class="line">        contents = msg.contents;
+</span><span class="line">        folders = msg.folders;
+</span><span class="line">        put_Msg_in_Folders(folders);
+</span><span class="line">    }
+</span><span class="line">    return *this;
+</span><span class="line">}
+</span><span class="line">
+</span><span class="line">void Message::remove_Msg_from_Folders()
+</span><span class="line">{
+</span><span class="line">    for(set&lt;Folder*&gt;::const_iterator beg = folders.begin();
+</span><span class="line">            beg != folders.end();
+</span><span class="line">            ++beg)
+</span><span class="line">    {
+</span><span class="line">        (*beg)-&gt;remMsg(this);
+</span><span class="line">    }
+</span><span class="line">}
+</span><span class="line">
+</span><span class="line">inline Message::~Message()
+</span><span class="line">{
+</span><span class="line">    remove_Msg_from_Folders();
+</span><span class="line">}
+</span><span class="line">
+</span><span class="line">void Message::save(Folder&amp; folder)
+</span><span class="line">{
+</span><span class="line">    addFldr(&amp;folder);
+</span><span class="line">    folder.addMsg(this);
+</span><span class="line">}
+</span><span class="line">
+</span><span class="line">void Message::addFldr(Folder* pfolder)
+</span><span class="line">{
+</span><span class="line">    folders.insert(pfolder);
+</span><span class="line">}
+</span><span class="line">
+</span><span class="line">void Message::remove(Folder&amp; folder)
+</span><span class="line">{
+</span><span class="line">    remFldr(&amp;folder);
+</span><span class="line">    folder.remMsg(this);
+</span><span class="line">}
+</span><span class="line">
+</span><span class="line">void Message::remFldr(Folder* pfolder)
+</span><span class="line">{
+</span><span class="line">    folders.erase(pfolder);
+</span><span class="line">}
+</span><span class="line">
+</span><span class="line">int main()
+</span><span class="line">{
+</span><span class="line">	Message m("dsfasdf");
+</span><span class="line">	Folder f = Folder();
+</span><span class="line">	cout &lt;&lt; "asdf"&lt;&lt; endl;
+</span><span class="line">	return 0;
+</span><span class="line">}
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>可以运行，但是不是想要的。</p>
+
+<p>正确的应该分开写</p>
+
+<p><code>Folder.h</code></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">#include &lt;iostream&gt;
+</span><span class="line">#include &lt;set&gt;
+</span><span class="line">
+</span><span class="line">#ifndef __Folder__
+</span><span class="line">#define __Folder__
+</span><span class="line">
+</span><span class="line">using std::string;
+</span><span class="line">using std::set;
+</span><span class="line">
+</span><span class="line">
+</span><span class="line">#include "Message.h"
+</span><span class="line">//predeclaration of Message
+</span><span class="line">class Message;
+</span><span class="line">// Message is a incomplete type.It can be used in limited ways only.
+</span><span class="line">// 1.can not define object of this type.
+</span><span class="line">// 2.only used as a pointer or ref.
+</span><span class="line">// 3.declare it as the formal parameter of a function or return type of a function.
+</span><span class="line">class Folder
+</span><span class="line">{
+</span><span class="line">public:
+</span><span class="line">    Folder(){}
+</span><span class="line">    Folder(const Folder&amp;);
+</span><span class="line">    Folder&amp; operator=(const Folder&amp;);
+</span><span class="line">    ~Folder();
+</span><span class="line">
+</span><span class="line">    // Message is used as the formal parameter.
+</span><span class="line">    void save(Message&amp;);
+</span><span class="line">    void remove(Message&amp;);
+</span><span class="line">    void addMsg(Message*);
+</span><span class="line">    void remMsg(Message*);
+</span><span class="line">
+</span><span class="line">private:
+</span><span class="line">    // Message is used as the typename of the template.
+</span><span class="line">    set&lt;Message*&gt; messages;
+</span><span class="line">
+</span><span class="line">    void put_Folder_in_Message(const set&lt;Message*&gt;&amp;);
+</span><span class="line">    void remove_Folder_from_Message();
+</span><span class="line">
+</span><span class="line">};
+</span><span class="line">
+</span><span class="line">#endif</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><code>Message.h</code></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">#include &lt;iostream&gt;
+</span><span class="line">#include &lt;set&gt;
+</span><span class="line">
+</span><span class="line">#ifndef __Message__
+</span><span class="line">#define __Message__
+</span><span class="line">
+</span><span class="line">using std::string;
+</span><span class="line">using std::set;
+</span><span class="line">
+</span><span class="line">#include "Folder.h"
+</span><span class="line">//predeclaration of Folder
+</span><span class="line">class Folder;
+</span><span class="line">// Folder is a incomplete type.It only can be used in limited ways.
+</span><span class="line">// 1.can not define object of this type.
+</span><span class="line">// 2.only used as a pointer or ref.
+</span><span class="line">// 3.declare it as the formal parameter of a function or return type of a function.
+</span><span class="line">
+</span><span class="line">class Message
+</span><span class="line">{
+</span><span class="line">public:
+</span><span class="line">    Message(const string &amp; str=""):
+</span><span class="line">        contents(str) {}
+</span><span class="line">    Message(const Message&amp;);
+</span><span class="line">    Message&amp; operator=(const Message &amp;);
+</span><span class="line">    ~Message();
+</span><span class="line">
+</span><span class="line">    // Folder is used as the formal parameter.
+</span><span class="line">    void save(Folder&amp;);
+</span><span class="line">    void remove(Folder&amp;);
+</span><span class="line">    void addFldr(Folder*);
+</span><span class="line">    void remFldr(Folder*);
+</span><span class="line">
+</span><span class="line">private:
+</span><span class="line">    string contents;
+</span><span class="line">    set&lt;Folder*&gt; folders;
+</span><span class="line">
+</span><span class="line">    // Folder is used as the typename of the template.
+</span><span class="line">    void put_Msg_in_Folders(const set&lt;Folder*&gt;&amp;);
+</span><span class="line">    void remove_Msg_from_Folders();
+</span><span class="line">};
+</span><span class="line">
+</span><span class="line">#endif</span></code></pre></td></tr></table></div></figure></notextile></div>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[virtualbox网络环境和登录]]></title>
+    <link href="http://aluenkinglee.github.io/blog/2013/10/20/virtualbox-network-environment-and-login/"/>
+    <updated>2013-10-20T22:46:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2013/10/20/virtualbox-network-environment-and-login</id>
+    <content type="html"><![CDATA[<p>最近由于实验室需要研究SDN的一些东西，再此先来搭配下环境。
+对于虚拟机的一些选择，可以看这里:
+<a href="http://mininet.org/vm-setup-notes/">vm-setup-notes</a> 
+我这里的环境是:</p>
+
+<p><code>os:            debian 7(wheezy) 64bit</code></p>
+
+<p><code>xwindows:      kde</code></p>
+
+<p><code>VM：           virtualbox</code></p>
+
+<p><code>controller:    pox</code></p>
+
+<p>按照上述的网址，可以比较容易的搭配出来需要的环境，下面就说以下之后遇到的问题。</p>
+
+<ul>
+  <li>virtualbox的鼠标独占问题，只是提示太不明明显了！对于那个right ctrl的提示我郁闷了好一会，我以为是鼠标右键+ctrl…其实是右边的ctrl键。对于这个键的设定，你可以从“管理”&gt;“全局设定”&gt;”热键”来设置你喜欢的按键..我就吐槽这么一句，之前vmware对此的说明很明了！</li>
+  <li>Using Host-only adapter to SSH guest from host.</li>
+</ul>
+
+<h3 id="nat">NAT模式</h3>
+<p>特点：
+1. 如果主机可以上网，虚拟机可以上网
+2. 虚拟机之间不能ping通
+3. 虚拟机可以ping通主机（此时ping虚拟机的网关，即是ping主机）
+4. 主机不能ping通虚拟机</p>
+
+<p>但是这个情况下是不能满足我的使用条件…我需要在host登录到guest中，so pass</p>
+
+<h3 id="section">桥接模式</h3>
+<p>特点：
+1. 如果主机可以上网，虚拟机可以上网
+2. 虚拟机之间可以ping通
+3. 虚拟机可以ping通主机
+4. 主机可以ping通虚拟机 (以上各点基于一个前提：主机可以上网)
+5. 如果主机不可以上网，所有1-4特点均无</p>
+
+<!--more-->
+
+<p>这个挺好，觉得可以满足我的要求但是，发现它的IP地址要求是自动非配的，我们实验室的IP是校园内网固定IP…</p>
+
+<h3 id="host-only-adapter">Host-only Adapter模式</h3>
+
+<p>特点：</p>
+
+<ol>
+  <li>虚拟机<code>不</code>可以上网</li>
+  <li>虚拟机之间可以ping通</li>
+  <li>虚拟机可以ping通主机（注意虚拟机与主机通信是通过主机的名为VirtualBox Host-Only Network的网卡，因此ip
+是该网卡ip <code>192.168.56.1</code>，而不是你现在正在上网所用的ip）</li>
+  <li>主机可以ping通虚拟机</li>
+</ol>
+
+<p>应用场景：
+需要搭建一个模拟局域网，所有机器可以互访。（颇不得以选这个的..）</p>
+
+<p>ip样式：<code>netstat -rn</code>查看路由表
+ip 与本机VirtualBox Host-Only Network的网卡ip在同一网段内（默认192.168.56.*）
+网关 本机VirtualBox Host-Only Network的网卡ip（默认192.168.56.1）</p>
+
+<h3 id="section-1">登录虚拟机</h3>
+<p>登录虚拟机，首先开开virtualbox的虚拟机</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">mininet-vm login: mininet
+</span><span class="line">Password: mininet</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>接下来查看我们的vm地址：（在guest里面操作）</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">sudo ifconfig</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>例如我这里的ip地址是<code>192.168.56.101</code>,然后就使用我们可爱的SSH</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">ssh -Y mininet@192.168.56.101</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>输入密码就可以了</p>
+
+<p>当然上面的不好看，做下别名好了。（在我们host里面操作）</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">sudo nano /etc/hosts
+</span><span class="line">192.168.56.101 mininet-vm</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>保存即可，这样子就可以使用</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">ssh -Y mininet@mininet-vm</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>接下来就可以去玩下面的实验了^^</p>
+
+<blockquote>
+  <p>参考文档:</p>
+</blockquote>
+
+<blockquote>
+  <p><a href="http://blog.csdn.net/yxc135/article/details/8458939">VirtualBox虚拟机网络环境解析</a></p>
+</blockquote>
+
+<blockquote>
+  <p><a href="http://www.live-in.org/archives/832.html">ssh命令用于远程登录上Linux主机</a></p>
+</blockquote>
+
+<blockquote>
+  <p><a href="http://mininet.org/vm-setup-notes/">SSH into VM</a></p>
+</blockquote>
+]]></content>
+  </entry>
+  
+</feed>

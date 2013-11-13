@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 复制 | 曾经渐行远，未免心戚戚]]></title>
+  <link href="http://aluenkinglee.github.io/blog/categories/fu-zhi/atom.xml" rel="self"/>
+  <link href="http://aluenkinglee.github.io/"/>
+  <updated>2013-11-13T15:52:24+08:00</updated>
+  <id>http://aluenkinglee.github.io/</id>
+  <author>
+    <name><![CDATA[Aluen King Lee]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[C++前置声明和复制控制]]></title>
+    <link href="http://aluenkinglee.github.io/blog/2013/10/24/c-plus-plus-forward-declaration-and-copy-control/"/>
+    <updated>2013-10-24T05:33:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2013/10/24/c-plus-plus-forward-declaration-and-copy-control</id>
+    <content type="html"><![CDATA[<p>突然有兴致想起了看会C++，因为最近一直是python，java，python的节奏…在这样下去，C++水平恐怕就停留在了只会编算法的地儿了…</p>
+
+<p>随手一翻，看到了复制控制。对于这章，印象里的记忆是：
+» 如果一个类它有形如指针或者申请了其他的系统资源成员，这个时候就得注意了，如申请资源，如何释放资源，复制的时候应该注意这些成员的行为是怎么样的。</p>
+
+<p>然后，就不是很清楚了。大概看了看 其实也差不多…好吧是差很多。编程的过程中出现了一些问题。在这里记录下来&gt;.&lt; 真实忘不了了！</p>
+
+<h5 id="section">复制构造函数</h5>
+<p>它是一个特殊的构造函数，而且形参常用const Type&amp; 来修饰(如果凶残点，用指针也不是不行，但一定得是这两种！想想是为什么？)</p>
+
+<!--more-->
+<p>有两种情况会调用它：</p>
+
+<ol>
+  <li>定义一个新对象，并用一个同类型的对象对它初始化，就像这样 <code>string fileDesp(filename);</code>此处的filename是已经定义好的对象。’显示调用’</li>
+  <li>复制一个对象，并把它作为实参传给一个函数。’隐式调用’</li>
+  <li>从函数返回时复制一个对象。’隐式调用’</li>
+  <li>初始化顺序容器中的元素。’隐式调用’</li>
+  <li>根据元素初始化列表初始化数组元素。’隐式调用’</li>
+</ol>
+
+<p><code>
+string book = "ISBN-2323-23234";
+</code></p>
+
+<p>创建book对象时，编译器首先会接受一个C语言风格形参的string构造函数，创建一个临时对象，然后调用string的复制构造函数将book初始化那个临时对象的副本。（但是我感觉更像是’临时对象-&gt;赋值操作’..这里需要编码测试一下）</p>
+
+<p>和java，python创建对象的方法来比,C++方法真心多…</p>
+
+<h5 id="section-1">合成的复制构造函数</h5>
+<p>就是自个没写编译器默认提供的复制构造函数，完成的功能很简单，数据成员逐个初始化，（<code>static</code>成员例外！！因为他们是属于类的！！）</p>
+
+<h5 id="explicit">关于explicit的复制构造函数</h5>
+<p>(以后加上，真心没写过，只知道IO类型的复制构造函数都是explicit的)</p>
+
+<h5 id="section-2">赋值重载</h5>
+<p>=是个二元运算符，所以有两个形参，分别对应左操作数和右操作数(const引用),当为成员函数时就是左操作数默认绑定到this指针上了。返回值为同一类型的引用。</p>
+
+<h5 id="section-3">关于析构函数</h5>
+<p>析构函数就是用来回收那些申请的系统资源的。所以自个度量何时该自己写给类的析构函数吧。</p>
+
+<h5 id="section-4">关于何时调用析构函数</h5>
+<ol>
+  <li>撤销类的对象自动调用</li>
+  <li>动态分配的对象只有在删除指向该指针时，才会运行析构函数！！否则会导致内存泄漏，小心啦。</li>
+</ol>
+
+<p><code>
+string filename * p = new string();
+delete p;
+</code>
+上述删除的行为不会销毁属于类的成员对象——static成员！其实挺好理解的啊。</p>
+
+<p>下面是个例子。现在先在这里贴下代码，以后放到github里面去。</p>
+
+<p>```</p>
+
+<h1 id="include-iostream">include <iostream /></h1>
+<p>#include <set /></p>
+
+<p>using std::string;
+using std::set;
+using std::cout;
+using std::endl;
+//predeclaration of Message
+class Message;</p>
+
+<p>class Folder
+{
+public:
+    Folder(){
+    	cout « “Folder” «endl;
+    }
+    Folder(const Folder&amp;);
+    Folder&amp; operator=(const Folder &amp;);
+    ~Folder();</p>
+
+<pre><code>void save(Message&amp;);
+void remove(Message&amp;);
+void addMsg(Message*);
+void remMsg(Message*);
+</code></pre>
+
+<p>private:
+    set&lt;Message*&gt; messages;</p>
+
+<pre><code>void put_Folder_in_Message(const set&lt;Message*&gt;&amp;);
+void remove_Folder_from_Message();
+</code></pre>
+
+<p>};</p>
+
+<p>class Message
+{
+public:
+    Message(const string &amp; str=””):
+        contents(str)
+        {}
+    Message(const Message&amp;);
+    Message&amp; operator=(const Message &amp;);
+    ~Message();</p>
+
+<pre><code>void save(Folder&amp;);
+void remove(Folder&amp;);
+void addFldr(Folder*);
+void remFldr(Folder*);
+</code></pre>
+
+<p>private:
+    string contents;
+    set&lt;Folder*&gt; folders;</p>
+
+<pre><code>void put_Msg_in_Folders(const set&lt;Folder*&gt;&amp;);
+void remove_Msg_from_Folders(); };
+</code></pre>
+
+<p>Folder::Folder(const Folder&amp; f):
+    messages(f.messages)
+{
+    put_Folder_in_Message(messages);
+}</p>
+
+<p>void Folder::put_Folder_in_Message(const set&lt;Message<em>&gt; &amp; msg)
+{
+    for (set&lt;Message</em>&gt;::const_iterator beg = msg.begin();
+            beg != msg.end();
+            ++beg)
+    {
+        (*beg)-&gt;addFldr(this);
+    }
+}</p>
+
+<p>Folder&amp; Folder::operator=(const Folder &amp; f)
+{
+    if (&amp;f != this)
+    {
+        //先把自己的给清除掉，在加上要赋值的，要不然肯定不一样。。
+        //因为Messages不一样。。
+        remove_Folder_from_Message();
+        messages = f.messages;
+        put_Folder_in_Message(messages);
+    }
+    return *this;
+}</p>
+
+<p>void Folder::remove_Folder_from_Message()
+{
+    for(set&lt;Message<em>&gt;::const_iterator beg = this-&gt;messages.begin();
+            beg != messages.end();
+            ++beg)
+    {
+        (</em>beg)-&gt;remFldr(this);
+    }
+}</p>
+
+<p>Folder::~Folder()
+{
+    remove_Folder_from_Message();
+}</p>
+
+<p>void Folder::save(Message &amp; msg)
+{
+    addMsg(&amp;msg);
+    msg.addFldr(this);
+}</p>
+
+<p>void Folder::remove(Message&amp; msg)
+{
+    remMsg(&amp;msg);
+    msg.remFldr(this);
+}</p>
+
+<p>void Folder::addMsg(Message* msg)
+{
+    messages.insert(msg);
+}</p>
+
+<p>void Folder::remMsg(Message* msg)
+{
+    messages.erase(msg);
+}</p>
+
+<p>//copy construction ,put the new message into the folders where the msg is pointed.
+inline Message::Message(const Message&amp; m):
+    contents(m.contents), folders(m.folders)
+{
+    put_Msg_in_Folders(folders);
+}</p>
+
+<p>void Message::put_Msg_in_Folders(const set&lt;Folder<em>&gt; &amp;folders)
+{
+    for(set&lt;Folder</em>&gt;::const_iterator beg = folders.begin();
+            beg != folders.end();
+            ++ beg)
+    {
+        //beg is a pointer to Folder*
+        (*beg)-&gt;addMsg(this);
+    }
+}</p>
+
+<p>inline Message&amp; Message::operator=(const Message&amp; msg)
+{
+    if(&amp;msg != this) {
+        //首先把自己指向的那些folder都给取消掉
+        remove_Msg_from_Folders();
+        //消息的内容copy过来
+        contents = msg.contents;
+        folders = msg.folders;
+        put_Msg_in_Folders(folders);
+    }
+    return *this;
+}</p>
+
+<p>void Message::remove_Msg_from_Folders()
+{
+    for(set&lt;Folder<em>&gt;::const_iterator beg = folders.begin();
+            beg != folders.end();
+            ++beg)
+    {
+        (</em>beg)-&gt;remMsg(this);
+    }
+}</p>
+
+<p>inline Message::~Message()
+{
+    remove_Msg_from_Folders();
+}</p>
+
+<p>void Message::save(Folder&amp; folder)
+{
+    addFldr(&amp;folder);
+    folder.addMsg(this);
+}</p>
+
+<p>void Message::addFldr(Folder* pfolder)
+{
+    folders.insert(pfolder);
+}</p>
+
+<p>void Message::remove(Folder&amp; folder)
+{
+    remFldr(&amp;folder);
+    folder.remMsg(this);
+}</p>
+
+<p>void Message::remFldr(Folder* pfolder)
+{
+    folders.erase(pfolder);
+}</p>
+
+<p>int main()
+{
+	Message m(“dsfasdf”);
+	Folder f = Folder();
+	cout « “asdf”« endl;
+	return 0;
+}</p>
+
+<p>```</p>
+
+<p>可以运行，但是不是想要的。</p>
+
+<p>正确的应该分开写</p>
+
+<p><code>Folder.h</code></p>
+
+<p>```
+#include <iostream>
+#include <set /></iostream></p>
+
+<h1 id="ifndef-folder">ifndef <strong>Folder</strong></h1>
+<p>#define <strong>Folder</strong></p>
+
+<p>using std::string;
+using std::set;</p>
+
+<h1 id="include-messageh">include “Message.h”</h1>
+<p>//predeclaration of Message
+class Message;
+// Message is a incomplete type.It can be used in limited ways only.
+// 1.can not define object of this type.
+// 2.only used as a pointer or ref.
+// 3.declare it as the formal parameter of a function or return type of a function.
+class Folder
+{
+public:
+    Folder(){}
+    Folder(const Folder&amp;);
+    Folder&amp; operator=(const Folder&amp;);
+    ~Folder();</p>
+
+<pre><code>// Message is used as the formal parameter.
+void save(Message&amp;);
+void remove(Message&amp;);
+void addMsg(Message*);
+void remMsg(Message*);
+</code></pre>
+
+<p>private:
+    // Message is used as the typename of the template.
+    set&lt;Message*&gt; messages;</p>
+
+<pre><code>void put_Folder_in_Message(const set&lt;Message*&gt;&amp;);
+void remove_Folder_from_Message();
+</code></pre>
+
+<p>};</p>
+
+<h1 id="endif">endif</h1>
+<p>```</p>
+
+<p><code>Message.h</code></p>
+
+<p>```
+#include <iostream>
+#include <set /></iostream></p>
+
+<h1 id="ifndef-message">ifndef <strong>Message</strong></h1>
+<p>#define <strong>Message</strong></p>
+
+<p>using std::string;
+using std::set;</p>
+
+<h1 id="include-folderh">include “Folder.h”</h1>
+<p>//predeclaration of Folder
+class Folder;
+// Folder is a incomplete type.It only can be used in limited ways.
+// 1.can not define object of this type.
+// 2.only used as a pointer or ref.
+// 3.declare it as the formal parameter of a function or return type of a function.</p>
+
+<p>class Message
+{
+public:
+    Message(const string &amp; str=””):
+        contents(str) {}
+    Message(const Message&amp;);
+    Message&amp; operator=(const Message &amp;);
+    ~Message();</p>
+
+<pre><code>// Folder is used as the formal parameter.
+void save(Folder&amp;);
+void remove(Folder&amp;);
+void addFldr(Folder*);
+void remFldr(Folder*);
+</code></pre>
+
+<p>private:
+    string contents;
+    set&lt;Folder*&gt; folders;</p>
+
+<pre><code>// Folder is used as the typename of the template.
+void put_Msg_in_Folders(const set&lt;Folder*&gt;&amp;);
+void remove_Msg_from_Folders(); };
+</code></pre>
+
+<h1 id="endif-1">endif</h1>
+<p>```</p>
+]]></content>
+  </entry>
+  
+</feed>
