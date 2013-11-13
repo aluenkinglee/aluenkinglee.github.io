@@ -1,0 +1,369 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>install nox on debian-bug fixed - 曾经渐行远，未免心戚戚</title>
+  <meta name="author" content="Aluen King Lee">
+
+  
+  <meta name="description" content="首先需要声明的一点是，到目前（2013/11）Nox在所有SDN控制器中不是最火的（相比Pox，floodlight），但是作为最先开发的一个SDN而言，还是有研究意义的。 安装提示 1
+2
+3
+4
+5
+6
+cd /etc/apt/sources.list.d/
+sudo wget http:// &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://aluenkinglee.github.io/blog/2013/11/13/install-nox-on-debian-bug-fixed">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="曾经渐行远，未免心戚戚" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+<!-- mathjax config similar to math.stackexchange -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
+          MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
+                  data.math = data.math.replace(/^\s*<!\[CDATA\[\s*((?:\n|.)*)\s*\]\]>\s*$/m,"$1");
+                    });
+          });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">曾经渐行远，未免心戚戚</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:aluenkinglee.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Install Nox on Debian-bug Fixed</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-13T22:44:00+08:00" pubdate data-updated="true">Nov 13<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>首先需要声明的一点是，到目前（2013/11）Nox在所有SDN控制器中不是最火的（相比Pox，floodlight），但是作为最先开发的一个SDN而言，还是有研究意义的。</p>
+
+<!--more-->
+
+<h5 id="section">安装提示</h5>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">cd /etc/apt/sources.list.d/
+</span><span class="line">sudo wget http://openflowswitch.org/downloads/debian/nox.list
+</span><span class="line">sudo apt-get update
+</span><span class="line">sudo apt-get install nox-dependencies
+</span><span class="line">sudo apt-get install libtbb-dev
+</span><span class="line">sudo apt-get install libboost-serialization-dev libboost-all-dev</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>然后在你想放置Nox源码的地方做如下操作：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">git clone git://github.com/noxrepo/nox
+</span><span class="line">cd nox
+</span><span class="line">./boot.sh
+</span><span class="line">mkdir build
+</span><span class="line">cd build
+</span><span class="line">../configure
+</span><span class="line">make -j 5
+</span><span class="line">make install</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>很不幸，遇到了如下的错误：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">../../src/builtin/component.cc:414:1: required from here
+</span><span class="line">/usr/include/boost/property_tree/detail/json_parser_read.hpp:105:17: error:
+</span><span class="line">no matching function for call to ‘boost::property_tree::basic_ptree
+</span><span class="line">std::basic_string&lt;char, std::basic_string &gt;::push_back(std::pair
+</span><span class="line">std::basic_string&lt;char, std::basic_string &gt;)’
+</span><span class="line">/usr/include/boost/property_tree/detail/json_parser_read.hpp:105:17: note:
+</span><span class="line">candidate is:
+</span><span class="line">In file included from /usr/include/boost/property_tree/ptree.hpp:516:0,
+</span><span class="line">from ../../src/include/component.hh:35,
+</span><span class="line">from ../../src/builtin/component.cc:18:
+</span><span class="line">/usr/include/boost/property_tree/detail/ptree_implementation.hpp:362:9:
+</span><span class="line">note: boost::property_tree::basic_ptree::iterator
+</span><span class="line">boost::property_tree::basic_ptree::push_back(const value_type&amp;) [with Key =
+</span><span class="line">std::basic_string; Data = std::basic_string; KeyCompare = std::less
+</span><span class="line">std::basic_string&lt;char &gt;; boost::property_tree::basic_ptree::value_type =
+</span><span class="line">std::pair, boost::property_tree::basic_ptreestd::basic_string&lt;char,
+</span><span class="line">std::basic_string &gt; &gt;]
+</span><span class="line">/usr/include/boost/property_tree/detail/ptree_implementation.hpp:362:9:
+</span><span class="line">note: no known conversion for argument 1 from ‘std::pair
+</span><span class="line">std::basic_string&lt;char, std::basic_string &gt;’ to ‘const value_type&amp; {aka
+</span><span class="line">const std::pair, boost::property_tree::basic_ptreestd::basic_string&lt;char,
+</span><span class="line">std::basic_string &gt; &gt;&amp;}’
+</span><span class="line">make[4]: *** [nox_core-component.o] Error 1</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>这个错误来源于nox依赖的boost库版本（1.49）的错误.注意错误原因是：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">/usr/include/boost/property_tree/detail/json_parser_read.hpp:105
+</span><span class="line">error:
+</span><span class="line">no matching function for call to ‘boost::property_tree::basic_ptree
+</span><span class="line">std::basic_string&lt;char, std::basic_string &gt;::push_back(std::pair
+</span><span class="line">std::basic_string&lt;char, std::basic_string &gt;)’</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>同样的问题点击<a href="http://lists.noxrepo.org/pipermail/nox-dev-noxrepo.org/2013-February/000668.html" title="[nox-dev] Nox build fails">这里</a></p>
+
+<p>解决方法：<code>/usr/include/boost/property_tree/detail/json_parser_read.hpp</code>找到这个文件。定位到<code>105行，</code></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">c.stack.back()-&gt;push_back(std::make_pair(c.name, Str(b, e)));</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>换成</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">c.stack.back()-&gt;push_back(std::make_pair(c.name, Ptree(Str(b, e))));</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>重新make&amp;&amp; make install 即可。</p>
+
+<h5 id="reference">Reference</h5>
+
+<ol>
+  <li>
+    <p><a href="https://svn.boost.org/trac/boost/ticket/6785">read_json does not compile on GCC 4.7.0 with std=c++11</a></p>
+  </li>
+  <li>
+    <p><a href="http://lists.noxrepo.org/pipermail/nox-dev-noxrepo.org/2013-February/000668.html">nox-dev Nox build fails</a></p>
+  </li>
+</ol>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Aluen King Lee</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-13T22:44:00+08:00" pubdate data-updated="true">Nov 13<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/sdn/'>SDN</a>, <a class='category' href='/blog/categories/nox/'>nox</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/11/13/use-mathjax-in-octopress-to-write-beautiful-latex/" title="Previous Post: Use MathJax in Octopress to Write beautiful LaTex">&laquo; Use MathJax in Octopress to Write beautiful LaTex</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/11/13/install-nox-on-debian-bug-fixed/">Install Nox on Debian-bug Fixed</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/11/13/use-mathjax-in-octopress-to-write-beautiful-latex/">Use MathJax in Octopress to Write Beautiful LaTex</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/24/c-plus-plus-forward-declaration-and-copy-control/">C++前置声明和复制控制</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/20/virtualbox-network-environment-and-login/">Virtualbox网络环境和登录</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Aluen King Lee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
