@@ -9,7 +9,7 @@
   <meta name="author" content="Aluen King Lee">
 
   
-  <meta name="description" content="首先需要声明的一点是，到目前（2013/11）Nox在所有SDN控制器中不是最火的（相比Pox，floodlight），但是作为最先开发的一个SDN而言，还是有研究意义的。 ">
+  <meta name="description" content="最近又重新看了一下coursera上的机器学习(Andrew Ng讲的)，比起之前上老师的课和机器学习这本书来说，简直好太多。当初选修这个课程的时候明显感到编程实践环节太少，很不适应，只有一个大作业而已。好在这里的Quara和Programming Excises很给力。 我的设想是这样， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -103,6 +103,82 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/12/31/ke-ai-de-armadillo/">可爱的Armadillo</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-31T10:25:00+08:00" pubdate data-updated="true">Dec 31<span>st</span>, 2013</time>
+        
+        
+          | <a href="/blog/2013/12/31/ke-ai-de-armadillo/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>最近又重新看了一下coursera上的<a href="https://class.coursera.org/ml-004/lecture/index">机器学习</a>(Andrew Ng讲的)，比起之前上老师的课和<a href="http://book.douban.com/subject/1102235/" title="机器学习">机器学习</a>这本书来说，简直好太多。当初选修这个课程的时候明显感到编程实践环节太少，很不适应，只有一个大作业而已。好在这里的Quara和Programming Excises很给力。</p>
+
+<p>我的设想是这样，octave作为一种快速验证想法的工具不适合应用在实际的生产环境中的，毕竟计算速度还是可以依靠集群和并行化来加快大数据处理。在此参考了C++的<a href="http://en.wikipedia.org/wiki/Comparison_of_linear_algebra_libraries">线性代数库</a>之后选择了Armadillo,毕竟经常更新并且从官网资料来看，和octave代码相似便于移植，再说，从它本身和其他的对比来看，速度也是相当快的。</p>
+
+<p>不过，在安装完Armadillo之后，编译example目录下的例子并不通过，提示</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">/tmp/cc9ckDKG.o: In function `void arma::gemv&lt;false, false, false&gt;::apply_blas_type&lt;double&gt;(double*, arma::Mat&lt;double&gt; const&amp;, double const*, double, double)':
+</span><span class="line">example1.cpp:(.text._ZN4arma4gemvILb0ELb0ELb0EE15apply_blas_typeIdEEvPT_RKNS_3MatIS3_EEPKS3_S3_S3_[_ZN4arma4gemvILb0ELb0ELb0EE15apply_blas_typeIdEEvPT_RKNS_3MatIS3_EEPKS3_S3_S3_]+0x7a): undefined reference to `wrapper_dgemv_'
+</span><span class="line">/tmp/cc9ckDKG.o: In function `main':
+</span><span class="line">example1.cpp:(.text.startup+0x1a5d): undefined reference to `wrapper_ddot_'
+</span><span class="line">collect2: error: ld returned 1 exit status</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>然后看了readme里面的编译链接部分，发现即使尝试</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">g++ example1.cpp -o example1 -O2 -llapack -lblas</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>也是不行。所以不甘心的看了<code>/usr/include/armadillo_bits/config.hpp</code>，找到了<code>#define ARMA_USE_WRAPPER</code>,并把它注释掉,就像这样</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">//// #define ARMA_USE_WRAPPER
+</span><span class="line">//// Comment out the above line if you're getting linking errors when compiling your programs,
+</span><span class="line">//// or if you prefer to directly link with LAPACK and/or BLAS.
+</span><span class="line">//// You will then need to link your programs directly with -llapack -lblas instead of -larmadillo</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>在用上面的命令就可以了。</p>
+
+<p>至于怎么安装，还是请看Readme吧各位。希望这个帖子能帮助有类似问题的人。（在debain系列的linux上有可能会有这样的问题。）</p>
+
+<p>接下来，应该就会把之前看过的视频和资料的东西在整理一下，并借用这个库实现应该实现的部分。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -490,6 +566,10 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/12/31/ke-ai-de-armadillo/">可爱的Armadillo</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/11/13/install-nox-on-debian-bug-fixed/">Install Nox on Debian-bug Fixed</a>
       </li>
     
@@ -503,10 +583,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     
       <li class="post">
         <a href="/blog/2013/10/24/c-plus-plus-forward-declaration-and-copy-control/">C++前置声明和复制控制</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/10/20/virtualbox-network-environment-and-login/">Virtualbox网络环境和登录</a>
       </li>
     
   </ul>
@@ -524,7 +600,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 </section> 
 <section>
 <h1>Recent Comments</h1>
-<ul class="ds-recent-comments" data-num-items="" data-show-avatars="" data-show-time="" data-show-title="" data-show-admin="" data-excerpt-length=""></ul>
+<ul class="ds-recent-comments" data-num-items="10" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="18"></ul>
 
 <!--多说js加载开始，一个页面只需要加载一次 -->
 <script type="text/javascript">
@@ -547,7 +623,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - Aluen King Lee -
+  Copyright &copy; 2014 - Aluen King Lee -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

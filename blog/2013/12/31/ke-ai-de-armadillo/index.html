@@ -5,13 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>virtualbox网络环境和登录 - 曾经渐行远，未免心戚戚</title>
+  <title>可爱的Armadillo - 曾经渐行远，未免心戚戚</title>
   <meta name="author" content="Aluen King Lee">
 
   
-  <meta name="description" content="最近由于实验室需要研究SDN的一些东西，再此先来搭配下环境。
-对于虚拟机的一些选择，可以看这里:
-vm-setup-notes 我这里的环境是: os: debian 7(wheezy) 64bit xwindows: kde VM： virtualbox controller: pox &hellip;">
+  <meta name="description" content="最近又重新看了一下coursera上的机器学习(Andrew Ng讲的)，比起之前上老师的课和机器学习这本书来说，简直好太多。当初选修这个课程的时候明显感到编程实践环节太少，很不适应，只有一个大作业而已。好在这里的Quara和Programming Excises很给力。 我的设想是这样， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +18,7 @@ vm-setup-notes 我这里的环境是: os: debian 7(wheezy) 64bit xwindows: kde V
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://aluenkinglee.github.io/blog/2013/10/20/virtualbox-network-environment-and-login">
+  <link rel="canonical" href="http://aluenkinglee.github.io/blog/2013/12/31/ke-ai-de-armadillo">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="曾经渐行远，未免心戚戚" type="application/atom+xml">
@@ -108,7 +106,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   
   <header>
     
-      <h1 class="entry-title">Virtualbox网络环境和登录</h1>
+      <h1 class="entry-title">可爱的Armadillo</h1>
     
     
       <p class="meta">
@@ -124,7 +122,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   
 
 
-<time datetime="2013-10-20T22:46:00+08:00" pubdate data-updated="true">Oct 20<span>th</span>, 2013</time>
+<time datetime="2013-12-31T10:25:00+08:00" pubdate data-updated="true">Dec 31<span>st</span>, 2013</time>
         
         
           | <a href="#comments">Comments</a>
@@ -134,113 +132,44 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   </header>
 
 
-<div class="entry-content"><p>最近由于实验室需要研究SDN的一些东西，再此先来搭配下环境。
-对于虚拟机的一些选择，可以看这里:
-<a href="http://mininet.org/vm-setup-notes/">vm-setup-notes</a> 
-我这里的环境是:</p>
+<div class="entry-content"><p>最近又重新看了一下coursera上的<a href="https://class.coursera.org/ml-004/lecture/index">机器学习</a>(Andrew Ng讲的)，比起之前上老师的课和<a href="http://book.douban.com/subject/1102235/" title="机器学习">机器学习</a>这本书来说，简直好太多。当初选修这个课程的时候明显感到编程实践环节太少，很不适应，只有一个大作业而已。好在这里的Quara和Programming Excises很给力。</p>
 
-<p><code>os:            debian 7(wheezy) 64bit</code></p>
+<p>我的设想是这样，octave作为一种快速验证想法的工具不适合应用在实际的生产环境中的，毕竟计算速度还是可以依靠集群和并行化来加快大数据处理。在此参考了C++的<a href="http://en.wikipedia.org/wiki/Comparison_of_linear_algebra_libraries">线性代数库</a>之后选择了Armadillo,毕竟经常更新并且从官网资料来看，和octave代码相似便于移植，再说，从它本身和其他的对比来看，速度也是相当快的。</p>
 
-<p><code>xwindows:      kde</code></p>
-
-<p><code>VM：           virtualbox</code></p>
-
-<p><code>controller:    pox</code></p>
-
-<p>按照上述的网址，可以比较容易的搭配出来需要的环境，下面就说以下之后遇到的问题。</p>
-
-<ul>
-  <li>virtualbox的鼠标独占问题，只是提示太不明明显了！对于那个right ctrl的提示我郁闷了好一会，我以为是鼠标右键+ctrl…其实是右边的ctrl键。对于这个键的设定，你可以从“管理”&gt;“全局设定”&gt;”热键”来设置你喜欢的按键..我就吐槽这么一句，之前vmware对此的说明很明了！</li>
-  <li>Using Host-only adapter to SSH guest from host.</li>
-</ul>
-
-<h3 id="nat">NAT模式</h3>
-<p>特点：
-1. 如果主机可以上网，虚拟机可以上网
-2. 虚拟机之间不能ping通
-3. 虚拟机可以ping通主机（此时ping虚拟机的网关，即是ping主机）
-4. 主机不能ping通虚拟机</p>
-
-<p>但是这个情况下是不能满足我的使用条件…我需要在host登录到guest中，so pass</p>
-
-<h3 id="section">桥接模式</h3>
-<p>特点：
-1. 如果主机可以上网，虚拟机可以上网
-2. 虚拟机之间可以ping通
-3. 虚拟机可以ping通主机
-4. 主机可以ping通虚拟机 (以上各点基于一个前提：主机可以上网)
-5. 如果主机不可以上网，所有1-4特点均无</p>
-
-<!--more-->
-
-<p>这个挺好，觉得可以满足我的要求但是，发现它的IP地址要求是自动非配的，我们实验室的IP是校园内网固定IP…</p>
-
-<h3 id="host-only-adapter">Host-only Adapter模式</h3>
-
-<p>特点：</p>
-
-<ol>
-  <li>虚拟机<code>不</code>可以上网</li>
-  <li>虚拟机之间可以ping通</li>
-  <li>虚拟机可以ping通主机（注意虚拟机与主机通信是通过主机的名为VirtualBox Host-Only Network的网卡，因此ip
-是该网卡ip <code>192.168.56.1</code>，而不是你现在正在上网所用的ip）</li>
-  <li>主机可以ping通虚拟机</li>
-</ol>
-
-<p>应用场景：
-需要搭建一个模拟局域网，所有机器可以互访。（颇不得以选这个的..）</p>
-
-<p>ip样式：<code>netstat -rn</code>查看路由表
-ip 与本机VirtualBox Host-Only Network的网卡ip在同一网段内（默认192.168.56.*）
-网关 本机VirtualBox Host-Only Network的网卡ip（默认192.168.56.1）</p>
-
-<h3 id="section-1">登录虚拟机</h3>
-<p>登录虚拟机，首先开开virtualbox的虚拟机</p>
+<p>不过，在安装完Armadillo之后，编译example目录下的例子并不通过，提示</p>
 
 <div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">mininet-vm login: mininet
-</span><span class="line">Password: mininet</span></code></pre></td></tr></table></div></figure></notextile></div>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">/tmp/cc9ckDKG.o: In function `void arma::gemv&lt;false, false, false&gt;::apply_blas_type&lt;double&gt;(double*, arma::Mat&lt;double&gt; const&amp;, double const*, double, double)':
+</span><span class="line">example1.cpp:(.text._ZN4arma4gemvILb0ELb0ELb0EE15apply_blas_typeIdEEvPT_RKNS_3MatIS3_EEPKS3_S3_S3_[_ZN4arma4gemvILb0ELb0ELb0EE15apply_blas_typeIdEEvPT_RKNS_3MatIS3_EEPKS3_S3_S3_]+0x7a): undefined reference to `wrapper_dgemv_'
+</span><span class="line">/tmp/cc9ckDKG.o: In function `main':
+</span><span class="line">example1.cpp:(.text.startup+0x1a5d): undefined reference to `wrapper_ddot_'
+</span><span class="line">collect2: error: ld returned 1 exit status</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>接下来查看我们的vm地址：（在guest里面操作）</p>
+<p>然后看了readme里面的编译链接部分，发现即使尝试</p>
 
 <div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">sudo ifconfig</span></code></pre></td></tr></table></div></figure></notextile></div>
-<p>例如我这里的ip地址是<code>192.168.56.101</code>,然后就使用我们可爱的SSH</p>
+</pre></td><td class="code"><pre><code class=""><span class="line">g++ example1.cpp -o example1 -O2 -llapack -lblas</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">ssh -Y mininet@192.168.56.101</span></code></pre></td></tr></table></div></figure></notextile></div>
-<p>输入密码就可以了</p>
-
-<p>当然上面的不好看，做下别名好了。（在我们host里面操作）</p>
+<p>也是不行。所以不甘心的看了<code>/usr/include/armadillo_bits/config.hpp</code>，找到了<code>#define ARMA_USE_WRAPPER</code>,并把它注释掉,就像这样</p>
 
 <div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">sudo nano /etc/hosts
-</span><span class="line">192.168.56.101 mininet-vm</span></code></pre></td></tr></table></div></figure></notextile></div>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">//// #define ARMA_USE_WRAPPER
+</span><span class="line">//// Comment out the above line if you're getting linking errors when compiling your programs,
+</span><span class="line">//// or if you prefer to directly link with LAPACK and/or BLAS.
+</span><span class="line">//// You will then need to link your programs directly with -llapack -lblas instead of -larmadillo</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>保存即可，这样子就可以使用</p>
+<p>在用上面的命令就可以了。</p>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">ssh -Y mininet@mininet-vm</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>至于怎么安装，还是请看Readme吧各位。希望这个帖子能帮助有类似问题的人。（在debain系列的linux上有可能会有这样的问题。）</p>
 
-<p>接下来就可以去玩下面的实验了^^</p>
-
-<blockquote>
-  <p>参考文档:</p>
-</blockquote>
-
-<blockquote>
-  <p><a href="http://blog.csdn.net/yxc135/article/details/8458939">VirtualBox虚拟机网络环境解析</a></p>
-</blockquote>
-
-<blockquote>
-  <p><a href="http://www.live-in.org/archives/832.html">ssh命令用于远程登录上Linux主机</a></p>
-</blockquote>
-
-<blockquote>
-  <p><a href="http://mininet.org/vm-setup-notes/">SSH into VM</a></p>
-</blockquote>
+<p>接下来，应该就会把之前看过的视频和资料的东西在整理一下，并借用这个库实现应该实现的部分。</p>
 </div>
 
 
@@ -263,12 +192,12 @@ ip 与本机VirtualBox Host-Only Network的网卡ip在同一网段内（默认19
   
 
 
-<time datetime="2013-10-20T22:46:00+08:00" pubdate data-updated="true">Oct 20<span>th</span>, 2013</time>
+<time datetime="2013-12-31T10:25:00+08:00" pubdate data-updated="true">Dec 31<span>st</span>, 2013</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/sdn/'>SDN</a>, <a class='category' href='/blog/categories/ssh/'>SSH</a>, <a class='category' href='/blog/categories/virtualbox/'>virtualbox</a>
+    <a class='category' href='/blog/categories/armadillo/'>Armadillo,</a>, <a class='category' href='/blog/categories/c-plus-plus/'>C++,</a>, <a class='category' href='/blog/categories/learning/'>Learning</a>, <a class='category' href='/blog/categories/machine/'>Machine</a>, <a class='category' href='/blog/categories/armadillolian-jie-cuo-wu/'>armadillo链接错误,</a>, <a class='category' href='/blog/categories/lapack/'>lapack,</a>, <a class='category' href='/blog/categories/openblas/'>openblas,</a>
   
 </span>
 
@@ -284,8 +213,8 @@ ip 与本机VirtualBox Host-Only Network的网卡ip在同一网段内（默认19
     
     <p class="meta">
       
+        <a class="basic-alignment left" href="/blog/2013/11/13/install-nox-on-debian-bug-fixed/" title="Previous Post: install nox on debian-bug fixed">&laquo; install nox on debian-bug fixed</a>
       
-        <a class="basic-alignment right" href="/blog/2013/10/24/c-plus-plus-forward-declaration-and-copy-control/" title="Next Post: C++前置声明和复制控制">C++前置声明和复制控制 &raquo;</a>
       
     </p>
   </footer>
