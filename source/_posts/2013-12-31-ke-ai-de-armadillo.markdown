@@ -3,7 +3,7 @@ layout: post
 title: "可爱的Armadillo"
 date: 2013-12-31 10:25
 comments: true
-categories: Armadillo, openblas, lapack, armadillo链接错误, C++, Machine Learning
+categories: Armadillo openblas lapack armadillo链接错误 C++ Machine Learning
 ---
 
 最近又重新看了一下coursera上的[机器学习](https://class.coursera.org/ml-004/lecture/index)(Andrew Ng讲的)，比起之前上老师的课和[机器学习](http://book.douban.com/subject/1102235/ '机器学习')这本书来说，简直好太多。当初选修这个课程的时候明显感到编程实践环节太少，很不适应，只有一个大作业而已。好在这里的Quara和Programming Excises很给力。
