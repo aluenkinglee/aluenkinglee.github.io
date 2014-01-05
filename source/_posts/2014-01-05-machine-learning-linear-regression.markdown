@@ -30,6 +30,8 @@ categories: C++ Armadillo Machine-Learning octave linear-regression
 
 那么好，我们会看到下面这个图！图先不上！！！假设你装了octave，并执行ex1的话就会看到它的！！
 
+![价格-人口关系图](https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-01-05-machine-learning-linear-regression/linear_regression_f1.png?raw=true "价格-人口关系图")
+
 在那之前，先让我们约定几个问题，恩恩：
 
 #####注释
@@ -88,12 +90,19 @@ Ng在视频中讲的很形象，只要我们沿着山最陡的方向向下走，
 选定了回归模型，那就要确定参数$\Theta$了，$\Theta$只有在$J{(\Theta)}
 $最小的情况下才能确定，所以问题归结为了求极小值的问题，梯度下降法是个不错的选择。当然，它会遇到找到的值只是个局部最小值。
 
+这是示意图：
+
+![最小值](https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-01-05-machine-learning-linear-regression/linear_regression_f4.png?raw=true)
+
+![局部极小值](https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-01-05-machine-learning-linear-regression/linear_regression_f5.png?raw=true)
+
 流程如下：
 
 1. 对$\Theta$赋予初始值，可随机，可为零向量。
 2. 同步改变$\Theta$值，使得$J{(\Theta)}$沿着梯度下降的方向走，直到学习曲线平滑，也就是收敛。
 
 用公式来描述就是,对于$j=1$和$j=0$，同时重复以下操作，直到$J{(\Theta)}$收敛。
+
 
 $$
 \theta_j := \theta_j - \alpha \frac{\partial}{\partial \theta_j}
@@ -102,8 +111,6 @@ J{(\theta_0,\theta_1) } \\
 \left(h_\theta(x^{(i)})-y^{(i)}
 \right) \cdot x_j^{(i)}
 $$
-
-这里上图！！
 
 这是octave实现，向量形式,代码[详见](https://github.com/aluenkinglee/mlclass/blob/master/
 mlclass-ex1/gradientDescent.m)
