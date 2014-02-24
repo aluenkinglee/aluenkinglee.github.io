@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: LaTex | 曾经渐行远，未免心戚戚]]></title>
-  <link href="http://aluenkinglee.github.io/blog/categories/latex/atom.xml" rel="self"/>
-  <link href="http://aluenkinglee.github.io/"/>
-  <updated>2014-01-05T20:20:53+08:00</updated>
-  <id>http://aluenkinglee.github.io/</id>
+  <link href="http://aluenkinglee.com/blog/categories/latex/atom.xml" rel="self"/>
+  <link href="http://aluenkinglee.com/"/>
+  <updated>2014-02-25T01:11:07+08:00</updated>
+  <id>http://aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Use MathJax in Octopress to Write beautiful LaTex]]></title>
-    <link href="http://aluenkinglee.github.io/blog/2013/11/13/use-mathjax-in-octopress-to-write-beautiful-latex/"/>
+    <link href="http://aluenkinglee.com/blog/2013/11/13/use-mathjax-in-octopress-to-write-beautiful-latex/"/>
     <updated>2013-11-13T12:37:00+08:00</updated>
-    <id>http://aluenkinglee.github.io/blog/2013/11/13/use-mathjax-in-octopress-to-write-beautiful-latex</id>
+    <id>http://aluenkinglee.com/blog/2013/11/13/use-mathjax-in-octopress-to-write-beautiful-latex</id>
     <content type="html"><![CDATA[<h4 id="latex">首先看下$\LaTeX$的例子</h4>
 
 <ul>
