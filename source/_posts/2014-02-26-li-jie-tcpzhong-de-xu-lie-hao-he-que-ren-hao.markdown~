@@ -3,7 +3,7 @@ layout: post
 title: "理解TCP中的序列号和确认号"
 date: 2014-02-26 22:34
 comments: true
-categories: TCP libpcap wireshark 三次握手 C
+categories: TCP libpcap wireshark 三次握手 C 四次握手
 ---
 
 之所以写这么一篇文章是因为被wireshark的序列号搞晕了，我不知道你们是否这样，当你读这篇article时，肯定你已经熟悉了TCP那个三次握手，
@@ -12,9 +12,14 @@ categories: TCP libpcap wireshark 三次握手 C
 
 相对来说TCP还是个复杂的协议，而且值得清楚的认识以下。那么结合wireshark和代码来认识下TCP里面的东西。
 
-这里是个已经准备好的pcap文件，本文结合这个文件对此进行描述。
+<!--more-->
+
+[这里](https://github.com/aluenkinglee/stuff/blob/master/cplusplus/traffic_parser/b.pcap?raw=true 'pcap文件')是个已经准备好的pcap文件，本文结合这个文件对此进行描述。
 
 这个文件分析的是微信在单一环境中的网络行为，所以比较简单。打开这个文件，找到开始的几个右键单击选择`Follow TCP Stream`，或者在filter那里输入`tcp.stream eq 1`可以看到这里。
+
+![Follow TCP Stream](https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-02-26-li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/tcp1.png?raw=true "Follow TCP Stream")
+
 
 ####三次握手
 
@@ -28,9 +33,16 @@ TCP利用了8个标志位，在头部位置，以此来控制链接的状态，�
 
 ######对于这个流的第一个，注意Flags里面出了SYN位是1之外，其它都是0。
 
+![第一次握手](https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-02-26-li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/tcp2.png?raw=true "第一次握手")
+
+
 ######接下来在看第二个，注意它有两个标志位被设置为1，分别是SYN和ACK。
 
+![第二次握手](https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-02-26-li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/tcp3.png?raw=true "第二次握手")
+
 ######对于第三个packet，就只有ACK设置了。
+
+![第三次握手](https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-02-26-li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/tcp4.png?raw=true "第三次握手")
 
 这就是最初的TCP三次握手。
 
@@ -39,16 +51,12 @@ TCP利用了8个标志位，在头部位置，以此来控制链接的状态，�
 假设客户端为A，服务器为B，双方都为护着一个32bit的序列号，用来追踪传输了多少数据。。这个号包括了之前所传输的负载的
 大小，由另一端的应答号来应答“你传的数据我都收到了。。”
 
-当一个机器开始初始TCP序列号时，它是随机的！！（我忘记了，在用那个wireshark后成功被它的相对序列号迷惑了==）,是一个0～ $2^{(32)}-1$的数。相对序列号是给人看的，所以像wireshark之辈使用它是为了人们方便阅读理解的。
+当一个机器开始初始TCP序列号时，它是随机的！！（我忘记了，在用那个wireshark后成功被它的相对序列号迷惑了==）,是一个0～ $2^{32}-1$的数。相对序列号是给人看的，所以像wireshark之辈使用它是为了人们方便阅读理解的。
+（选择不启用相对序列号：选择`Edit > Preferences... `不启用那个`Relative sequence numbers and window scaling `就可以了）
 
-######怎么不起用相对序列号选择
+接下来让我们结合下图来看这个流的行为。在`Statistics > Flow Graph...`选择`TCP flow`。
 
-
-`Edit > Preferences... `不启用那个`Relative sequence numbers and window scaling `就可以了。
-
-
-
-接下来让我们结合图示来看这个流的行为。在`Statistics > Flow Graph...`选择`TCP flow`。
+![流图](https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-02-26-li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/tcp5.png?raw=true "流图")
 
 这张图很容易理解就不说了。使用这张流图可以很方便的帮助我们理解他们是怎么工作的。
 
@@ -92,5 +100,13 @@ A:既然我都要到了，那么我们就分手吧~~ 同意，FIN置为1，因�
 ######packet #10
 
 因为#9带有FIN，所以SEQ自增1.ACK不变。
+
+关于代码，请看下篇。
+
+## 参考
+
+1. [TCP sequence number question](http://stackoverflow.com/questions/2672734/tcp-sequence-number-question)
+
+2. [Transmission Control Protocol](http://en.wikipedia.org/wiki/Transmission_Control_Protocol)
 
 

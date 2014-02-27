@@ -12,8 +12,6 @@ categories: Armadillo openblas lapack armadillo链接错误 C++ Machine Learning
 
 不过，在安装完Armadillo之后，编译example目录下的例子并不通过，提示
 
-<!--more-->
-
 
 ```
 /tmp/cc9ckDKG.o: In function `void arma::gemv<false, false, false>::apply_blas_type<double>(double*, arma::Mat<double> const&, double const*, double, double)':
