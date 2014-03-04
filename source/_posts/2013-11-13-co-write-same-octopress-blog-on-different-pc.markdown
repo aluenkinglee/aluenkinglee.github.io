@@ -18,6 +18,8 @@ Octopress的git仓库(repository)有两个分支，分别是`master`和`source`�
 
 2. `source`存储的是生成博客的源文件（各种markdown文件）,写作博客是在这个分支。每次写完之后，记得推送到服务器。这样就不用担心我们的备份了。
 
+<!--more-->
+
 ## 克隆服务器上的git到新机器
 
 将博客的源文件clone到本地的（假设就叫做）octopress文件夹内。
@@ -29,7 +31,7 @@ $ git clone -b source git@github.com:username/username.github.com.git octopress
 
 ```
 $ cd octopress
-$ git clone git@github.com:username/username.github.com.git _deploy 
+$ git clone -b master git@github.com:username/username.github.com.git _deploy 
 ```
 
 还是要安装博客的。

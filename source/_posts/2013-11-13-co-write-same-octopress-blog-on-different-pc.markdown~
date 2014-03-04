@@ -68,7 +68,6 @@ $ git add .
 $ git commit -am "Some comment here." 
 $ git push origin source  	# 上面三行是更新远端source分支
 
-
 $ rake deploy             	# 更新远端master分支，文章就发布到了博客中
 ```
 
