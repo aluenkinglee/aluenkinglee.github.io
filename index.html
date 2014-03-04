@@ -9,7 +9,8 @@
   <meta name="author" content="Aluen King Lee">
 
   
-  <meta name="description" content="对于想知道hashtable原理的的人来说，多少对基本的数据结构和算法都有些了解，所以不再细说。 平常我们所说的一些容器来说，比如vector，list，stack之类，他们中的元素都是可以排序的，可以归为序列式容器，基于连续内存的vector可以实现随机存储，但是搜索的复杂度是O（n）， &hellip;">
+  <meta name="description" content="之所以写这么一篇文章是因为被wireshark的序列号搞晕了，我不知道你们是否这样，当你读这篇article时，肯定你已经熟悉了TCP那个三次握手，
+或者是SYN,SYN|ACK,ACK. 而我要做的也就是这个，提取一个流的前N个packets，针对目前的需求， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -103,6 +104,54 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/">理解TCP中的序列号和确认号</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-26T22:34:00+08:00" pubdate data-updated="true">Feb 26<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>之所以写这么一篇文章是因为被wireshark的序列号搞晕了，我不知道你们是否这样，当你读这篇article时，肯定你已经熟悉了TCP那个三次握手，
+或者是SYN,SYN|ACK,ACK. 而我要做的也就是这个，提取一个流的前N个packets，针对目前的需求，只需要在传输层截取UDP和TCP的前多少个流即可。
+所以我得分析网络层的这些协议底层到底是怎么回事，在结合libpcap完成流的提取任务。</p>
+
+<p>相对来说TCP还是个复杂的协议，而且值得清楚的认识以下。那么结合wireshark和代码来认识下TCP里面的东西。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -247,40 +296,12 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 
 <p>不过，在安装完Armadillo之后，编译example目录下的例子并不通过，提示</p>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">/tmp/cc9ckDKG.o: In function `void arma::gemv&lt;false, false, false&gt;::apply_blas_type&lt;double&gt;(double*, arma::Mat&lt;double&gt; const&amp;, double const*, double, double)':
-</span><span class="line">example1.cpp:(.text._ZN4arma4gemvILb0ELb0ELb0EE15apply_blas_typeIdEEvPT_RKNS_3MatIS3_EEPKS3_S3_S3_[_ZN4arma4gemvILb0ELb0ELb0EE15apply_blas_typeIdEEvPT_RKNS_3MatIS3_EEPKS3_S3_S3_]+0x7a): undefined reference to `wrapper_dgemv_'
-</span><span class="line">/tmp/cc9ckDKG.o: In function `main':
-</span><span class="line">example1.cpp:(.text.startup+0x1a5d): undefined reference to `wrapper_ddot_'
-</span><span class="line">collect2: error: ld returned 1 exit status</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>然后看了readme里面的编译链接部分，发现即使尝试</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">g++ example1.cpp -o example1 -O2 -llapack -lblas</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>也是不行。所以不甘心的看了<code>/usr/include/armadillo_bits/config.hpp</code>，找到了<code>#define ARMA_USE_WRAPPER</code>,并把它注释掉,就像这样</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">//// #define ARMA_USE_WRAPPER
-</span><span class="line">//// Comment out the above line if you're getting linking errors when compiling your programs,
-</span><span class="line">//// or if you prefer to directly link with LAPACK and/or BLAS.
-</span><span class="line">//// You will then need to link your programs directly with -llapack -lblas instead of -larmadillo</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>在用上面的命令就可以了。</p>
-
-<p>至于怎么安装，还是请看Readme吧各位。希望这个帖子能帮助有类似问题的人。（在debain系列的linux上有可能会有这样的问题。）</p>
-
-<p>接下来，应该就会把之前看过的视频和资料的东西在整理一下，并借用这个库实现应该实现的部分。</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/12/31/ke-ai-de-armadillo/">read on &rarr;</a>
+    </footer>
   
 
 
@@ -672,6 +693,10 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/">理解TCP中的序列号和确认号</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/02/24/c-plus-plus-de-hashtablena-xie-shi/">C++的hashtable那些事</a>
       </li>
     
@@ -685,10 +710,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     
       <li class="post">
         <a href="/blog/2013/11/13/install-nox-on-debian-bug-fixed/">Install Nox on Debian-bug Fixed</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/11/13/co-write-same-octopress-blog-on-different-pc/">在不同PC上协同写作同一个Octopress博客</a>
       </li>
     
   </ul>

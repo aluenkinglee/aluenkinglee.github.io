@@ -4,52 +4,58 @@
         <loc>
             http://aluenkinglee.com/blog/2013/10/20/virtualbox-network-environment-and-login/
         </loc>
-        <lastmod>2013-11-15T03:09:20+08:00</lastmod>
+        <lastmod>2014-03-04T21:49:06+08:00</lastmod>
     </url>
     <url>
         <loc>
             http://aluenkinglee.com/blog/2013/10/24/c-plus-plus-forward-declaration-and-copy-control/
         </loc>
-        <lastmod>2013-11-15T03:09:20+08:00</lastmod>
+        <lastmod>2014-03-04T21:49:06+08:00</lastmod>
     </url>
     <url>
         <loc>
             http://aluenkinglee.com/blog/2013/11/13/use-mathjax-in-octopress-to-write-beautiful-latex/
         </loc>
-        <lastmod>2013-11-15T03:09:20+08:00</lastmod>
+        <lastmod>2014-03-04T21:49:06+08:00</lastmod>
     </url>
     <url>
         <loc>
             http://aluenkinglee.com/blog/2013/11/13/co-write-same-octopress-blog-on-different-pc/
         </loc>
-        <lastmod>2013-11-15T03:09:20+08:00</lastmod>
+        <lastmod>2014-03-04T21:49:06+08:00</lastmod>
     </url>
     <url>
         <loc>http://aluenkinglee.com/blog/2013/11/13/install-nox-on-debian-bug-fixed/</loc>
-        <lastmod>2013-11-15T03:09:20+08:00</lastmod>
+        <lastmod>2014-03-04T21:49:06+08:00</lastmod>
     </url>
     <url>
         <loc>http://aluenkinglee.com/blog/2013/12/31/ke-ai-de-armadillo/</loc>
-        <lastmod>2014-02-24T03:37:15+08:00</lastmod>
+        <lastmod>2014-03-04T21:49:06+08:00</lastmod>
     </url>
     <url>
         <loc>http://aluenkinglee.com/blog/2014/01/05/machine-learning-linear-regression/</loc>
-        <lastmod>2014-02-24T03:37:15+08:00</lastmod>
+        <lastmod>2014-03-04T21:49:06+08:00</lastmod>
     </url>
     <url>
         <loc>http://aluenkinglee.com/blog/2014/02/24/c-plus-plus-de-hashtablena-xie-shi/</loc>
-        <lastmod>2014-02-25T01:09:55+08:00</lastmod>
+        <lastmod>2014-03-04T21:49:06+08:00</lastmod>
     </url>
     <url>
-        <loc>http://aluenkinglee.com/blog/archives/</loc>
-        <lastmod>2014-02-25T01:09:55+08:00</lastmod>
-    </url>
-    <url>
-        <loc>http://aluenkinglee.com/</loc>
-        <lastmod>2014-02-25T01:09:55+08:00</lastmod>
+        <loc>
+            http://aluenkinglee.com/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/
+        </loc>
+        <lastmod>2014-03-04T21:49:06+08:00</lastmod>
     </url>
     <url>
         <loc>http://aluenkinglee.com/robots.txt</loc>
-        <lastmod>2013-11-13T21:15:31+08:00</lastmod>
+        <lastmod>2014-03-04T21:49:06+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://aluenkinglee.com/</loc>
+        <lastmod>2014-03-04T21:49:06+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://aluenkinglee.com/blog/archives/</loc>
+        <lastmod>2014-03-04T21:49:06+08:00</lastmod>
     </url>
 </urlset>

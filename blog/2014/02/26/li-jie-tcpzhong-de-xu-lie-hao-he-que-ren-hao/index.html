@@ -1,0 +1,385 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>理解TCP中的序列号和确认号 - 曾经渐行远，未免心戚戚</title>
+  <meta name="author" content="Aluen King Lee">
+
+  
+  <meta name="description" content="之所以写这么一篇文章是因为被wireshark的序列号搞晕了，我不知道你们是否这样，当你读这篇article时，肯定你已经熟悉了TCP那个三次握手，
+或者是SYN,SYN|ACK,ACK. 而我要做的也就是这个，提取一个流的前N个packets，针对目前的需求， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://aluenkinglee.com/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="曾经渐行远，未免心戚戚" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+<!-- mathjax config similar to math.stackexchange -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
+          MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
+                  data.math = data.math.replace(/^\s*<!\[CDATA\[\s*((?:\n|.)*)\s*\]\]>\s*$/m,"$1");
+                    });
+          });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">曾经渐行远，未免心戚戚</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:aluenkinglee.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">理解TCP中的序列号和确认号</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-26T22:34:00+08:00" pubdate data-updated="true">Feb 26<span>th</span>, 2014</time>
+        
+        
+          | <a href="#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>之所以写这么一篇文章是因为被wireshark的序列号搞晕了，我不知道你们是否这样，当你读这篇article时，肯定你已经熟悉了TCP那个三次握手，
+或者是SYN,SYN|ACK,ACK. 而我要做的也就是这个，提取一个流的前N个packets，针对目前的需求，只需要在传输层截取UDP和TCP的前多少个流即可。
+所以我得分析网络层的这些协议底层到底是怎么回事，在结合libpcap完成流的提取任务。</p>
+
+<p>相对来说TCP还是个复杂的协议，而且值得清楚的认识以下。那么结合wireshark和代码来认识下TCP里面的东西。</p>
+
+<!--more-->
+
+<p><a href="https://github.com/aluenkinglee/stuff/blob/master/cplusplus/traffic_parser/b.pcap?raw=true" title="pcap文件">这里</a>是个已经准备好的pcap文件，本文结合这个文件对此进行描述。</p>
+
+<p>这个文件分析的是微信在单一环境中的网络行为，所以比较简单。打开这个文件，找到开始的几个右键单击选择<code>Follow TCP Stream</code>，或者在filter那里输入<code>tcp.stream eq 1</code>可以看到这里。</p>
+
+<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-02-26-li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/tcp1.png?raw=true" alt="Follow TCP Stream" title="Follow TCP Stream" /></p>
+
+<h4 id="section">三次握手</h4>
+
+<p>TCP利用了8个标志位，在头部位置，以此来控制链接的状态，对我们最有用的就是SYN，ACK，FIN了。</p>
+
+<ul>
+  <li>SYN - (Synchronize) Initiates a connection</li>
+  <li>FIN - (Final) Cleanly terminates a connection</li>
+  <li>ACK - Acknowledges received data</li>
+</ul>
+
+<p>下面将会看到，一个packet包含了多个flag set。</p>
+
+<h6 id="flagssyn10">对于这个流的第一个，注意Flags里面出了SYN位是1之外，其它都是0。</h6>
+
+<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-02-26-li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/tcp2.png?raw=true" alt="第一次握手" title="第一次握手" /></p>
+
+<h6 id="synack">接下来在看第二个，注意它有两个标志位被设置为1，分别是SYN和ACK。</h6>
+
+<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-02-26-li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/tcp3.png?raw=true" alt="第二次握手" title="第二次握手" /></p>
+
+<h6 id="packetack">对于第三个packet，就只有ACK设置了。</h6>
+
+<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-02-26-li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/tcp4.png?raw=true" alt="第三次握手" title="第三次握手" /></p>
+
+<p>这就是最初的TCP三次握手。</p>
+
+<h4 id="seqack">序列号和应答号（SEQ和ACK）</h4>
+
+<p>假设客户端为A，服务器为B，双方都为护着一个32bit的序列号，用来追踪传输了多少数据。。这个号包括了之前所传输的负载的
+大小，由另一端的应答号来应答“你传的数据我都收到了。。”</p>
+
+<p>当一个机器开始初始TCP序列号时，它是随机的！！不然会出现序列号攻击。。（我忘记了，在用那个wireshark后成功被它的相对序列号迷惑了==）,是一个0～ $2^{32}-1$的数。相对序列号是给人看的，所以像wireshark之辈使用它是为了人们方便阅读理解的。
+（选择不启用相对序列号：选择<code>Edit &gt; Preferences... </code>不启用那个<code>Relative sequence numbers and window scaling </code>就可以了）</p>
+
+<p>接下来让我们结合下图来看这个流的行为。在<code>Statistics &gt; Flow Graph...</code>选择<code>TCP flow</code>。</p>
+
+<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-02-26-li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/tcp5.png?raw=true" alt="流图" title="流图" /></p>
+
+<p>这张图很容易理解就不说了。使用这张流图可以很方便的帮助我们理解他们是怎么工作的。</p>
+
+<h6 id="packet-1">packet #1</h6>
+
+<p>A向B发了一个请求，我们可以在frame的tcp中分析出来，SYN=1而ACK=0，这意味这是一个流的起始包。这里使用的是相对序列号，所以为0.</p>
+
+<h6 id="packet-2">packet #2</h6>
+
+<p>B收到了响应，恩，因为这是会话的开始，所以B这边也生成了一个随机的序列号，只不过在这里也显示为0了。SYN置为1。另外ACK也置为1，表明收到了A的响应。
+(注意！虽然A没有发送任何负载payload，B仍然把ACK置为1，是因为收到的SYN或者FIN触发了这个增1行为。这儿不会涉及到任何负载长度的计算，因为带有这样信号的包不会携带负载的。)</p>
+
+<h6 id="packet-3">packet #3</h6>
+
+<p>和#2一样，A回应了B的响应（SEQ=0，ACK=1）所以ACK为1.自己的SEQ因为收到的包中有SYN所以变为1。此时，双方的SEQ都是1，这种现象在所有TCP开始建立连接时候都是一样的。</p>
+
+<h6 id="packet-4">packet #4</h6>
+
+<p>A这个包此时带有负载，这里的SEQ是1，因为上个包（#3）没有传输任何数据，ACK也是1，因为A没有传输任何数据。注意！packet的长度是341，但是我们计算的是传输层的数据长度–负载的长度，所以是ACK — LEN = LEN（#4）-LEN（#3） = 341 - 66 = 275。</p>
+
+<h6 id="packet-5">packet #5</h6>
+
+<p>这个包是B（#5）对A（#4）发送数据的响应，此时B的ACK加上负载的长度是275变为276，表示我B收到了你A传输的数据payload（#4）. B此时的SEQ仍为1.</p>
+
+<h6 id="packet-6">packet #6</h6>
+
+<p>这个包是B对A放送的HTTP响应，因为之前它（B）所有的包都没有负载，所以SEQ仍然为1，而ACK还是276.负载长度为627.</p>
+
+<h6 id="packet-7">packet #7</h6>
+
+<p>好吧，这个例子有点特殊，到这里为止B的数据就发送完了。。。所以FIN置为1，表明你（A）要得我（B）都给完了，没我的事儿了，SEQ加上我发送的数据长度为628，你那边确认之后应该和我一样才对。ACK还是之前你给我发送的那些数据，还是这些276.</p>
+
+<h6 id="packet-8">packet #8</h6>
+
+<p>A:收到了所有的数据，我先确认给你我数据我收到了，ACK加上627变为628。我之前发送的数据截止到目前是276，没错，我们对上了。</p>
+
+<h6 id="packet-9">packet #9</h6>
+
+<p>A:既然我都要到了，那么我们就分手吧~~ 同意，FIN置为1，因为从B收到了带有FIN的报文（#7），所以ACK+1，变为629。因为上个数据包#8 没有发送任何数据，所以这里的SEQ不变,</p>
+
+<h6 id="packet-10">packet #10</h6>
+
+<p>因为#9带有FIN，所以SEQ自增1.ACK不变。</p>
+
+<p>关于代码，请看下篇。</p>
+
+<h2 id="section-1">参考</h2>
+
+<ol>
+  <li>
+    <p><a href="http://stackoverflow.com/questions/2672734/tcp-sequence-number-question">TCP sequence number question</a></p>
+  </li>
+  <li>
+    <p><a href="http://en.wikipedia.org/wiki/Transmission_Control_Protocol">Transmission Control Protocol</a></p>
+  </li>
+</ol>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Aluen King Lee</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-26T22:34:00+08:00" pubdate data-updated="true">Feb 26<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/c/'>C</a>, <a class='category' href='/blog/categories/tcp/'>TCP</a>, <a class='category' href='/blog/categories/libpcap/'>libpcap</a>, <a class='category' href='/blog/categories/wireshark/'>wireshark</a>, <a class='category' href='/blog/categories/san-ci-wo-shou/'>三次握手</a>, <a class='category' href='/blog/categories/si-ci-wo-shou/'>四次握手</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/02/24/c-plus-plus-de-hashtablena-xie-shi/" title="Previous Post: C++的hashtable那些事">&laquo; C++的hashtable那些事</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+
+  <section>
+    <h1>Comments</h1>
+    <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"aluenkinglee"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END --></div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/">理解TCP中的序列号和确认号</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/24/c-plus-plus-de-hashtablena-xie-shi/">C++的hashtable那些事</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/01/05/machine-learning-linear-regression/">Machine Learning :linear Regression</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/31/ke-ai-de-armadillo/">可爱的Armadillo</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/11/13/install-nox-on-debian-bug-fixed/">Install Nox on Debian-bug Fixed</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+<section>
+  <h1>My Douban</h1>
+  <div>
+  <!--添加到这-->
+  <script type="text/javascript" src="http://www.douban.com/service/badge/aluenkinglee/?selection=random&amp;picsize=small&amp;show=dolist&amp;n=8&amp;cat=book&amp;columns=3"></script>
+  </div>
+</section> 
+<section>
+<h1>Recent Comments</h1>
+<ul class="ds-recent-comments" data-num-items="10" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="18"></ul>
+
+</section> 
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Aluen King Lee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

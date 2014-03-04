@@ -4,7 +4,7 @@
   <title><![CDATA[Category: lapack | 曾经渐行远，未免心戚戚]]></title>
   <link href="http://aluenkinglee.com/blog/categories/lapack/atom.xml" rel="self"/>
   <link href="http://aluenkinglee.com/"/>
-  <updated>2014-02-25T01:11:07+08:00</updated>
+  <updated>2014-03-04T21:52:09+08:00</updated>
   <id>http://aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
@@ -23,6 +23,8 @@
 <p>我的设想是这样，octave作为一种快速验证想法的工具不适合应用在实际的生产环境中的，毕竟计算速度还是可以依靠集群和并行化来加快大数据处理。在此参考了C++的<a href="http://en.wikipedia.org/wiki/Comparison_of_linear_algebra_libraries">线性代数库</a>之后选择了Armadillo,毕竟经常更新并且从官网资料来看，和octave代码相似便于移植，再说，从它本身和其他的对比来看，速度也是相当快的。</p>
 
 <p>不过，在安装完Armadillo之后，编译example目录下的例子并不通过，提示</p>
+
+<!--more-->
 
 <p><code>
 /tmp/cc9ckDKG.o: In function `void arma::gemv&lt;false, false, false&gt;::apply_blas_type&lt;double&gt;(double*, arma::Mat&lt;double&gt; const&amp;, double const*, double, double)':
