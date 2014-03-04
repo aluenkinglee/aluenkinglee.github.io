@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Octopress | 曾经渐行远，未免心戚戚]]></title>
   <link href="http://aluenkinglee.com/blog/categories/octopress/atom.xml" rel="self"/>
   <link href="http://aluenkinglee.com/"/>
-  <updated>2014-03-04T21:52:09+08:00</updated>
+  <updated>2014-03-04T22:04:27+08:00</updated>
   <id>http://aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
@@ -35,6 +35,8 @@
   </li>
 </ol>
 
+<!--more-->
+
 <h2 id="git">克隆服务器上的git到新机器</h2>
 
 <p>将博客的源文件clone到本地的（假设就叫做）octopress文件夹内。</p>
@@ -46,7 +48,7 @@ $ git clone -b source git@github.com:username/username.github.com.git octopress
 
 <p><code>
 $ cd octopress
-$ git clone git@github.com:username/username.github.com.git _deploy 
+$ git clone -b master git@github.com:username/username.github.com.git _deploy 
 </code></p>
 
 <p>还是要安装博客的。</p>

@@ -4,7 +4,7 @@
   <title><![CDATA[曾经渐行远，未免心戚戚]]></title>
   <link href="http://aluenkinglee.com/atom.xml" rel="self"/>
   <link href="http://aluenkinglee.com/"/>
-  <updated>2014-03-04T21:52:09+08:00</updated>
+  <updated>2014-03-04T22:04:27+08:00</updated>
   <id>http://aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
@@ -12,6 +12,266 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[“奇异”的内存覆盖]]></title>
+    <link href="http://aluenkinglee.com/blog/2014/03/04/qi-yi-de-nei-cun-fu-gai/"/>
+    <updated>2014-03-04T22:01:00+08:00</updated>
+    <id>http://aluenkinglee.com/blog/2014/03/04/qi-yi-de-nei-cun-fu-gai</id>
+    <content type="html"><![CDATA[<p>犯了一个愚蠢的问题，让我碰到了这么个内容错误的bug</p>
+
+<!--more-->
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">*** glibc detected *** ./main: free<span class="o">()</span>: invalid next size <span class="o">(</span>fast<span class="o">)</span>: 0x0000000001dd8590 ***
+</span><span class="line"><span class="o">=======</span> Backtrace: <span class="o">=========</span>
+</span><span class="line">/lib/x86_64-linux-gnu/libc.so.6<span class="o">(</span>+0x76d76<span class="o">)[</span>0x7fd77419fd76<span class="o">]</span>
+</span><span class="line">/lib/x86_64-linux-gnu/libc.so.6<span class="o">(</span>cfree+0x6c<span class="o">)[</span>0x7fd7741a4aac<span class="o">]</span>
+</span><span class="line">/usr/lib/x86_64-linux-gnu/libpcap.so.0.8<span class="o">(</span>+0x1b470<span class="o">)[</span>0x7fd774e2e470<span class="o">]</span>
+</span><span class="line">/usr/lib/x86_64-linux-gnu/libpcap.so.0.8<span class="o">(</span>pcap_loop+0x2f<span class="o">)[</span>0x7fd774e1fecf<span class="o">]</span>
+</span><span class="line">./main<span class="o">[</span>0x401869<span class="o">]</span>
+</span><span class="line">/lib/x86_64-linux-gnu/libc.so.6<span class="o">(</span>__libc_start_main+0xfd<span class="o">)[</span>0x7fd774147ead<span class="o">]</span>
+</span><span class="line">./main<span class="o">[</span>0x401001<span class="o">]</span>
+</span><span class="line"><span class="o">=======</span> Memory map: <span class="o">========</span>
+</span><span class="line">00400000-00402000 r-xp 00000000 08:08 1982169                            /home/kinglee/github/stuff/cplusplus/traffic_parser/main
+</span><span class="line">00602000-00603000 rw-p 00002000 08:08 1982169                            /home/kinglee/github/stuff/cplusplus/traffic_parser/main
+</span><span class="line">01dc8000-01de9000 rw-p 00000000 00:00 0                                  <span class="o">[</span>heap<span class="o">]</span>
+</span><span class="line">7fd770000000-7fd770021000 rw-p 00000000 00:00 0
+</span><span class="line">7fd770021000-7fd774000000 ---p 00000000 00:00 0
+</span><span class="line">7fd774129000-7fd7742a9000 r-xp 00000000 08:08 2097171                    /lib/x86_64-linux-gnu/libc-2.13.so
+</span><span class="line">7fd7742a9000-7fd7744a9000 ---p 00180000 08:08 2097171                    /lib/x86_64-linux-gnu/libc-2.13.so
+</span><span class="line">7fd7744a9000-7fd7744ad000 r--p 00180000 08:08 2097171                    /lib/x86_64-linux-gnu/libc-2.13.so
+</span><span class="line">7fd7744ad000-7fd7744ae000 rw-p 00184000 08:08 2097171                    /lib/x86_64-linux-gnu/libc-2.13.so
+</span><span class="line">7fd7744ae000-7fd7744b3000 rw-p 00000000 00:00 0
+</span><span class="line">7fd7744b3000-7fd7744c8000 r-xp 00000000 08:08 2097156                    /lib/x86_64-linux-gnu/libgcc_s.so.1
+</span><span class="line">7fd7744c8000-7fd7746c8000 ---p 00015000 08:08 2097156                    /lib/x86_64-linux-gnu/libgcc_s.so.1
+</span><span class="line">7fd7746c8000-7fd7746c9000 rw-p 00015000 08:08 2097156                    /lib/x86_64-linux-gnu/libgcc_s.so.1
+</span><span class="line">7fd7746c9000-7fd77474a000 r-xp 00000000 08:08 2097168                    /lib/x86_64-linux-gnu/libm-2.13.so
+</span><span class="line">7fd77474a000-7fd774949000 ---p 00081000 08:08 2097168                    /lib/x86_64-linux-gnu/libm-2.13.so
+</span><span class="line">7fd774949000-7fd77494a000 r--p 00080000 08:08 2097168                    /lib/x86_64-linux-gnu/libm-2.13.so
+</span><span class="line">7fd77494a000-7fd77494b000 rw-p 00081000 08:08 2097168                    /lib/x86_64-linux-gnu/libm-2.13.so
+</span><span class="line">7fd77494b000-7fd774a33000 r-xp 00000000 08:08 1314662                    /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.17
+</span><span class="line">7fd774a33000-7fd774c33000 ---p 000e8000 08:08 1314662                    /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.17
+</span><span class="line">7fd774c33000-7fd774c3b000 r--p 000e8000 08:08 1314662                    /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.17
+</span><span class="line">7fd774c3b000-7fd774c3d000 rw-p 000f0000 08:08 1314662                    /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.17
+</span><span class="line">7fd774c3d000-7fd774c52000 rw-p 00000000 00:00 0
+</span><span class="line">7fd774c52000-7fd774c72000 r-xp 00000000 08:08 2097174                    /lib/x86_64-linux-gnu/ld-2.13.so
+</span><span class="line">7fd774e0e000-7fd774e13000 rw-p 00000000 00:00 0
+</span><span class="line">7fd774e13000-7fd774e4b000 r-xp 00000000 08:08 1331924                    /usr/lib/x86_64-linux-gnu/libpcap.so.1.3.0
+</span><span class="line">7fd774e4b000-7fd774e4d000 r--p 00037000 08:08 1331924                    /usr/lib/x86_64-linux-gnu/libpcap.so.1.3.0
+</span><span class="line">7fd774e4d000-7fd774e4e000 rw-p 00039000 08:08 1331924                    /usr/lib/x86_64-linux-gnu/libpcap.so.1.3.0
+</span><span class="line">7fd774e4e000-7fd774e4f000 rw-p 00000000 00:00 0
+</span><span class="line">7fd774e6d000-7fd774e71000 rw-p 00000000 00:00 0
+</span><span class="line">7fd774e71000-7fd774e72000 r--p 0001f000 08:08 2097174                    /lib/x86_64-linux-gnu/ld-2.13.so
+</span><span class="line">7fd774e72000-7fd774e73000 rw-p 00020000 08:08 2097174                    /lib/x86_64-linux-gnu/ld-2.13.so
+</span><span class="line">7fd774e73000-7fd774e74000 rw-p 00000000 00:00 0
+</span><span class="line">7fff1591a000-7fff1593b000 rw-p 00000000 00:00 0                          <span class="o">[</span>stack<span class="o">]</span>
+</span><span class="line">7fff159ff000-7fff15a00000 r-xp 00000000 00:00 0                          <span class="o">[</span>vdso<span class="o">]</span>
+</span><span class="line">ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  <span class="o">[</span>vsyscall<span class="o">]</span>
+</span><span class="line">已放弃
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>对于这个问题，当时表示怎么会出现内存错误？我指针根本没有指错啊！那块内存也没有回收阿！！原来的程序比较大，所以我就抽象写了个简单的，慢慢找。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+<span class="line-number">53</span>
+<span class="line-number">54</span>
+</pre></td><td class="code"><pre><code class="c++"><span class="line"><span class="cp">#include &lt;string&gt;</span>
+</span><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
+</span><span class="line"><span class="cp">#include &lt;algorithm&gt;</span>
+</span><span class="line"><span class="cp">#include &lt;vector&gt;</span>
+</span><span class="line">
+</span><span class="line"><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+</span><span class="line"><span class="k">typedef</span> <span class="k">class</span> <span class="nc">packet</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">private</span><span class="o">:</span>
+</span><span class="line">    <span class="kt">int</span> <span class="n">len</span><span class="p">;</span>
+</span><span class="line">    <span class="kt">char</span><span class="o">*</span> <span class="n">data</span><span class="p">;</span>
+</span><span class="line">    <span class="k">public</span><span class="o">:</span>
+</span><span class="line">    <span class="n">packet</span><span class="p">(</span><span class="kt">int</span> <span class="n">l</span><span class="p">,</span><span class="kt">char</span> <span class="o">*</span> <span class="n">p</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">	<span class="c1">//注意这里，开始我写成了这样，一开始写顺了...</span>
+</span><span class="line">	<span class="c1">//我本意是想申请一个长度为l的连续内存区域。</span>
+</span><span class="line">	<span class="c1">//结果本意成为了申请了一个单位的内存，并给它赋值！！</span>
+</span><span class="line">        <span class="n">data</span><span class="o">=</span><span class="k">new</span> <span class="kt">char</span><span class="p">(</span><span class="n">l</span><span class="p">);</span>
+</span><span class="line">        <span class="c1">//应该写成这样</span>
+</span><span class="line">        <span class="c1">//data=new char[l];</span>
+</span><span class="line">        <span class="n">copy</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">p</span><span class="o">+</span><span class="n">l</span><span class="p">,</span><span class="n">data</span><span class="p">);</span>
+</span><span class="line">        <span class="n">len</span> <span class="o">=</span> <span class="n">l</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="n">packet</span><span class="p">(</span><span class="k">const</span> <span class="n">packet</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">this</span><span class="o">-&gt;</span><span class="n">len</span><span class="o">=</span><span class="n">p</span><span class="p">.</span><span class="n">len</span><span class="p">;</span>
+</span><span class="line">        <span class="n">data</span><span class="o">=</span><span class="k">new</span> <span class="kt">char</span><span class="p">[</span><span class="n">len</span><span class="p">];</span>
+</span><span class="line">        <span class="n">copy</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">data</span><span class="p">,</span> <span class="n">p</span><span class="p">.</span><span class="n">data</span><span class="o">+</span><span class="n">len</span><span class="p">,</span><span class="n">data</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="n">packet</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">packet</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">this</span><span class="o">-&gt;</span><span class="n">len</span> <span class="o">=</span> <span class="n">p</span><span class="p">.</span><span class="n">len</span><span class="p">;</span>
+</span><span class="line">        <span class="k">this</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">char</span><span class="p">[</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">];</span>
+</span><span class="line">        <span class="n">copy</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">data</span><span class="p">,</span> <span class="n">p</span><span class="p">.</span><span class="n">data</span><span class="o">+</span><span class="n">len</span><span class="p">,</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+</span><span class="line">        <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="o">~</span><span class="n">packet</span><span class="p">(){</span><span class="k">delete</span><span class="p">[]</span> <span class="n">data</span><span class="p">;}</span>
+</span><span class="line">    <span class="kt">char</span><span class="o">*</span> <span class="n">get_data</span><span class="p">(){</span><span class="k">return</span> <span class="n">data</span><span class="p">;}</span>
+</span><span class="line">
+</span><span class="line"><span class="p">}</span><span class="n">packet</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="kt">int</span> <span class="n">main</span><span class="p">()</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="n">vector</span><span class="o">&lt;</span><span class="n">packet</span><span class="o">&gt;</span> <span class="n">stream</span><span class="p">;</span>
+</span><span class="line">    <span class="kt">char</span> <span class="o">*</span><span class="n">t</span> <span class="o">=</span> <span class="s">&quot;hello world.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span class="line">    <span class="n">packet</span> <span class="n">p</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="n">t</span><span class="p">);</span>
+</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">p</span><span class="p">.</span><span class="n">get_data</span><span class="p">(</span> <span class="p">)</span><span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span><span class="line">    <span class="n">stream</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">stream</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">get_data</span><span class="p">()</span> <span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+</span><span class="line">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>编译运行就会出错。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="c++"><span class="line"><span class="n">g</span><span class="o">++</span> <span class="n">test</span><span class="p">.</span><span class="n">cc</span> <span class="o">-</span><span class="n">o</span> <span class="n">main</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>所以，上述的语句是没有申请够足够的内存(只申请了一个，却按照那个长度来copy！！当然会出现数据覆盖的错误，这个属于语言错误)，所以会造成之后的内存覆盖，导致出错。有意思的是在windows平台上，我试过，是不会提示你出错的。
+不过确实可以看到运行过程中不合理的地方。比如数据被覆盖了overlapping!（实验平台debian 7 ，g++ (Debian 4.7.2-5) 4.7.2
+windows是win7 + mingw）</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="c++"><span class="line"><span class="o">***</span> <span class="n">glibc</span> <span class="n">detected</span> <span class="o">***</span> <span class="p">.</span><span class="o">/</span><span class="nl">main:</span> <span class="kt">double</span> <span class="n">free</span> <span class="n">or</span> <span class="n">corruption</span> <span class="p">(</span><span class="n">fasttop</span><span class="p">)</span><span class="o">:</span> <span class="mh">0x0000000000e55010</span> <span class="o">***</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>另外一点，在实际使用过程中，还是尽量不要混合使用malloc 和delete/delete[]</p>
+
+<ul>
+  <li>
+    <p>使用malloc分配的内存尽量使用free释放掉</p>
+  </li>
+  <li>
+    <p>使用new分配的内存，看情况，若是对象类型本身就是数组类型，使用delete[],否则使用delete释放掉内存</p>
+  </li>
+  <li>
+    <p>使用new[]分配内存的，必须使用delete[] 来释放掉内存。否则只是释放掉了内存区域的第一个从而造成内存泄漏。</p>
+  </li>
+</ul>
+
+<blockquote>
+  <blockquote>
+    <p>参考</p>
+  </blockquote>
+</blockquote>
+
+<ul>
+  <li>
+    <p><a href="http://stackoverflow.com/questions/18389313/glibc-detected-main-free-invalid-next-size-fast">’** glibc detected *** ./main: free(): invalid next size (fast):’</a></p>
+  </li>
+  <li>
+    <p><a href="http://www.cplusplus.com/reference/cstring/memcpy/?kw=memcpy">‘好好使用memcpy’</a></p>
+  </li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[理解TCP中的序列号和确认号]]></title>
@@ -1139,6 +1399,8 @@ mlclass-ex1/gradientDescent.m">详见</a></p>
   </li>
 </ol>
 
+<!--more-->
+
 <h2 id="git">克隆服务器上的git到新机器</h2>
 
 <p>将博客的源文件clone到本地的（假设就叫做）octopress文件夹内。</p>
@@ -1150,7 +1412,7 @@ mlclass-ex1/gradientDescent.m">详见</a></p>
 <div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 </pre></td><td class="code"><pre><code class=""><span class="line">$ cd octopress
-</span><span class="line">$ git clone git@github.com:username/username.github.com.git _deploy </span></code></pre></td></tr></table></div></figure></notextile></div>
+</span><span class="line">$ git clone -b master git@github.com:username/username.github.com.git _deploy </span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>还是要安装博客的。</p>
 
