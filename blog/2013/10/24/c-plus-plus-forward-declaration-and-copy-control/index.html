@@ -154,8 +154,9 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   <li>根据元素初始化列表初始化数组元素。’隐式调用’</li>
 </ol>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">string book = "ISBN-2323-23234";</span></code></pre></td></tr></table></div></figure></notextile></div>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="n">string</span> <span class="n">book</span> <span class="o">=</span> <span class="s">&quot;ISBN-2323-23234&quot;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>创建book对象时，编译器首先会接受一个C语言风格形参的string构造函数，创建一个临时对象，然后调用string的复制构造函数将book初始化那个临时对象的副本。（但是我感觉更像是’临时对象-&gt;赋值操作’..这里需要编码测试一下）</p>
 
@@ -179,15 +180,16 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   <li>动态分配的对象只有在删除指向该指针时，才会运行析构函数！！否则会导致内存泄漏，小心啦。</li>
 </ol>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">string filename * p = new string();
-</span><span class="line">delete p;</span></code></pre></td></tr></table></div></figure></notextile></div>
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="n">string</span> <span class="n">filename</span> <span class="o">*</span> <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">string</span><span class="p">();</span>
+</span><span class="line"><span class="k">delete</span> <span class="n">p</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 <p>上述删除的行为不会销毁属于类的成员对象——static成员！其实挺好理解的啊。</p>
 
 <p>下面是个例子。现在先在这里贴下代码，以后放到github里面去。</p>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -385,206 +387,204 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 <span class="line-number">196</span>
 <span class="line-number">197</span>
 <span class="line-number">198</span>
-<span class="line-number">199</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">
-</span><span class="line">#include &lt;iostream&gt;
-</span><span class="line">#include &lt;set&gt;
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
+</span><span class="line"><span class="cp">#include &lt;set&gt;</span>
 </span><span class="line">
-</span><span class="line">using std::string;
-</span><span class="line">using std::set;
-</span><span class="line">using std::cout;
-</span><span class="line">using std::endl;
-</span><span class="line">//predeclaration of Message
-</span><span class="line">class Message;
+</span><span class="line"><span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">;</span>
+</span><span class="line"><span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">set</span><span class="p">;</span>
+</span><span class="line"><span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">;</span>
+</span><span class="line"><span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class="line"><span class="c1">//predeclaration of Message</span>
+</span><span class="line"><span class="k">class</span> <span class="nc">Message</span><span class="p">;</span>
 </span><span class="line">
-</span><span class="line">class Folder
-</span><span class="line">{
-</span><span class="line">public:
-</span><span class="line">    Folder(){
-</span><span class="line">    	cout &lt;&lt; "Folder" &lt;&lt;endl;
-</span><span class="line">    }
-</span><span class="line">    Folder(const Folder&amp;);
-</span><span class="line">    Folder&amp; operator=(const Folder &amp;);
-</span><span class="line">    ~Folder();
+</span><span class="line"><span class="k">class</span> <span class="nc">Folder</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line"><span class="k">public</span><span class="o">:</span>
+</span><span class="line">    <span class="n">Folder</span><span class="p">(){</span>
+</span><span class="line">    	<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Folder&quot;</span> <span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="n">Folder</span><span class="p">(</span><span class="k">const</span> <span class="n">Folder</span><span class="o">&amp;</span><span class="p">);</span>
+</span><span class="line">    <span class="n">Folder</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Folder</span> <span class="o">&amp;</span><span class="p">);</span>
+</span><span class="line">    <span class="o">~</span><span class="n">Folder</span><span class="p">();</span>
 </span><span class="line">
-</span><span class="line">    void save(Message&amp;);
-</span><span class="line">    void remove(Message&amp;);
-</span><span class="line">    void addMsg(Message*);
-</span><span class="line">    void remMsg(Message*);
+</span><span class="line">    <span class="kt">void</span> <span class="n">save</span><span class="p">(</span><span class="n">Message</span><span class="o">&amp;</span><span class="p">);</span>
+</span><span class="line">    <span class="kt">void</span> <span class="n">remove</span><span class="p">(</span><span class="n">Message</span><span class="o">&amp;</span><span class="p">);</span>
+</span><span class="line">    <span class="kt">void</span> <span class="n">addMsg</span><span class="p">(</span><span class="n">Message</span><span class="o">*</span><span class="p">);</span>
+</span><span class="line">    <span class="kt">void</span> <span class="n">remMsg</span><span class="p">(</span><span class="n">Message</span><span class="o">*</span><span class="p">);</span>
 </span><span class="line">
-</span><span class="line">private:
-</span><span class="line">    set&lt;Message*&gt; messages;
+</span><span class="line"><span class="k">private</span><span class="o">:</span>
+</span><span class="line">    <span class="n">set</span><span class="o">&lt;</span><span class="n">Message</span><span class="o">*&gt;</span> <span class="n">messages</span><span class="p">;</span>
 </span><span class="line">
-</span><span class="line">    void put_Folder_in_Message(const set&lt;Message*&gt;&amp;);
-</span><span class="line">    void remove_Folder_from_Message();
+</span><span class="line">    <span class="kt">void</span> <span class="n">put_Folder_in_Message</span><span class="p">(</span><span class="k">const</span> <span class="n">set</span><span class="o">&lt;</span><span class="n">Message</span><span class="o">*&gt;&amp;</span><span class="p">);</span>
+</span><span class="line">    <span class="kt">void</span> <span class="n">remove_Folder_from_Message</span><span class="p">();</span>
 </span><span class="line">
-</span><span class="line">};
+</span><span class="line"><span class="p">};</span>
 </span><span class="line">
-</span><span class="line">class Message
-</span><span class="line">{
-</span><span class="line">public:
-</span><span class="line">    Message(const string &amp; str=""):
-</span><span class="line">        contents(str)
-</span><span class="line">        {}
-</span><span class="line">    Message(const Message&amp;);
-</span><span class="line">    Message&amp; operator=(const Message &amp;);
-</span><span class="line">    ~Message();
+</span><span class="line"><span class="k">class</span> <span class="nc">Message</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line"><span class="k">public</span><span class="o">:</span>
+</span><span class="line">    <span class="n">Message</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span> <span class="n">str</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span><span class="o">:</span>
+</span><span class="line">        <span class="n">contents</span><span class="p">(</span><span class="n">str</span><span class="p">)</span>
+</span><span class="line">        <span class="p">{}</span>
+</span><span class="line">    <span class="n">Message</span><span class="p">(</span><span class="k">const</span> <span class="n">Message</span><span class="o">&amp;</span><span class="p">);</span>
+</span><span class="line">    <span class="n">Message</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Message</span> <span class="o">&amp;</span><span class="p">);</span>
+</span><span class="line">    <span class="o">~</span><span class="n">Message</span><span class="p">();</span>
 </span><span class="line">
-</span><span class="line">    void save(Folder&amp;);
-</span><span class="line">    void remove(Folder&amp;);
-</span><span class="line">    void addFldr(Folder*);
-</span><span class="line">    void remFldr(Folder*);
+</span><span class="line">    <span class="kt">void</span> <span class="n">save</span><span class="p">(</span><span class="n">Folder</span><span class="o">&amp;</span><span class="p">);</span>
+</span><span class="line">    <span class="kt">void</span> <span class="n">remove</span><span class="p">(</span><span class="n">Folder</span><span class="o">&amp;</span><span class="p">);</span>
+</span><span class="line">    <span class="kt">void</span> <span class="n">addFldr</span><span class="p">(</span><span class="n">Folder</span><span class="o">*</span><span class="p">);</span>
+</span><span class="line">    <span class="kt">void</span> <span class="n">remFldr</span><span class="p">(</span><span class="n">Folder</span><span class="o">*</span><span class="p">);</span>
 </span><span class="line">
-</span><span class="line">private:
-</span><span class="line">    string contents;
-</span><span class="line">    set&lt;Folder*&gt; folders;
+</span><span class="line"><span class="k">private</span><span class="o">:</span>
+</span><span class="line">    <span class="n">string</span> <span class="n">contents</span><span class="p">;</span>
+</span><span class="line">    <span class="n">set</span><span class="o">&lt;</span><span class="n">Folder</span><span class="o">*&gt;</span> <span class="n">folders</span><span class="p">;</span>
 </span><span class="line">
-</span><span class="line">    void put_Msg_in_Folders(const set&lt;Folder*&gt;&amp;);
-</span><span class="line">    void remove_Msg_from_Folders();
-</span><span class="line">};
+</span><span class="line">    <span class="kt">void</span> <span class="n">put_Msg_in_Folders</span><span class="p">(</span><span class="k">const</span> <span class="n">set</span><span class="o">&lt;</span><span class="n">Folder</span><span class="o">*&gt;&amp;</span><span class="p">);</span>
+</span><span class="line">    <span class="kt">void</span> <span class="n">remove_Msg_from_Folders</span><span class="p">();</span>
+</span><span class="line"><span class="p">};</span>
 </span><span class="line">
 </span><span class="line">
-</span><span class="line">Folder::Folder(const Folder&amp; f):
-</span><span class="line">    messages(f.messages)
-</span><span class="line">{
-</span><span class="line">    put_Folder_in_Message(messages);
-</span><span class="line">}
+</span><span class="line"><span class="n">Folder</span><span class="o">::</span><span class="n">Folder</span><span class="p">(</span><span class="k">const</span> <span class="n">Folder</span><span class="o">&amp;</span> <span class="n">f</span><span class="p">)</span><span class="o">:</span>
+</span><span class="line">    <span class="n">messages</span><span class="p">(</span><span class="n">f</span><span class="p">.</span><span class="n">messages</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="n">put_Folder_in_Message</span><span class="p">(</span><span class="n">messages</span><span class="p">);</span>
+</span><span class="line"><span class="p">}</span>
 </span><span class="line">
-</span><span class="line">void Folder::put_Folder_in_Message(const set&lt;Message*&gt; &amp; msg)
-</span><span class="line">{
-</span><span class="line">    for (set&lt;Message*&gt;::const_iterator beg = msg.begin();
-</span><span class="line">            beg != msg.end();
-</span><span class="line">            ++beg)
-</span><span class="line">    {
-</span><span class="line">        (*beg)-&gt;addFldr(this);
-</span><span class="line">    }
-</span><span class="line">}
+</span><span class="line"><span class="kt">void</span> <span class="n">Folder</span><span class="o">::</span><span class="n">put_Folder_in_Message</span><span class="p">(</span><span class="k">const</span> <span class="n">set</span><span class="o">&lt;</span><span class="n">Message</span><span class="o">*&gt;</span> <span class="o">&amp;</span> <span class="n">msg</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">for</span> <span class="p">(</span><span class="n">set</span><span class="o">&lt;</span><span class="n">Message</span><span class="o">*&gt;::</span><span class="n">const_iterator</span> <span class="n">beg</span> <span class="o">=</span> <span class="n">msg</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+</span><span class="line">            <span class="n">beg</span> <span class="o">!=</span> <span class="n">msg</span><span class="p">.</span><span class="n">end</span><span class="p">();</span>
+</span><span class="line">            <span class="o">++</span><span class="n">beg</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="p">(</span><span class="o">*</span><span class="n">beg</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">addFldr</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
 </span><span class="line">
-</span><span class="line">Folder&amp; Folder::operator=(const Folder &amp; f)
-</span><span class="line">{
-</span><span class="line">    if (&amp;f != this)
-</span><span class="line">    {
-</span><span class="line">        //先把自己的给清除掉，在加上要赋值的，要不然肯定不一样。。
-</span><span class="line">        //因为Messages不一样。。
-</span><span class="line">        remove_Folder_from_Message();
-</span><span class="line">        messages = f.messages;
-</span><span class="line">        put_Folder_in_Message(messages);
-</span><span class="line">    }
-</span><span class="line">    return *this;
-</span><span class="line">}
+</span><span class="line"><span class="n">Folder</span><span class="o">&amp;</span> <span class="n">Folder</span><span class="o">::</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Folder</span> <span class="o">&amp;</span> <span class="n">f</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">if</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">f</span> <span class="o">!=</span> <span class="k">this</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="c1">//先把自己的给清除掉，在加上要赋值的，要不然肯定不一样。。</span>
+</span><span class="line">        <span class="c1">//因为Messages不一样。。</span>
+</span><span class="line">        <span class="n">remove_Folder_from_Message</span><span class="p">();</span>
+</span><span class="line">        <span class="n">messages</span> <span class="o">=</span> <span class="n">f</span><span class="p">.</span><span class="n">messages</span><span class="p">;</span>
+</span><span class="line">        <span class="n">put_Folder_in_Message</span><span class="p">(</span><span class="n">messages</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
 </span><span class="line">
-</span><span class="line">void Folder::remove_Folder_from_Message()
-</span><span class="line">{
-</span><span class="line">    for(set&lt;Message*&gt;::const_iterator beg = this-&gt;messages.begin();
-</span><span class="line">            beg != messages.end();
-</span><span class="line">            ++beg)
-</span><span class="line">    {
-</span><span class="line">        (*beg)-&gt;remFldr(this);
-</span><span class="line">    }
-</span><span class="line">}
+</span><span class="line"><span class="kt">void</span> <span class="n">Folder</span><span class="o">::</span><span class="n">remove_Folder_from_Message</span><span class="p">()</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">for</span><span class="p">(</span><span class="n">set</span><span class="o">&lt;</span><span class="n">Message</span><span class="o">*&gt;::</span><span class="n">const_iterator</span> <span class="n">beg</span> <span class="o">=</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">messages</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+</span><span class="line">            <span class="n">beg</span> <span class="o">!=</span> <span class="n">messages</span><span class="p">.</span><span class="n">end</span><span class="p">();</span>
+</span><span class="line">            <span class="o">++</span><span class="n">beg</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="p">(</span><span class="o">*</span><span class="n">beg</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">remFldr</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
 </span><span class="line">
-</span><span class="line">Folder::~Folder()
-</span><span class="line">{
-</span><span class="line">    remove_Folder_from_Message();
-</span><span class="line">}
+</span><span class="line"><span class="n">Folder</span><span class="o">::~</span><span class="n">Folder</span><span class="p">()</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="n">remove_Folder_from_Message</span><span class="p">();</span>
+</span><span class="line"><span class="p">}</span>
 </span><span class="line">
-</span><span class="line">void Folder::save(Message &amp; msg)
-</span><span class="line">{
-</span><span class="line">    addMsg(&amp;msg);
-</span><span class="line">    msg.addFldr(this);
-</span><span class="line">}
+</span><span class="line"><span class="kt">void</span> <span class="n">Folder</span><span class="o">::</span><span class="n">save</span><span class="p">(</span><span class="n">Message</span> <span class="o">&amp;</span> <span class="n">msg</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="n">addMsg</span><span class="p">(</span><span class="o">&amp;</span><span class="n">msg</span><span class="p">);</span>
+</span><span class="line">    <span class="n">msg</span><span class="p">.</span><span class="n">addFldr</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class="line"><span class="p">}</span>
 </span><span class="line">
-</span><span class="line">void Folder::remove(Message&amp; msg)
-</span><span class="line">{
-</span><span class="line">    remMsg(&amp;msg);
-</span><span class="line">    msg.remFldr(this);
-</span><span class="line">}
+</span><span class="line"><span class="kt">void</span> <span class="n">Folder</span><span class="o">::</span><span class="n">remove</span><span class="p">(</span><span class="n">Message</span><span class="o">&amp;</span> <span class="n">msg</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="n">remMsg</span><span class="p">(</span><span class="o">&amp;</span><span class="n">msg</span><span class="p">);</span>
+</span><span class="line">    <span class="n">msg</span><span class="p">.</span><span class="n">remFldr</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class="line"><span class="p">}</span>
 </span><span class="line">
-</span><span class="line">void Folder::addMsg(Message* msg)
-</span><span class="line">{
-</span><span class="line">    messages.insert(msg);
-</span><span class="line">}
+</span><span class="line"><span class="kt">void</span> <span class="n">Folder</span><span class="o">::</span><span class="n">addMsg</span><span class="p">(</span><span class="n">Message</span><span class="o">*</span> <span class="n">msg</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="n">messages</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
+</span><span class="line"><span class="p">}</span>
 </span><span class="line">
-</span><span class="line">void Folder::remMsg(Message* msg)
-</span><span class="line">{
-</span><span class="line">    messages.erase(msg);
-</span><span class="line">}
+</span><span class="line"><span class="kt">void</span> <span class="n">Folder</span><span class="o">::</span><span class="n">remMsg</span><span class="p">(</span><span class="n">Message</span><span class="o">*</span> <span class="n">msg</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="n">messages</span><span class="p">.</span><span class="n">erase</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
+</span><span class="line"><span class="p">}</span>
 </span><span class="line">
-</span><span class="line">//copy construction ,put the new message into the folders where the msg is pointed.
-</span><span class="line">inline Message::Message(const Message&amp; m):
-</span><span class="line">    contents(m.contents), folders(m.folders)
-</span><span class="line">{
-</span><span class="line">    put_Msg_in_Folders(folders);
-</span><span class="line">}
+</span><span class="line"><span class="c1">//copy construction ,put the new message into the folders where the msg is pointed.</span>
+</span><span class="line"><span class="kr">inline</span> <span class="n">Message</span><span class="o">::</span><span class="n">Message</span><span class="p">(</span><span class="k">const</span> <span class="n">Message</span><span class="o">&amp;</span> <span class="n">m</span><span class="p">)</span><span class="o">:</span>
+</span><span class="line">    <span class="n">contents</span><span class="p">(</span><span class="n">m</span><span class="p">.</span><span class="n">contents</span><span class="p">),</span> <span class="n">folders</span><span class="p">(</span><span class="n">m</span><span class="p">.</span><span class="n">folders</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="n">put_Msg_in_Folders</span><span class="p">(</span><span class="n">folders</span><span class="p">);</span>
+</span><span class="line"><span class="p">}</span>
 </span><span class="line">
-</span><span class="line">void Message::put_Msg_in_Folders(const set&lt;Folder*&gt; &amp;folders)
-</span><span class="line">{
-</span><span class="line">    for(set&lt;Folder*&gt;::const_iterator beg = folders.begin();
-</span><span class="line">            beg != folders.end();
-</span><span class="line">            ++ beg)
-</span><span class="line">    {
-</span><span class="line">        //beg is a pointer to Folder*
-</span><span class="line">        (*beg)-&gt;addMsg(this);
-</span><span class="line">    }
-</span><span class="line">}
+</span><span class="line"><span class="kt">void</span> <span class="n">Message</span><span class="o">::</span><span class="n">put_Msg_in_Folders</span><span class="p">(</span><span class="k">const</span> <span class="n">set</span><span class="o">&lt;</span><span class="n">Folder</span><span class="o">*&gt;</span> <span class="o">&amp;</span><span class="n">folders</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">for</span><span class="p">(</span><span class="n">set</span><span class="o">&lt;</span><span class="n">Folder</span><span class="o">*&gt;::</span><span class="n">const_iterator</span> <span class="n">beg</span> <span class="o">=</span> <span class="n">folders</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+</span><span class="line">            <span class="n">beg</span> <span class="o">!=</span> <span class="n">folders</span><span class="p">.</span><span class="n">end</span><span class="p">();</span>
+</span><span class="line">            <span class="o">++</span> <span class="n">beg</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="c1">//beg is a pointer to Folder*</span>
+</span><span class="line">        <span class="p">(</span><span class="o">*</span><span class="n">beg</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">addMsg</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
 </span><span class="line">
-</span><span class="line">inline Message&amp; Message::operator=(const Message&amp; msg)
-</span><span class="line">{
-</span><span class="line">    if(&amp;msg != this) {
-</span><span class="line">        //首先把自己指向的那些folder都给取消掉
-</span><span class="line">        remove_Msg_from_Folders();
-</span><span class="line">        //消息的内容copy过来
-</span><span class="line">        contents = msg.contents;
-</span><span class="line">        folders = msg.folders;
-</span><span class="line">        put_Msg_in_Folders(folders);
-</span><span class="line">    }
-</span><span class="line">    return *this;
-</span><span class="line">}
+</span><span class="line"><span class="kr">inline</span> <span class="n">Message</span><span class="o">&amp;</span> <span class="n">Message</span><span class="o">::</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Message</span><span class="o">&amp;</span> <span class="n">msg</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="o">&amp;</span><span class="n">msg</span> <span class="o">!=</span> <span class="k">this</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="c1">//首先把自己指向的那些folder都给取消掉</span>
+</span><span class="line">        <span class="n">remove_Msg_from_Folders</span><span class="p">();</span>
+</span><span class="line">        <span class="c1">//消息的内容copy过来</span>
+</span><span class="line">        <span class="n">contents</span> <span class="o">=</span> <span class="n">msg</span><span class="p">.</span><span class="n">contents</span><span class="p">;</span>
+</span><span class="line">        <span class="n">folders</span> <span class="o">=</span> <span class="n">msg</span><span class="p">.</span><span class="n">folders</span><span class="p">;</span>
+</span><span class="line">        <span class="n">put_Msg_in_Folders</span><span class="p">(</span><span class="n">folders</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
 </span><span class="line">
-</span><span class="line">void Message::remove_Msg_from_Folders()
-</span><span class="line">{
-</span><span class="line">    for(set&lt;Folder*&gt;::const_iterator beg = folders.begin();
-</span><span class="line">            beg != folders.end();
-</span><span class="line">            ++beg)
-</span><span class="line">    {
-</span><span class="line">        (*beg)-&gt;remMsg(this);
-</span><span class="line">    }
-</span><span class="line">}
+</span><span class="line"><span class="kt">void</span> <span class="n">Message</span><span class="o">::</span><span class="n">remove_Msg_from_Folders</span><span class="p">()</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">for</span><span class="p">(</span><span class="n">set</span><span class="o">&lt;</span><span class="n">Folder</span><span class="o">*&gt;::</span><span class="n">const_iterator</span> <span class="n">beg</span> <span class="o">=</span> <span class="n">folders</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+</span><span class="line">            <span class="n">beg</span> <span class="o">!=</span> <span class="n">folders</span><span class="p">.</span><span class="n">end</span><span class="p">();</span>
+</span><span class="line">            <span class="o">++</span><span class="n">beg</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="p">(</span><span class="o">*</span><span class="n">beg</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">remMsg</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
 </span><span class="line">
-</span><span class="line">inline Message::~Message()
-</span><span class="line">{
-</span><span class="line">    remove_Msg_from_Folders();
-</span><span class="line">}
+</span><span class="line"><span class="kr">inline</span> <span class="n">Message</span><span class="o">::~</span><span class="n">Message</span><span class="p">()</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="n">remove_Msg_from_Folders</span><span class="p">();</span>
+</span><span class="line"><span class="p">}</span>
 </span><span class="line">
-</span><span class="line">void Message::save(Folder&amp; folder)
-</span><span class="line">{
-</span><span class="line">    addFldr(&amp;folder);
-</span><span class="line">    folder.addMsg(this);
-</span><span class="line">}
+</span><span class="line"><span class="kt">void</span> <span class="n">Message</span><span class="o">::</span><span class="n">save</span><span class="p">(</span><span class="n">Folder</span><span class="o">&amp;</span> <span class="n">folder</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="n">addFldr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">folder</span><span class="p">);</span>
+</span><span class="line">    <span class="n">folder</span><span class="p">.</span><span class="n">addMsg</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class="line"><span class="p">}</span>
 </span><span class="line">
-</span><span class="line">void Message::addFldr(Folder* pfolder)
-</span><span class="line">{
-</span><span class="line">    folders.insert(pfolder);
-</span><span class="line">}
+</span><span class="line"><span class="kt">void</span> <span class="n">Message</span><span class="o">::</span><span class="n">addFldr</span><span class="p">(</span><span class="n">Folder</span><span class="o">*</span> <span class="n">pfolder</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="n">folders</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pfolder</span><span class="p">);</span>
+</span><span class="line"><span class="p">}</span>
 </span><span class="line">
-</span><span class="line">void Message::remove(Folder&amp; folder)
-</span><span class="line">{
-</span><span class="line">    remFldr(&amp;folder);
-</span><span class="line">    folder.remMsg(this);
-</span><span class="line">}
+</span><span class="line"><span class="kt">void</span> <span class="n">Message</span><span class="o">::</span><span class="n">remove</span><span class="p">(</span><span class="n">Folder</span><span class="o">&amp;</span> <span class="n">folder</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="n">remFldr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">folder</span><span class="p">);</span>
+</span><span class="line">    <span class="n">folder</span><span class="p">.</span><span class="n">remMsg</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class="line"><span class="p">}</span>
 </span><span class="line">
-</span><span class="line">void Message::remFldr(Folder* pfolder)
-</span><span class="line">{
-</span><span class="line">    folders.erase(pfolder);
-</span><span class="line">}
+</span><span class="line"><span class="kt">void</span> <span class="n">Message</span><span class="o">::</span><span class="n">remFldr</span><span class="p">(</span><span class="n">Folder</span><span class="o">*</span> <span class="n">pfolder</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="n">folders</span><span class="p">.</span><span class="n">erase</span><span class="p">(</span><span class="n">pfolder</span><span class="p">);</span>
+</span><span class="line"><span class="p">}</span>
 </span><span class="line">
-</span><span class="line">int main()
-</span><span class="line">{
-</span><span class="line">	Message m("dsfasdf");
-</span><span class="line">	Folder f = Folder();
-</span><span class="line">	cout &lt;&lt; "asdf"&lt;&lt; endl;
-</span><span class="line">	return 0;
-</span><span class="line">}
+</span><span class="line"><span class="kt">int</span> <span class="n">main</span><span class="p">()</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">	<span class="n">Message</span> <span class="n">m</span><span class="p">(</span><span class="s">&quot;dsfasdf&quot;</span><span class="p">);</span>
+</span><span class="line">	<span class="n">Folder</span> <span class="n">f</span> <span class="o">=</span> <span class="n">Folder</span><span class="p">();</span>
+</span><span class="line">	<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;asdf&quot;</span><span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span><span class="line">	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>可以运行，但是不是想要的。</p>
@@ -593,7 +593,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 
 <p><code>Folder.h</code></p>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -634,51 +634,52 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 <span class="line-number">39</span>
 <span class="line-number">40</span>
 <span class="line-number">41</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">#include &lt;iostream&gt;
-</span><span class="line">#include &lt;set&gt;
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
+</span><span class="line"><span class="cp">#include &lt;set&gt;</span>
 </span><span class="line">
-</span><span class="line">#ifndef __Folder__
-</span><span class="line">#define __Folder__
+</span><span class="line"><span class="cp">#ifndef __Folder__</span>
+</span><span class="line"><span class="cp">#define __Folder__</span>
 </span><span class="line">
-</span><span class="line">using std::string;
-</span><span class="line">using std::set;
+</span><span class="line"><span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">;</span>
+</span><span class="line"><span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">set</span><span class="p">;</span>
 </span><span class="line">
 </span><span class="line">
-</span><span class="line">#include "Message.h"
-</span><span class="line">//predeclaration of Message
-</span><span class="line">class Message;
-</span><span class="line">// Message is a incomplete type.It can be used in limited ways only.
-</span><span class="line">// 1.can not define object of this type.
-</span><span class="line">// 2.only used as a pointer or ref.
-</span><span class="line">// 3.declare it as the formal parameter of a function or return type of a function.
-</span><span class="line">class Folder
-</span><span class="line">{
-</span><span class="line">public:
-</span><span class="line">    Folder(){}
-</span><span class="line">    Folder(const Folder&amp;);
-</span><span class="line">    Folder&amp; operator=(const Folder&amp;);
-</span><span class="line">    ~Folder();
+</span><span class="line"><span class="cp">#include &quot;Message.h&quot;</span>
+</span><span class="line"><span class="c1">//predeclaration of Message</span>
+</span><span class="line"><span class="k">class</span> <span class="nc">Message</span><span class="p">;</span>
+</span><span class="line"><span class="c1">// Message is a incomplete type.It can be used in limited ways only.</span>
+</span><span class="line"><span class="c1">// 1.can not define object of this type.</span>
+</span><span class="line"><span class="c1">// 2.only used as a pointer or ref.</span>
+</span><span class="line"><span class="c1">// 3.declare it as the formal parameter of a function or return type of a function.</span>
+</span><span class="line"><span class="k">class</span> <span class="nc">Folder</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line"><span class="k">public</span><span class="o">:</span>
+</span><span class="line">    <span class="n">Folder</span><span class="p">(){}</span>
+</span><span class="line">    <span class="n">Folder</span><span class="p">(</span><span class="k">const</span> <span class="n">Folder</span><span class="o">&amp;</span><span class="p">);</span>
+</span><span class="line">    <span class="n">Folder</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Folder</span><span class="o">&amp;</span><span class="p">);</span>
+</span><span class="line">    <span class="o">~</span><span class="n">Folder</span><span class="p">();</span>
 </span><span class="line">
-</span><span class="line">    // Message is used as the formal parameter.
-</span><span class="line">    void save(Message&amp;);
-</span><span class="line">    void remove(Message&amp;);
-</span><span class="line">    void addMsg(Message*);
-</span><span class="line">    void remMsg(Message*);
+</span><span class="line">    <span class="c1">// Message is used as the formal parameter.</span>
+</span><span class="line">    <span class="kt">void</span> <span class="n">save</span><span class="p">(</span><span class="n">Message</span><span class="o">&amp;</span><span class="p">);</span>
+</span><span class="line">    <span class="kt">void</span> <span class="n">remove</span><span class="p">(</span><span class="n">Message</span><span class="o">&amp;</span><span class="p">);</span>
+</span><span class="line">    <span class="kt">void</span> <span class="n">addMsg</span><span class="p">(</span><span class="n">Message</span><span class="o">*</span><span class="p">);</span>
+</span><span class="line">    <span class="kt">void</span> <span class="n">remMsg</span><span class="p">(</span><span class="n">Message</span><span class="o">*</span><span class="p">);</span>
 </span><span class="line">
-</span><span class="line">private:
-</span><span class="line">    // Message is used as the typename of the template.
-</span><span class="line">    set&lt;Message*&gt; messages;
+</span><span class="line"><span class="k">private</span><span class="o">:</span>
+</span><span class="line">    <span class="c1">// Message is used as the typename of the template.</span>
+</span><span class="line">    <span class="n">set</span><span class="o">&lt;</span><span class="n">Message</span><span class="o">*&gt;</span> <span class="n">messages</span><span class="p">;</span>
 </span><span class="line">
-</span><span class="line">    void put_Folder_in_Message(const set&lt;Message*&gt;&amp;);
-</span><span class="line">    void remove_Folder_from_Message();
+</span><span class="line">    <span class="kt">void</span> <span class="n">put_Folder_in_Message</span><span class="p">(</span><span class="k">const</span> <span class="n">set</span><span class="o">&lt;</span><span class="n">Message</span><span class="o">*&gt;&amp;</span><span class="p">);</span>
+</span><span class="line">    <span class="kt">void</span> <span class="n">remove_Folder_from_Message</span><span class="p">();</span>
 </span><span class="line">
-</span><span class="line">};
+</span><span class="line"><span class="p">};</span>
 </span><span class="line">
-</span><span class="line">#endif</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span><span class="line"><span class="cp">#endif</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p><code>Message.h</code></p>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -720,48 +721,191 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 <span class="line-number">40</span>
 <span class="line-number">41</span>
 <span class="line-number">42</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">#include &lt;iostream&gt;
-</span><span class="line">#include &lt;set&gt;
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
+</span><span class="line"><span class="cp">#include &lt;set&gt;</span>
 </span><span class="line">
-</span><span class="line">#ifndef __Message__
-</span><span class="line">#define __Message__
+</span><span class="line"><span class="cp">#ifndef __Message__</span>
+</span><span class="line"><span class="cp">#define __Message__</span>
 </span><span class="line">
-</span><span class="line">using std::string;
-</span><span class="line">using std::set;
+</span><span class="line"><span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">;</span>
+</span><span class="line"><span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">set</span><span class="p">;</span>
 </span><span class="line">
-</span><span class="line">#include "Folder.h"
-</span><span class="line">//predeclaration of Folder
-</span><span class="line">class Folder;
-</span><span class="line">// Folder is a incomplete type.It only can be used in limited ways.
-</span><span class="line">// 1.can not define object of this type.
-</span><span class="line">// 2.only used as a pointer or ref.
-</span><span class="line">// 3.declare it as the formal parameter of a function or return type of a function.
+</span><span class="line"><span class="cp">#include &quot;Folder.h&quot;</span>
+</span><span class="line"><span class="c1">//predeclaration of Folder</span>
+</span><span class="line"><span class="k">class</span> <span class="nc">Folder</span><span class="p">;</span>
+</span><span class="line"><span class="c1">// Folder is a incomplete type.It only can be used in limited ways.</span>
+</span><span class="line"><span class="c1">// 1.can not define object of this type.</span>
+</span><span class="line"><span class="c1">// 2.only used as a pointer or ref.</span>
+</span><span class="line"><span class="c1">// 3.declare it as the formal parameter of a function or return type of a function.</span>
 </span><span class="line">
-</span><span class="line">class Message
-</span><span class="line">{
-</span><span class="line">public:
-</span><span class="line">    Message(const string &amp; str=""):
-</span><span class="line">        contents(str) {}
-</span><span class="line">    Message(const Message&amp;);
-</span><span class="line">    Message&amp; operator=(const Message &amp;);
-</span><span class="line">    ~Message();
+</span><span class="line"><span class="k">class</span> <span class="nc">Message</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line"><span class="k">public</span><span class="o">:</span>
+</span><span class="line">    <span class="n">Message</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span> <span class="n">str</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span><span class="o">:</span>
+</span><span class="line">        <span class="n">contents</span><span class="p">(</span><span class="n">str</span><span class="p">)</span> <span class="p">{}</span>
+</span><span class="line">    <span class="n">Message</span><span class="p">(</span><span class="k">const</span> <span class="n">Message</span><span class="o">&amp;</span><span class="p">);</span>
+</span><span class="line">    <span class="n">Message</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Message</span> <span class="o">&amp;</span><span class="p">);</span>
+</span><span class="line">    <span class="o">~</span><span class="n">Message</span><span class="p">();</span>
 </span><span class="line">
-</span><span class="line">    // Folder is used as the formal parameter.
-</span><span class="line">    void save(Folder&amp;);
-</span><span class="line">    void remove(Folder&amp;);
-</span><span class="line">    void addFldr(Folder*);
-</span><span class="line">    void remFldr(Folder*);
+</span><span class="line">    <span class="c1">// Folder is used as the formal parameter.</span>
+</span><span class="line">    <span class="kt">void</span> <span class="n">save</span><span class="p">(</span><span class="n">Folder</span><span class="o">&amp;</span><span class="p">);</span>
+</span><span class="line">    <span class="kt">void</span> <span class="n">remove</span><span class="p">(</span><span class="n">Folder</span><span class="o">&amp;</span><span class="p">);</span>
+</span><span class="line">    <span class="kt">void</span> <span class="n">addFldr</span><span class="p">(</span><span class="n">Folder</span><span class="o">*</span><span class="p">);</span>
+</span><span class="line">    <span class="kt">void</span> <span class="n">remFldr</span><span class="p">(</span><span class="n">Folder</span><span class="o">*</span><span class="p">);</span>
 </span><span class="line">
-</span><span class="line">private:
-</span><span class="line">    string contents;
-</span><span class="line">    set&lt;Folder*&gt; folders;
+</span><span class="line"><span class="k">private</span><span class="o">:</span>
+</span><span class="line">    <span class="n">string</span> <span class="n">contents</span><span class="p">;</span>
+</span><span class="line">    <span class="n">set</span><span class="o">&lt;</span><span class="n">Folder</span><span class="o">*&gt;</span> <span class="n">folders</span><span class="p">;</span>
 </span><span class="line">
-</span><span class="line">    // Folder is used as the typename of the template.
-</span><span class="line">    void put_Msg_in_Folders(const set&lt;Folder*&gt;&amp;);
-</span><span class="line">    void remove_Msg_from_Folders();
-</span><span class="line">};
+</span><span class="line">    <span class="c1">// Folder is used as the typename of the template.</span>
+</span><span class="line">    <span class="kt">void</span> <span class="n">put_Msg_in_Folders</span><span class="p">(</span><span class="k">const</span> <span class="n">set</span><span class="o">&lt;</span><span class="n">Folder</span><span class="o">*&gt;&amp;</span><span class="p">);</span>
+</span><span class="line">    <span class="kt">void</span> <span class="n">remove_Msg_from_Folders</span><span class="p">();</span>
+</span><span class="line"><span class="p">};</span>
 </span><span class="line">
-</span><span class="line">#endif</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span><span class="line"><span class="cp">#endif</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>一个简单的例子，就是来测试一下<code>class A=B</code>时究竟会不会同时调用赋值构造函数和拷贝构造函数。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+<span class="line-number">53</span>
+<span class="line-number">54</span>
+<span class="line-number">55</span>
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
+</span><span class="line"><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="k">class</span> <span class="nc">object</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line"><span class="k">private</span><span class="o">:</span>
+</span><span class="line">    <span class="kt">int</span> <span class="n">data</span><span class="p">;</span>
+</span><span class="line"><span class="k">public</span><span class="o">:</span>
+</span><span class="line">    <span class="n">object</span><span class="p">(</span><span class="kt">int</span> <span class="n">d</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span>
+</span><span class="line">        <span class="n">data</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;default constructor&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="n">object</span><span class="p">(</span><span class="k">const</span> <span class="n">object</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span><span class="o">:</span>
+</span><span class="line">        <span class="n">data</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;copy constructor&quot;</span> <span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="n">object</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">object</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">if</span><span class="p">(</span><span class="o">&amp;</span><span class="n">other</span> <span class="o">!=</span> <span class="k">this</span><span class="p">)</span>
+</span><span class="line">        <span class="p">{</span>
+</span><span class="line">            <span class="n">data</span> <span class="o">=</span> <span class="n">other</span><span class="p">.</span><span class="n">data</span><span class="p">;</span>
+</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;assignment constructor&quot;</span> <span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">        <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">};</span>
+</span><span class="line">
+</span><span class="line"><span class="kt">void</span> <span class="n">behavior1</span><span class="p">(</span><span class="n">object</span> <span class="n">other</span><span class="p">)</span>	<span class="c1">//形参调用copy constructor</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;test behavior1&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="kt">void</span> <span class="n">behavior2</span><span class="p">(</span><span class="n">object</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;test behavior2&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line"><span class="kt">int</span> <span class="n">main</span><span class="p">()</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="n">object</span> <span class="n">A</span><span class="p">;</span>
+</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span><span class="line">    <span class="n">object</span> <span class="n">B</span><span class="p">(</span><span class="n">A</span><span class="p">);</span>
+</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span><span class="line">    <span class="n">object</span> <span class="n">C</span> <span class="o">=</span> <span class="n">A</span><span class="p">;</span>  <span class="c1">//这个情况仍然只是调用copy constructor</span>
+</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span><span class="line">    <span class="n">C</span><span class="o">=</span><span class="n">B</span><span class="p">;</span>	   <span class="c1">//只有这种情况下才会调用assignment constructor</span>
+</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span><span class="line">    <span class="n">behavior1</span><span class="p">(</span><span class="n">A</span><span class="p">);</span>
+</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span><span class="line">    <span class="n">behavior2</span><span class="p">(</span><span class="n">A</span><span class="p">);</span>
+</span><span class="line">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>测试结果显示如下：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">default constructor
+</span><span class="line">
+</span><span class="line">copy constructor
+</span><span class="line">
+</span><span class="line">copy constructor
+</span><span class="line">
+</span><span class="line">assignment constructor
+</span><span class="line">
+</span><span class="line">copy constructor
+</span><span class="line">test behavior1
+</span><span class="line">
+</span><span class="line">test behavior2
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 </div>
 
 
