@@ -6,6 +6,16 @@
     </url>
     <url>
         <loc>
+            http://aluenkinglee.com/blog/2013/03/15/some-important-details-in-python-personal/
+        </loc>
+        <lastmod>2014-03-14T16:48:26+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://aluenkinglee.com/blog/2013/03/15/puzzles-of-vars-properties-in-python/</loc>
+        <lastmod>2014-03-14T17:09:48+08:00</lastmod>
+    </url>
+    <url>
+        <loc>
             http://aluenkinglee.com/blog/2013/04/16/pythonchu-li-dai-you-shi-qu-de-de-zi-fu-chuan/
         </loc>
         <lastmod>2014-03-14T16:07:54+08:00</lastmod>
@@ -70,10 +80,10 @@
     </url>
     <url>
         <loc>http://aluenkinglee.com/</loc>
-        <lastmod>2014-03-14T16:09:11+08:00</lastmod>
+        <lastmod>2014-03-14T17:09:48+08:00</lastmod>
     </url>
     <url>
         <loc>http://aluenkinglee.com/blog/archives/</loc>
-        <lastmod>2014-03-14T16:09:11+08:00</lastmod>
+        <lastmod>2014-03-14T17:09:48+08:00</lastmod>
     </url>
 </urlset>

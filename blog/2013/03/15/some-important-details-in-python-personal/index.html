@@ -1,0 +1,688 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Python中得一些重要的细节 - 曾经渐行远，未免心戚戚</title>
+  <meta name="author" content="Aluen King Lee">
+
+  
+  <meta name="description" content="字符串可以被下表索引，和C一样，第一个字符同样是0。 Python中并没有单独的字符类型，一个字符就是长度为1的字符串。 和C字符串不同的是，python字符串值不能更改。 1
+2
+3
+4
+5
+&gt;&gt;&gt; word = &#39;string&#39;
+&gt;&gt;&gt; &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://aluenkinglee.com/blog/2013/03/15/some-important-details-in-python-personal">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="曾经渐行远，未免心戚戚" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+<!-- mathjax config similar to math.stackexchange -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
+          MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
+                  data.math = data.math.replace(/^\s*<!\[CDATA\[\s*((?:\n|.)*)\s*\]\]>\s*$/m,"$1");
+                    });
+          });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">曾经渐行远，未免心戚戚</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:aluenkinglee.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Python中得一些重要的细节</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-15T16:17:00+08:00" pubdate data-updated="true">Mar 15<span>th</span>, 2013</time>
+        
+        
+          | <a href="#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>字符串可以被下表索引，和C一样，第一个字符同样是0。</p>
+
+<p>Python中并没有单独的字符类型，一个字符就是长度为1的字符串。</p>
+
+<p>和C字符串不同的是，python字符串值不能更改。</p>
+
+<!-- more -->
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">word</span> <span class="o">=</span> <span class="s">&#39;string&#39;</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">word</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">=</span><span class="s">&#39;d&#39;</span>
+</span><span class="line"><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+</span><span class="line">  <span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+</span><span class="line"><span class="ne">TypeError</span><span class="p">:</span> <span class="s">&#39;str&#39;</span> <span class="nb">object</span> <span class="n">does</span> <span class="ow">not</span> <span class="n">support</span> <span class="n">item</span> <span class="n">assignment</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>关于unicode的一些说明，encode(),unicode()那些往
+<a href="http://docs.python.org/2/tutorial/introduction.html#unicode-strings">这里看</a></p>
+
+<p>python中一些iterable types（具体术语不知道怎么称呼）是分成可以<code>immutable</code>和<code>mutable</code>的：</p>
+
+<h5 id="mutable">可更改的（<code>mutable</code>）:</h5>
+
+<ul>
+  <li>
+    <p>字典型(dictionary)</p>
+  </li>
+  <li>
+    <p>列表型(list)</p>
+  </li>
+</ul>
+
+<h5 id="mutable-1">不可更改（mutable）：</h5>
+
+<ul>
+  <li>
+    <p>元组（tuple)</p>
+  </li>
+  <li>
+    <p>数值型（number）</p>
+  </li>
+  <li>
+    <p>字符串(string)</p>
+  </li>
+</ul>
+
+<p>所有的切片操作都是返回一个新的包含请求元素的list。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;spam&#39;</span><span class="p">,</span> <span class="s">&#39;eggs&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1234</span><span class="p">]</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">[:]</span>
+</span><span class="line"><span class="p">[</span><span class="s">&#39;spam&#39;</span><span class="p">,</span> <span class="s">&#39;eggs&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1234</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>pass语句请看<a href="http://docs.python.org/2/reference/simple_stmts.html#pass">这里</a></p>
+
+<p>函数中的变量，函数中得变量赋值操作都是把值存在<code>本地符号表（local symbol table）</code>中，
+变量引用时先查看本地符号表，在然后是<code>全局符号表（global symbol table）</code>，
+最后才是<code>内置表（table of built-in names）</code>，全局变量得先申明下，在使用</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">v</span><span class="o">=</span> <span class="mi">1</span>
+</span><span class="line"><span class="k">def</span> <span class="nf">test_global_vars</span><span class="p">():</span>
+</span><span class="line">    <span class="sd">&quot;&quot;&quot; 测试使用global&quot;&quot;&quot;</span>
+</span><span class="line">    <span class="c">#global v += 1 #wrong!!</span>
+</span><span class="line">    <span class="k">global</span> <span class="n">v</span>
+</span><span class="line">    <span class="n">v</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class="line">    <span class="k">print</span> <span class="n">v</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>突然想到了python中得变量类型这些东西，以下是实验</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="k">def</span> <span class="nf">test_global_vars</span><span class="p">():</span>
+</span><span class="line">    <span class="sd">&quot;&quot;&quot; 测试使用global&quot;&quot;&quot;</span>
+</span><span class="line">    <span class="k">global</span> <span class="n">v</span>
+</span><span class="line">    <span class="n">v</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class="line">    <span class="k">print</span> <span class="n">v</span><span class="p">,</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+</span><span class="line">
+</span><span class="line"><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+</span><span class="line">    <span class="sd">&quot;&quot;&quot;测试实参是怎么回事，by value，value总是个函数引用，不是那个</span>
+</span><span class="line"><span class="sd">    对象的值,实参也是跟函数内的变量一样被放入到了本地符号表&quot;&quot;&quot;</span>
+</span><span class="line">    <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class="line">    <span class="k">print</span> <span class="n">n</span><span class="p">,</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+</span><span class="line">
+</span><span class="line"><span class="n">v</span><span class="o">=</span> <span class="mi">1</span>
+</span><span class="line"><span class="k">print</span> <span class="n">v</span><span class="p">,</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+</span><span class="line"><span class="n">test_global_vars</span><span class="p">()</span>
+</span><span class="line"><span class="k">print</span> <span class="n">v</span><span class="p">,</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+</span><span class="line"><span class="n">foo</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+</span><span class="line"><span class="k">print</span> <span class="n">v</span><span class="p">,</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+</span><span class="line"><span class="n">v</span><span class="o">+=</span><span class="mi">1</span>
+</span><span class="line"><span class="k">print</span> <span class="n">v</span><span class="p">,</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>这是我机器上的一次run result</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="mi">1</span> <span class="mh">0x1429168</span>
+</span><span class="line"><span class="mi">2</span> <span class="mh">0x142915c</span>
+</span><span class="line"><span class="mi">2</span> <span class="mh">0x142915c</span>
+</span><span class="line"><span class="mi">3</span> <span class="mh">0x1429150</span>
+</span><span class="line"><span class="mi">2</span> <span class="mh">0x142915c</span>
+</span><span class="line"><span class="mi">3</span> <span class="mh">0x1429150</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>会发现v的值一样的时候，id值都是一样的。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">v</span> <span class="o">=</span> <span class="mi">1</span> 			<span class="c">#将名字 v 与内存中值为1的内存绑定在一起。</span>
+</span><span class="line"><span class="n">test_global_vars</span><span class="p">()</span> 	<span class="c">#这句话之后就是把v 和 内存中为2的地址绑定在一起。所以地址会变。</span>
+</span><span class="line"><span class="n">foo</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> 			<span class="c">#形参n 和 内存中为 3 的地址绑定在一起。实参v还是绑定在 2 的地址。</span>
+</span><span class="line"><span class="n">v</span> <span class="o">+=</span> <span class="mi">1</span> 			<span class="c">#v的值改变为3 所以地址就绑定到了 3 在内存中得地方。所以这个时候会发现和上一句的地址一样。</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>很奇特，但是这个样子会有什么好处?</p>
+
+<ul>
+  <li>
+    <p>首先python支持函数编程，函数式编程在运算的过程中值肯定是不会变得。
+想想我们数学中得变量（怎么可能会出现x = x + 1 ！！）数学上讲不通。
+这对函数式编程是个利好消息。（但是这很明显不是函数式编程，应该是这
+个特性在lamda演算中很有用，待解决）</p>
+  </li>
+  <li>
+    <p>这个…受C、C++的“毒害”深啊，目前还是转不过来,但是在看列表<code>可变</code>之后
+，刹那间觉得列表这玩意像指针那种东西啊</p>
+  </li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">dic</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;value&quot;</span><span class="p">:</span><span class="mi">3</span><span class="p">}</span>
+</span><span class="line"><span class="n">b</span> <span class="o">=</span> <span class="n">dic</span>
+</span><span class="line"><span class="k">print</span> <span class="n">dic</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">dic</span><span class="p">)),</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
+</span><span class="line"><span class="n">b</span><span class="p">[</span><span class="s">&quot;value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span>
+</span><span class="line"><span class="k">print</span> <span class="n">dic</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">dic</span><span class="p">)),</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>但是你看结果，他们都是绑定到同一块内存的，这种字典的就直接在源地址改了</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="p">{</span><span class="s">&#39;value&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span> <span class="p">{</span><span class="s">&#39;value&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span> <span class="mh">0x1823d20</span> <span class="mh">0x1823d20</span>
+</span><span class="line"><span class="p">{</span><span class="s">&#39;value&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}</span> <span class="p">{</span><span class="s">&#39;value&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}</span> <span class="mh">0x1823d20</span> <span class="mh">0x1823d20</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>python就是这么设计的，至于为什么，不知道(待解决)</p>
+
+<p>在说句题外话，你看django那些代码写的，都是使用的tuple之类的。url(省略号)…为什么会这个样子，来看看实验的结果</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span class="line">    <span class="sd">&quot;&quot;&quot;docstring for A&quot;&quot;&quot;</span>
+</span><span class="line">    <span class="n">x</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class="line">    <span class="c"># self.x = [] #这个是错误的语法，只能在__init__中定义</span>
+</span><span class="line">    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+</span><span class="line">        <span class="c">#x和self.value有什么区别啊</span>
+</span><span class="line">        <span class="c">#x和self.x有什么区别啊</span>
+</span><span class="line">        <span class="nb">super</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">arg</span> <span class="o">=</span> <span class="n">arg</span>
+</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class="line">        <span class="k">print</span> <span class="s">&quot;in __init__&quot;</span>
+</span><span class="line">        <span class="k">print</span> <span class="s">&quot;x address :</span><span class="se">\t\t\t\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</span><span class="line">        <span class="k">print</span> <span class="s">&quot;self.x address :</span><span class="se">\t\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">def</span> <span class="nf">set_x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class="line">    <span class="k">def</span> <span class="nf">get_x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class="line">        <span class="k">print</span> <span class="s">&quot;in get_x&quot;</span>
+</span><span class="line">        <span class="k">print</span> <span class="s">&quot;x address :</span><span class="se">\t\t\t\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</span><span class="line">        <span class="k">print</span> <span class="s">&quot;self.x address :</span><span class="se">\t\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
+</span><span class="line">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
+</span><span class="line">    <span class="k">def</span> <span class="nf">get_xx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span><span class="c">#很诡异的存在啊，但这个只是定义的不同啊</span>
+</span><span class="line">        <span class="k">print</span> <span class="s">&quot;in get_xx&quot;</span>
+</span><span class="line">        <span class="k">print</span> <span class="s">&quot;x address :</span><span class="se">\t\t\t\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</span><span class="line">        <span class="k">print</span> <span class="s">&quot;self.x address :</span><span class="se">\t\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">x</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class="line">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+</span><span class="line">
+</span><span class="line"><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+</span><span class="line">    <span class="n">a</span> <span class="o">=</span> <span class="n">A</span><span class="p">(</span><span class="s">&quot;oj&quot;</span><span class="p">)</span>
+</span><span class="line">    <span class="n">a</span><span class="o">.</span><span class="n">set_x</span><span class="p">()</span>
+</span><span class="line">    <span class="c">#print A.__dict__</span>
+</span><span class="line">    <span class="k">print</span> <span class="n">a</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span>
+</span><span class="line">    <span class="k">print</span> <span class="n">a</span><span class="o">.</span><span class="n">get_xx</span><span class="p">()</span>
+</span><span class="line">    <span class="k">print</span> <span class="n">a</span><span class="o">.</span><span class="n">get_x</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>自己跑下试试，在__init__()内外定义的变量是不一样的，x，self.value类似static，全局共享。而self.x就不是了，在编码的时候一定要注意这种细节。</p>
+
+<p>可能上面那个太复杂了些，那么看看这个。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="k">class</span> <span class="nc">b</span><span class="p">:</span>
+</span><span class="line">    <span class="n">x</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class="line">    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">=</span><span class="p">[]</span>
+</span><span class="line">    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class="line">    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">x</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span>
+</span><span class="line">
+</span><span class="line"><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+</span><span class="line">    <span class="n">a</span> <span class="o">=</span> <span class="n">b</span><span class="p">()</span>
+</span><span class="line">    <span class="n">a</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+</span><span class="line">    <span class="k">print</span> <span class="n">a</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">b</span><span class="o">.</span><span class="n">__dict__</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>接下来还是关于函数的:</p>
+
+<p>The default values are evaluated at the point of function definition in the defining scope, so that</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">i</span> <span class="o">=</span> <span class="mi">5</span>
+</span><span class="line"><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="n">i</span><span class="p">):</span> <span class="c"># 默认的初始值 只 赋值一次 ，其后初始就不会改变了。</span>
+</span><span class="line">    <span class="k">print</span> <span class="n">arg</span>
+</span><span class="line"><span class="n">i</span> <span class="o">=</span> <span class="mi">6</span>
+</span><span class="line"><span class="n">f</span><span class="p">()</span>           <span class="c"># here will print  5！！ 所以这会为5 只要没传递新的参数</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>但是当形参是个可变对象 如 :列表，字典或者一些类的实例，这个时候会共享这个可变的对象！！！</p>
+
+<p>虽然元组（Tuples）和列表（list）看起来很相似，但是使用的场景不同的。元组通常是不可变的，
+通常包括类型不同的元素，可以通过解包和索引来访问。列表是可变的，通常都是些同一类型的元素迭代访问。</p>
+
+<p>遍历技巧，可能需要下标的时候会用到 <a href="http://docs.python.org/2/tutorial/datastructures.html#looping-techniques">这里</a></p>
+
+<hr />
+
+<p>_xxx      不能用’from module import *’导入</p>
+
+<p><strong>xxx</strong> 系统定义名字</p>
+
+<p>__xxx    类中的私有变量名</p>
+
+<p>以单下划线开头_foo 的代表不能直接访问的类属性，需通过类提供的接口进行访问，不能用“from xxx import *”而导入；</p>
+
+<p>以双下划线开头的__foo代表类的私有成员；以双下划线开头和结尾的__foo__代表python里特殊方法专用的标识，如__init__()代表类的构造函数。</p>
+
+<p>“单下划线” 开始的成员变量叫做保护变量，意思是只有类对象和子类对象自己能访问到这些变量；</p>
+
+<p>“双下划线” 开始的是私有成员，意思是只有类对象自己能访问，连子类对象也不能访问到这个数据。</p>
+
+<h6 id="python">Python中的继承：</h6>
+
+<p>super可以避免显示的引用Base，这听起来很不错，最起码不用自己去判断使用哪个类的构造方法。
+但是最最要的用途还是多继承问题。在python2.7中，得这样解决：super(thisClass,self).<strong>init</strong>() ,python3中变成了这样：super().<strong>init</strong>()</p>
+
+<p>样例：仔细观察，不要忘记那个object！！</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="k">class</span> <span class="nc">Point</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span class="line">	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+</span><span class="line">		<span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
+</span><span class="line">		<span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="k">class</span> <span class="nc">Circle</span><span class="p">(</span><span class="n">Point</span><span class="p">):</span>
+</span><span class="line">	<span class="sd">&quot;&quot;&quot;docstring for Circle&quot;&quot;&quot;</span>
+</span><span class="line">	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+</span><span class="line">		<span class="nb">super</span><span class="p">(</span><span class="n">Circle</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+</span><span class="line">		<span class="c"># Point.__init__(self,x,y)</span>
+</span><span class="line">		<span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">radius</span><span class="p">;</span>
+</span><span class="line"><span class="n">c</span><span class="o">=</span> <span class="n">Circle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="k">class</span> <span class="nc">Base</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span class="line">    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class="line">        <span class="k">print</span> <span class="s">&quot;Base created&quot;</span>
+</span><span class="line">
+</span><span class="line"><span class="k">class</span> <span class="nc">ChildA</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+</span><span class="line">    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class="line">        <span class="n">Base</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="k">class</span> <span class="nc">ChildB</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+</span><span class="line">    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class="line">        <span class="nb">super</span><span class="p">(</span><span class="n">ChildB</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+</span><span class="line">
+</span><span class="line"><span class="k">print</span> <span class="n">ChildA</span><span class="p">(),</span><span class="n">ChildB</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Aluen King Lee</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-15T16:17:00+08:00" pubdate data-updated="true">Mar 15<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/python/'>python</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/03/14/gitde-an-zhuang-he-shi-yong/" title="Previous Post: git的安装和使用">&laquo; git的安装和使用</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/03/15/puzzles-of-vars-properties-in-python/" title="Next Post: python中关于变量属性的迷惑">python中关于变量属性的迷惑 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+
+  <section>
+    <h1>Comments</h1>
+    <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"aluenkinglee"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END --></div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/03/04/qi-yi-de-nei-cun-fu-gai/">“奇异”的内存覆盖</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/">理解TCP中的序列号和确认号</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/24/c-plus-plus-de-hashtablena-xie-shi/">C++的hashtable那些事</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/01/05/machine-learning-linear-regression/">Machine Learning :linear Regression</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/31/ke-ai-de-armadillo/">可爱的Armadillo</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+<section>
+  <h1>My Douban</h1>
+  <div>
+  <!--添加到这-->
+  <script type="text/javascript" src="http://www.douban.com/service/badge/aluenkinglee/?selection=random&amp;picsize=small&amp;show=dolist&amp;n=8&amp;cat=book&amp;columns=3"></script>
+  </div>
+</section> 
+<section>
+<h1>Recent Comments</h1>
+<ul class="ds-recent-comments" data-num-items="10" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="18"></ul>
+
+</section> 
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Aluen King Lee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
