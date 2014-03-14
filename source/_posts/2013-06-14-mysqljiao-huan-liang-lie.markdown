@@ -15,6 +15,7 @@ select id,place_lat,place_lon from `nearbyinfo` where `nearbyinfo`.`place_lat`>0
 ```
 
 正常的数据都是< `39.xxx`, `160.2xxx` >之间，如图所示:
+<!--more-->
 
 ![正常数据](https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/11.png?raw=true "正常数据")
 

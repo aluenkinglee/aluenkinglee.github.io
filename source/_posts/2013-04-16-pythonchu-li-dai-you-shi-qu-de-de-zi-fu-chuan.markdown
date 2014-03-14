@@ -19,7 +19,7 @@ categories: python 时间格式
 ```
 time.strptime('Fri Aug 12 14:09:31 +0800 2011', '%a %b %d %H:%M:%S %z %Y')
 ```
-
+<!--more-->
 当然也可以这样，只是试验下而已
 
 ```
