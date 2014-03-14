@@ -5,13 +5,14 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>virtualbox网络环境和登录 - 曾经渐行远，未免心戚戚</title>
+  <title>MySql交换两列 - 曾经渐行远，未免心戚戚</title>
   <meta name="author" content="Aluen King Lee">
 
   
-  <meta name="description" content="最近由于实验室需要研究SDN的一些东西，再此先来搭配下环境。
-对于虚拟机的一些选择，可以看这里:
-vm-setup-notes 我这里的环境是: os: debian 7(wheezy) 64bit xwindows: kde VM： virtualbox controller: pox &hellip;">
+  <meta name="description" content="事情的起因是这个发现数据库中出现了某两列数据正好颠倒了，大部分数据都是正常的，
+这些错误的原因是数据源有问题，今天在进一步的做标签聚类的时候分析的时候发现这
+些占很小比例的误差，辛亏发现了，否则做出来的结果有可能会郁闷很久。 1
+select id,place_lat,place_lon from &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +21,7 @@ vm-setup-notes 我这里的环境是: os: debian 7(wheezy) 64bit xwindows: kde V
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://aluenkinglee.com/blog/2013/10/20/virtualbox-network-environment-and-login">
+  <link rel="canonical" href="http://aluenkinglee.com/blog/2013/06/14/mysqljiao-huan-liang-lie">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="曾经渐行远，未免心戚戚" type="application/atom+xml">
@@ -108,7 +109,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   
   <header>
     
-      <h1 class="entry-title">Virtualbox网络环境和登录</h1>
+      <h1 class="entry-title">MySql交换两列</h1>
     
     
       <p class="meta">
@@ -124,7 +125,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   
 
 
-<time datetime="2013-10-20T22:46:00+08:00" pubdate data-updated="true">Oct 20<span>th</span>, 2013</time>
+<time datetime="2013-06-14T15:35:00+08:00" pubdate data-updated="true">Jun 14<span>th</span>, 2013</time>
         
         
           | <a href="#comments">Comments</a>
@@ -134,113 +135,73 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   </header>
 
 
-<div class="entry-content"><p>最近由于实验室需要研究SDN的一些东西，再此先来搭配下环境。
-对于虚拟机的一些选择，可以看这里:
-<a href="http://mininet.org/vm-setup-notes/">vm-setup-notes</a> 
-我这里的环境是:</p>
+<div class="entry-content"><p>事情的起因是这个发现数据库中出现了某两列数据正好颠倒了，大部分数据都是正常的，
+这些错误的原因是数据源有问题，今天在进一步的做标签聚类的时候分析的时候发现这
+些占很小比例的误差，辛亏发现了，否则做出来的结果有可能会郁闷很久。</p>
 
-<p><code>os:            debian 7(wheezy) 64bit</code></p>
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">select id,place_lat,place_lon from `nearbyinfo` where `nearbyinfo`.`place_lat`&gt;0;</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p><code>xwindows:      kde</code></p>
+<p>正常的数据都是&lt; <code>39.xxx</code>, <code>160.2xxx</code> &gt;之间，如图所示:</p>
 
-<p><code>VM：           virtualbox</code></p>
+<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/11.png?raw=true" alt="正常数据" title="正常数据" /></p>
 
-<p><code>controller:    pox</code></p>
+<p>但是幸好及时发现了存在这样的数据，</p>
 
-<p>按照上述的网址，可以比较容易的搭配出来需要的环境，下面就说以下之后遇到的问题。</p>
+<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/12.png?raw=true" alt="异常数据" title="异常数据" /></p>
 
-<ul>
-  <li>virtualbox的鼠标独占问题，只是提示太不明明显了！对于那个right ctrl的提示我郁闷了好一会，我以为是鼠标右键+ctrl…其实是右边的ctrl键。对于这个键的设定，你可以从“管理”&gt;“全局设定”&gt;”热键”来设置你喜欢的按键..我就吐槽这么一句，之前vmware对此的说明很明了！</li>
-  <li>Using Host-only adapter to SSH guest from host.</li>
-</ul>
+<p>一开始想的是想写sql语句试着把这两栏的数据给交换过来，可是sql太渣…然后就想着找
+到这些ID和他们的坐标值（都已经出来了），然后用python读出来写成update的语句，
+然后在执行一下就可以了，这也太…</p>
 
-<h3 id="nat">NAT模式</h3>
-<p>特点：
-1. 如果主机可以上网，虚拟机可以上网
-2. 虚拟机之间不能ping通
-3. 虚拟机可以ping通主机（此时ping虚拟机的网关，即是ping主机）
-4. 主机不能ping通虚拟机</p>
-
-<p>但是这个情况下是不能满足我的使用条件…我需要在host登录到guest中，so pass</p>
-
-<h3 id="section">桥接模式</h3>
-<p>特点：
-1. 如果主机可以上网，虚拟机可以上网
-2. 虚拟机之间可以ping通
-3. 虚拟机可以ping通主机
-4. 主机可以ping通虚拟机 (以上各点基于一个前提：主机可以上网)
-5. 如果主机不可以上网，所有1-4特点均无</p>
-
-<!--more-->
-
-<p>这个挺好，觉得可以满足我的要求但是，发现它的IP地址要求是自动非配的，我们实验室的IP是校园内网固定IP…</p>
-
-<h3 id="host-only-adapter">Host-only Adapter模式</h3>
-
-<p>特点：</p>
-
-<ol>
-  <li>虚拟机<code>不</code>可以上网</li>
-  <li>虚拟机之间可以ping通</li>
-  <li>虚拟机可以ping通主机（注意虚拟机与主机通信是通过主机的名为VirtualBox Host-Only Network的网卡，因此ip
-是该网卡ip <code>192.168.56.1</code>，而不是你现在正在上网所用的ip）</li>
-  <li>主机可以ping通虚拟机</li>
-</ol>
-
-<p>应用场景：
-需要搭建一个模拟局域网，所有机器可以互访。（颇不得以选这个的..）</p>
-
-<p>ip样式：<code>netstat -rn</code>查看路由表
-ip 与本机VirtualBox Host-Only Network的网卡ip在同一网段内（默认192.168.56.*）
-网关 本机VirtualBox Host-Only Network的网卡ip（默认192.168.56.1）</p>
-
-<h3 id="section-1">登录虚拟机</h3>
-<p>登录虚拟机，首先开开virtualbox的虚拟机</p>
+<p>辛亏最终还是找到了，在这还是完整的说明一下吧。首先创建一个表，在Mysql中</p>
 
 <div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">mininet-vm login: mininet
-</span><span class="line">Password: mininet</span></code></pre></td></tr></table></div></figure></notextile></div>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">CREATE DATABASE  IF NOT EXISTS `weibodata` 
+</span><span class="line">USE `weibodata`;
+</span><span class="line">DROP TABLE IF EXISTS `test`;
+</span><span class="line">CREATE TABLE `test` (
+</span><span class="line">  `id` int(11) NOT NULL AUTO_INCREMENT,
+</span><span class="line">  `a` varchar(45) DEFAULT NULL,
+</span><span class="line">  `b` varchar(45) DEFAULT NULL,
+</span><span class="line">  PRIMARY KEY (`id`)
+</span><span class="line">) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+</span><span class="line">LOCK TABLES `test` WRITE;
+</span><span class="line">INSERT INTO `test` VALUES (1,'-1','4'),(2,'3','2');
+</span><span class="line">UNLOCK TABLES;</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>接下来查看我们的vm地址：（在guest里面操作）</p>
+<p>所以看起来会是这个样子:</p>
+
+<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/12.png?raw=true" alt="交换之前" title="交换之前" /></p>
+
+<p>然后执行下面的语句，会发生第二行swap了</p>
 
 <div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">sudo ifconfig</span></code></pre></td></tr></table></div></figure></notextile></div>
-<p>例如我这里的ip地址是<code>192.168.56.101</code>,然后就使用我们可爱的SSH</p>
+</pre></td><td class="code"><pre><code class=""><span class="line">UPDATE test t1,test t2 SET t1.a=t1.b,t2.b=t2.a where t1.id =t2.id and t1.a&gt;0;</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">ssh -Y mininet@192.168.56.101</span></code></pre></td></tr></table></div></figure></notextile></div>
-<p>输入密码就可以了</p>
+<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/12.png?raw=true" alt="交换之后" title="交换之后" /></p>
 
-<p>当然上面的不好看，做下别名好了。（在我们host里面操作）</p>
+<p>在尝试一下就会变成原样。</p>
+
+<p>问题解决了。</p>
 
 <div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">sudo nano /etc/hosts
-</span><span class="line">192.168.56.101 mininet-vm</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>保存即可，这样子就可以使用</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">ssh -Y mininet@mininet-vm</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>接下来就可以去玩下面的实验了^^</p>
-
-<blockquote>
-  <p>参考文档:</p>
-</blockquote>
-
-<blockquote>
-  <p><a href="http://blog.csdn.net/yxc135/article/details/8458939">VirtualBox虚拟机网络环境解析</a></p>
-</blockquote>
-
-<blockquote>
-  <p><a href="http://www.live-in.org/archives/832.html">ssh命令用于远程登录上Linux主机</a></p>
-</blockquote>
-
-<blockquote>
-  <p><a href="http://mininet.org/vm-setup-notes/">SSH into VM</a></p>
-</blockquote>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">select id,place_lat,place_lon from nearbyinfo where place_lat &gt;100;
+</span><span class="line">UPDATE nearbyinfo t1,nearbyinfo t2 SET t1.place_lat=t1.place_lon,t2.place_lon=t2.place_lat where t1.id = t2.id and t1.place_lat&gt;100;
+</span><span class="line">select id,place_lat,place_lon from nearbyinfo where id in (1025,4974,4814,2685);</span></code></pre></td></tr></table></div></figure></notextile></div>
 </div>
 
 
@@ -263,12 +224,12 @@ ip 与本机VirtualBox Host-Only Network的网卡ip在同一网段内（默认19
   
 
 
-<time datetime="2013-10-20T22:46:00+08:00" pubdate data-updated="true">Oct 20<span>th</span>, 2013</time>
+<time datetime="2013-06-14T15:35:00+08:00" pubdate data-updated="true">Jun 14<span>th</span>, 2013</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/sdn/'>SDN</a>, <a class='category' href='/blog/categories/ssh/'>SSH</a>, <a class='category' href='/blog/categories/virtualbox/'>virtualbox</a>
+    <a class='category' href='/blog/categories/mysql/'>mysql</a>, <a class='category' href='/blog/categories/python/'>python</a>
   
 </span>
 
@@ -284,10 +245,10 @@ ip 与本机VirtualBox Host-Only Network的网卡ip在同一网段内（默认19
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2013/06/14/mysqljiao-huan-liang-lie/" title="Previous Post: MySql交换两列">&laquo; MySql交换两列</a>
+        <a class="basic-alignment left" href="/blog/2011/03/14/gitde-an-zhuang-he-shi-yong/" title="Previous Post: git的安装和使用">&laquo; git的安装和使用</a>
       
       
-        <a class="basic-alignment right" href="/blog/2013/10/24/c-plus-plus-forward-declaration-and-copy-control/" title="Next Post: C++前置声明和复制控制">C++前置声明和复制控制 &raquo;</a>
+        <a class="basic-alignment right" href="/blog/2013/10/20/virtualbox-network-environment-and-login/" title="Next Post: virtualbox网络环境和登录">virtualbox网络环境和登录 &raquo;</a>
       
     </p>
   </footer>
