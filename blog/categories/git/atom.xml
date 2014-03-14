@@ -4,7 +4,7 @@
   <title><![CDATA[Category: git | 曾经渐行远，未免心戚戚]]></title>
   <link href="http://aluenkinglee.com/blog/categories/git/atom.xml" rel="self"/>
   <link href="http://aluenkinglee.com/"/>
-  <updated>2014-03-14T16:05:33+08:00</updated>
+  <updated>2014-03-14T16:09:12+08:00</updated>
   <id>http://aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
@@ -23,7 +23,8 @@
 <p><code>bash
 Permission denied (publickey).
 fatal: The remote end hung up unexpectedly
-</code></p>
+</code>
+<!--more--></p>
 
 <p>的错误，真是忘记怎么使用了，连SSH keys都没添加就想push啊…好吧，
 真的是好记性不如烂笔头，老老实实的写下来已免在出这样的糗事</p>

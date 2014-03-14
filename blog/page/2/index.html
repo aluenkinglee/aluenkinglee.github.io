@@ -145,68 +145,13 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 <div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 </pre></td><td class="code"><pre><code class=""><span class="line">select id,place_lat,place_lon from `nearbyinfo` where `nearbyinfo`.`place_lat`&gt;0;</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>正常的数据都是&lt; <code>39.xxx</code>, <code>160.2xxx</code> &gt;之间，如图所示:</p>
-
-<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/11.png?raw=true" alt="正常数据" title="正常数据" /></p>
-
-<p>但是幸好及时发现了存在这样的数据，</p>
-
-<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/12.png?raw=true" alt="异常数据" title="异常数据" /></p>
-
-<p>一开始想的是想写sql语句试着把这两栏的数据给交换过来，可是sql太渣…然后就想着找
-到这些ID和他们的坐标值（都已经出来了），然后用python读出来写成update的语句，
-然后在执行一下就可以了，这也太…</p>
-
-<p>辛亏最终还是找到了，在这还是完整的说明一下吧。首先创建一个表，在Mysql中</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">CREATE DATABASE  IF NOT EXISTS `weibodata` 
-</span><span class="line">USE `weibodata`;
-</span><span class="line">DROP TABLE IF EXISTS `test`;
-</span><span class="line">CREATE TABLE `test` (
-</span><span class="line">  `id` int(11) NOT NULL AUTO_INCREMENT,
-</span><span class="line">  `a` varchar(45) DEFAULT NULL,
-</span><span class="line">  `b` varchar(45) DEFAULT NULL,
-</span><span class="line">  PRIMARY KEY (`id`)
-</span><span class="line">) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-</span><span class="line">LOCK TABLES `test` WRITE;
-</span><span class="line">INSERT INTO `test` VALUES (1,'-1','4'),(2,'3','2');
-</span><span class="line">UNLOCK TABLES;</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>所以看起来会是这个样子:</p>
-
-<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/12.png?raw=true" alt="交换之前" title="交换之前" /></p>
-
-<p>然后执行下面的语句，会发生第二行swap了</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">UPDATE test t1,test t2 SET t1.a=t1.b,t2.b=t2.a where t1.id =t2.id and t1.a&gt;0;</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/12.png?raw=true" alt="交换之后" title="交换之后" /></p>
-
-<p>在尝试一下就会变成原样。</p>
-
-<p>问题解决了。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">select id,place_lat,place_lon from nearbyinfo where place_lat &gt;100;
-</span><span class="line">UPDATE nearbyinfo t1,nearbyinfo t2 SET t1.place_lat=t1.place_lon,t2.place_lon=t2.place_lat where t1.id = t2.id and t1.place_lat&gt;100;
-</span><span class="line">select id,place_lat,place_lon from nearbyinfo where id in (1025,4974,4814,2685);</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>正常的数据都是&lt; <code>39.xxx</code>, <code>160.2xxx</code> &gt;之间，如图所示:
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/06/14/mysqljiao-huan-liang-lie/">read on &rarr;</a>
+    </footer>
   
 
 
@@ -255,67 +200,12 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 
 <div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 </pre></td><td class="code"><pre><code class=""><span class="line">time.strptime('Fri Aug 12 14:09:31 +0800 2011', '%a %b %d %H:%M:%S %z %Y')</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>当然也可以这样，只是试验下而已</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">dt2 = datetime.strptime('Fri Aug 12 14:09:31 +0800 2011', '%a %b %d %H:%M:%S %Z %Y')</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>然而却出现了如下的错误：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">ValueError: time data 'Fri Aug 12 14:09:31 +0800 2011' does not match format '%a %b %d %H:%M:%S %Z %Y'</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>查了下<a href="http://stackoverflow.com/questions/10540399/strftime-does-not-return-abbreviated-time-zone">资料</a>
-发现这个跟系统有关系，而且这个是bug，（虽然开发者不承认，但是我觉得还有有点关系….虽然它又跟locals有关系。。。识别起来
-确实很繁琐）比如现在我是在windows上处理的结果就是</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">&gt;&gt;&gt; print time.strftime("%a, %d %b %Y %I:%M:%S %p %Z", time.localtime(10.5))
-</span><span class="line">Thu, 01 Jan 1970 08:00:10 AM 中国标准时间
-</span><span class="line">&gt;&gt;&gt; print time.strftime("%a, %d %b %Y %I:%M %p %Z", time.gmtime())
-</span><span class="line">Tue, 16 Apr 2013 08:33 AM 中国标准时间
-</span><span class="line">&gt;&gt;&gt;</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>和那个+8000格格不入，好吧 反正数据的处理设计不到时区，那么可以这样子做</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">&gt;&gt;&gt; dt2 = datetime.strptime('Fri Aug 12 14:09:31 +0800 2011', '%a %b %d %H:%M:%S +0800 %Y')
-</span><span class="line">&gt;&gt;&gt; print dt2
-</span><span class="line">2011-08-12 14:09:31</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>对现在的需求来说,反而更好.</p>
-
-<h3 id="section">参考</h3>
-
-<ol>
-  <li>
-    <p><a href="http://bugs.python.org/issue6641">issue6641</a></p>
-  </li>
-  <li>
-    <p><a href="http://stackoverflow.com/questions/4788533/python-strftime-gmtime-not-respecting-timezone">python-strftime-gmtime-not-respecting-timezone</a></p>
-  </li>
-  <li>
-    <p><a href="http://stackoverflow.com/questions/10540399/strftime-does-not-return-abbreviated-time-zone">strftime-does-not-return-abbreviated-time-zone</a></p>
-  </li>
-  <li>
-    <p><a href="http://forum.open.weibo.com/read.php?tid=11780">微博使用</a></p>
-  </li>
-  <li>
-    <p><a href="http://docs.python.org/2/library/datetime.html#strftime-and-strptime-behavior">strftime-and-strptime-behavior</a></p>
-  </li>
-  <li>
-    <p><a href="http://stackoverflow.com/questions/466345/converting-string-into-datetime">converting-string-into-datetime</a></p>
-  </li>
-</ol>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/04/16/pythonchu-li-dai-you-shi-qu-de-de-zi-fu-chuan/">read on &rarr;</a>
+    </footer>
   
 
 
@@ -359,95 +249,12 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 </pre></td><td class="code"><pre><code class="bash"><span class="line">Permission denied <span class="o">(</span>publickey<span class="o">)</span>.
 </span><span class="line">fatal: The remote end hung up unexpectedly
 </span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>的错误，真是忘记怎么使用了，连SSH keys都没添加就想push啊…好吧，
-真的是好记性不如烂笔头，老老实实的写下来已免在出这样的糗事</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class="bash"><span class="line">sudo apt-get install git git-core
-</span><span class="line">ssh-keygen
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>然后系统提示输入文件保存位置等信息，连续敲三次回车即可，生成的SSH key文件保存在中～/.ssh/id_rsa.publickey</p>
-
-<p>接着拷贝.ssh/id_rsa.pub文件内的所以内容，将它粘帖到github帐号管理中的添加SSH key界面中。</p>
-
-<h6 id="githubssh-key">打开github帐号管理中的添加SSH key界面的步骤如下</h6>
-
-<ul>
-  <li>
-    <p>登录github</p>
-  </li>
-  <li>
-    <p>点击右上方的Accounting settings图标</p>
-  </li>
-  <li>
-    <p>选择 SSH key</p>
-  </li>
-  <li>
-    <p>点击 Add SSH key</p>
-  </li>
-</ul>
-
-<p>在出现的界面中填写SSH key的名称，填一个你自己喜欢的名称即可，然后将上面拷贝的~/.ssh/id_rsa.pub文件内容粘帖到key一栏，
-在点击“add key”按钮就可以了。添加过程github会提示你输入一次你的github密码。</p>
-
-<h3 id="git-">git 配置</h3>
-
-<p>git有三个配置文件，分别是<code>repo/.git/config</code>,<code>$HOME/.gitconfig</code>,<code>/etc/gitconfig</code>.</p>
-
-<ol>
-  <li>
-    <p>repo/.git/config 库级别的配置文件，只对当前库有效，优先级最高(git config –local)</p>
-  </li>
-  <li>
-    <p>$HOME/.gitconfig 用户级别的配置文件，对当前用户有效，优先级次之(git config –global)</p>
-  </li>
-  <li>
-    <p>/etc/gitconfig 系统全局配置文件，对整个系统有效，优先级最低(git config –system)</p>
-  </li>
-</ol>
-
-<p>git config –list 可以查看当前的git配置列表</p>
-
-<p>如果已经配置了，则会看到user.name 和 user.email的配置信息</p>
-
-<p>如果没有,一般情况下在git提交时会使用机器名，诸如：unknown dev@xxx-PC.(none) 等类型的Author信息，肯定不方便了。</p>
-
-<p>建议都配置明确的user.name 和 user.email信息。</p>
-
-<h5 id="section">可以通过下面的命令进行配置</h5>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class="bash"><span class="line">git config user.name xxx
-</span><span class="line">git config user.email xxx@xxx.com
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>配置完成后可以通过 git config –list 查看到.</p>
-
-<p>这个准备工作算是完成了，其他的，就参考别人写得。在这不再写了。</p>
-
-<blockquote>
-  <blockquote>
-    <p>参考</p>
-  </blockquote>
-</blockquote>
-
-<ol>
-  <li>
-    <p><a href="http://blog.sina.com.cn/s/blog_55465b470100s63h.html">说明很详细</a></p>
-  </li>
-  <li>
-    <p><a href="http://simen-net.iteye.com/blog/832391">这个有可能会用的着以后，搭建git server，在eclipse里集成git</a></p>
-  </li>
-  <li>
-    <p><a href="http://www.cnblogs.com/Jerry-Chou/archive/2012/05/14/2499088.html">git常用命令</a></p>
-  </li>
-</ol>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2011/03/14/gitde-an-zhuang-he-shi-yong/">read on &rarr;</a>
+    </footer>
   
 
 

@@ -615,30 +615,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 
 <p><code>controller:    pox</code></p>
 
-<p>按照上述的网址，可以比较容易的搭配出来需要的环境，下面就说以下之后遇到的问题。</p>
-
-<ul>
-  <li>virtualbox的鼠标独占问题，只是提示太不明明显了！对于那个right ctrl的提示我郁闷了好一会，我以为是鼠标右键+ctrl…其实是右边的ctrl键。对于这个键的设定，你可以从“管理”&gt;“全局设定”&gt;”热键”来设置你喜欢的按键..我就吐槽这么一句，之前vmware对此的说明很明了！</li>
-  <li>Using Host-only adapter to SSH guest from host.</li>
-</ul>
-
-<h3 id="nat">NAT模式</h3>
-<p>特点：
-1. 如果主机可以上网，虚拟机可以上网
-2. 虚拟机之间不能ping通
-3. 虚拟机可以ping通主机（此时ping虚拟机的网关，即是ping主机）
-4. 主机不能ping通虚拟机</p>
-
-<p>但是这个情况下是不能满足我的使用条件…我需要在host登录到guest中，so pass</p>
-
-<h3 id="section">桥接模式</h3>
-<p>特点：
-1. 如果主机可以上网，虚拟机可以上网
-2. 虚拟机之间可以ping通
-3. 虚拟机可以ping通主机
-4. 主机可以ping通虚拟机 (以上各点基于一个前提：主机可以上网)
-5. 如果主机不可以上网，所有1-4特点均无</p>
-
 </div>
   
   

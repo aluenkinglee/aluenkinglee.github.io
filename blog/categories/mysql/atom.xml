@@ -4,7 +4,7 @@
   <title><![CDATA[Category: mysql | 曾经渐行远，未免心戚戚]]></title>
   <link href="http://aluenkinglee.com/blog/categories/mysql/atom.xml" rel="self"/>
   <link href="http://aluenkinglee.com/"/>
-  <updated>2014-03-14T16:05:33+08:00</updated>
+  <updated>2014-03-14T16:09:12+08:00</updated>
   <id>http://aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
@@ -26,7 +26,8 @@
 select id,place_lat,place_lon from `nearbyinfo` where `nearbyinfo`.`place_lat`&gt;0;
 </code></p>
 
-<p>正常的数据都是&lt; <code>39.xxx</code>, <code>160.2xxx</code> &gt;之间，如图所示:</p>
+<p>正常的数据都是&lt; <code>39.xxx</code>, <code>160.2xxx</code> &gt;之间，如图所示:
+<!--more--></p>
 
 <p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/11.png?raw=true" alt="正常数据" title="正常数据" /></p>
 

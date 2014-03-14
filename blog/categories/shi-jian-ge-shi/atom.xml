@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 时间格式 | 曾经渐行远，未免心戚戚]]></title>
   <link href="http://aluenkinglee.com/blog/categories/shi-jian-ge-shi/atom.xml" rel="self"/>
   <link href="http://aluenkinglee.com/"/>
-  <updated>2014-03-14T16:05:33+08:00</updated>
+  <updated>2014-03-14T16:09:12+08:00</updated>
   <id>http://aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
@@ -30,9 +30,9 @@
 
 <p><code>
 time.strptime('Fri Aug 12 14:09:31 +0800 2011', '%a %b %d %H:%M:%S %z %Y')
-</code></p>
-
-<p>当然也可以这样，只是试验下而已</p>
+</code>
+<!--more-->
+当然也可以这样，只是试验下而已</p>
 
 <p><code>
 dt2 = datetime.strptime('Fri Aug 12 14:09:31 +0800 2011', '%a %b %d %H:%M:%S %Z %Y')

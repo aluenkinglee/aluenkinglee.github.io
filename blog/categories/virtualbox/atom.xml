@@ -4,7 +4,7 @@
   <title><![CDATA[Category: virtualbox | 曾经渐行远，未免心戚戚]]></title>
   <link href="http://aluenkinglee.com/blog/categories/virtualbox/atom.xml" rel="self"/>
   <link href="http://aluenkinglee.com/"/>
-  <updated>2014-03-14T16:05:33+08:00</updated>
+  <updated>2014-03-14T16:09:12+08:00</updated>
   <id>http://aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
@@ -31,6 +31,8 @@
 
 <p><code>controller:    pox</code></p>
 
+<!--more-->
+
 <p>按照上述的网址，可以比较容易的搭配出来需要的环境，下面就说以下之后遇到的问题。</p>
 
 <ul>
@@ -54,8 +56,6 @@
 3. 虚拟机可以ping通主机
 4. 主机可以ping通虚拟机 (以上各点基于一个前提：主机可以上网)
 5. 如果主机不可以上网，所有1-4特点均无</p>
-
-<!--more-->
 
 <p>这个挺好，觉得可以满足我的要求但是，发现它的IP地址要求是自动非配的，我们实验室的IP是校园内网固定IP…</p>
 

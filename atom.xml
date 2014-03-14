@@ -4,7 +4,7 @@
   <title><![CDATA[曾经渐行远，未免心戚戚]]></title>
   <link href="http://aluenkinglee.com/atom.xml" rel="self"/>
   <link href="http://aluenkinglee.com/"/>
-  <updated>2014-03-14T16:05:33+08:00</updated>
+  <updated>2014-03-14T16:09:12+08:00</updated>
   <id>http://aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
@@ -2316,6 +2316,8 @@ f_x(x_1,...,x_k)=\frac{1}{(2\pi)^{k/2}|\Sigma|^{1/2}}exp(-\frac{1}{2}(x-\mu)^T\S
 
 <p><code>controller:    pox</code></p>
 
+<!--more-->
+
 <p>按照上述的网址，可以比较容易的搭配出来需要的环境，下面就说以下之后遇到的问题。</p>
 
 <ul>
@@ -2339,8 +2341,6 @@ f_x(x_1,...,x_k)=\frac{1}{(2\pi)^{k/2}|\Sigma|^{1/2}}exp(-\frac{1}{2}(x-\mu)^T\S
 3. 虚拟机可以ping通主机
 4. 主机可以ping通虚拟机 (以上各点基于一个前提：主机可以上网)
 5. 如果主机不可以上网，所有1-4特点均无</p>
-
-<!--more-->
 
 <p>这个挺好，觉得可以满足我的要求但是，发现它的IP地址要求是自动非配的，我们实验室的IP是校园内网固定IP…</p>
 
@@ -2425,7 +2425,8 @@ ip 与本机VirtualBox Host-Only Network的网卡ip在同一网段内（默认19
 <div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 </pre></td><td class="code"><pre><code class=""><span class="line">select id,place_lat,place_lon from `nearbyinfo` where `nearbyinfo`.`place_lat`&gt;0;</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>正常的数据都是&lt; <code>39.xxx</code>, <code>160.2xxx</code> &gt;之间，如图所示:</p>
+<p>正常的数据都是&lt; <code>39.xxx</code>, <code>160.2xxx</code> &gt;之间，如图所示:
+<!--more--></p>
 
 <p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/11.png?raw=true" alt="正常数据" title="正常数据" /></p>
 
@@ -2505,7 +2506,7 @@ ip 与本机VirtualBox Host-Only Network的网卡ip在同一网段内（默认19
 
 <div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 </pre></td><td class="code"><pre><code class=""><span class="line">time.strptime('Fri Aug 12 14:09:31 +0800 2011', '%a %b %d %H:%M:%S %z %Y')</span></code></pre></td></tr></table></div></figure></notextile></div>
-
+<!--more-->
 <p>当然也可以这样，只是试验下而已</p>
 
 <div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
@@ -2579,6 +2580,7 @@ ip 与本机VirtualBox Host-Only Network的网卡ip在同一网段内（默认19
 </pre></td><td class="code"><pre><code class="bash"><span class="line">Permission denied <span class="o">(</span>publickey<span class="o">)</span>.
 </span><span class="line">fatal: The remote end hung up unexpectedly
 </span></code></pre></td></tr></table></div></figure></notextile></div>
+<!--more-->
 
 <p>的错误，真是忘记怎么使用了，连SSH keys都没添加就想push啊…好吧，
 真的是好记性不如烂笔头，老老实实的写下来已免在出这样的糗事</p>
