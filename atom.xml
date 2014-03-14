@@ -4,7 +4,7 @@
   <title><![CDATA[曾经渐行远，未免心戚戚]]></title>
   <link href="http://aluenkinglee.com/atom.xml" rel="self"/>
   <link href="http://aluenkinglee.com/"/>
-  <updated>2014-03-05T14:39:14+08:00</updated>
+  <updated>2014-03-14T15:31:32+08:00</updated>
   <id>http://aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
@@ -2410,6 +2410,108 @@ ip 与本机VirtualBox Host-Only Network的网卡ip在同一网段内（默认19
 <blockquote>
   <p><a href="http://mininet.org/vm-setup-notes/">SSH into VM</a></p>
 </blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[git的安装和使用]]></title>
+    <link href="http://aluenkinglee.com/blog/2011/03/14/gitde-an-zhuang-he-shi-yong/"/>
+    <updated>2011-03-14T15:11:00+08:00</updated>
+    <id>http://aluenkinglee.com/blog/2011/03/14/gitde-an-zhuang-he-shi-yong</id>
+    <content type="html"><![CDATA[<p>git之前一直使用的，但是n久没用居然忘记怎么使用了。。。中途使用过程中居然还出现了</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">Permission denied <span class="o">(</span>publickey<span class="o">)</span>.
+</span><span class="line">fatal: The remote end hung up unexpectedly
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>的错误，真是忘记怎么使用了，连SSH keys都没添加就想push啊…好吧，
+真的是好记性不如烂笔头，老老实实的写下来已免在出这样的糗事</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">sudo apt-get install git git-core
+</span><span class="line">ssh-keygen
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>然后系统提示输入文件保存位置等信息，连续敲三次回车即可，生成的SSH key文件保存在中～/.ssh/id_rsa.publickey</p>
+
+<p>接着拷贝.ssh/id_rsa.pub文件内的所以内容，将它粘帖到github帐号管理中的添加SSH key界面中。</p>
+
+<h6 id="githubssh-key">打开github帐号管理中的添加SSH key界面的步骤如下</h6>
+
+<ul>
+  <li>
+    <p>登录github</p>
+  </li>
+  <li>
+    <p>点击右上方的Accounting settings图标</p>
+  </li>
+  <li>
+    <p>选择 SSH key</p>
+  </li>
+  <li>
+    <p>点击 Add SSH key</p>
+  </li>
+</ul>
+
+<p>在出现的界面中填写SSH key的名称，填一个你自己喜欢的名称即可，然后将上面拷贝的~/.ssh/id_rsa.pub文件内容粘帖到key一栏，
+在点击“add key”按钮就可以了。添加过程github会提示你输入一次你的github密码。</p>
+
+<h3 id="git-">git 配置</h3>
+
+<p>git有三个配置文件，分别是<code>repo/.git/config</code>,<code>$HOME/.gitconfig</code>,<code>/etc/gitconfig</code>.</p>
+
+<ol>
+  <li>
+    <p>repo/.git/config 库级别的配置文件，只对当前库有效，优先级最高(git config –local)</p>
+  </li>
+  <li>
+    <p>$HOME/.gitconfig 用户级别的配置文件，对当前用户有效，优先级次之(git config –global)</p>
+  </li>
+  <li>
+    <p>/etc/gitconfig 系统全局配置文件，对整个系统有效，优先级最低(git config –system)</p>
+  </li>
+</ol>
+
+<p>git config –list 可以查看当前的git配置列表</p>
+
+<p>如果已经配置了，则会看到user.name 和 user.email的配置信息</p>
+
+<p>如果没有,一般情况下在git提交时会使用机器名，诸如：unknown dev@xxx-PC.(none) 等类型的Author信息，肯定不方便了。</p>
+
+<p>建议都配置明确的user.name 和 user.email信息。</p>
+
+<h5 id="section">可以通过下面的命令进行配置</h5>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">git config user.name xxx
+</span><span class="line">git config user.email xxx@xxx.com
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>配置完成后可以通过 git config –list 查看到.</p>
+
+<p>这个准备工作算是完成了，其他的，就参考别人写得。在这不再写了。</p>
+
+<blockquote>
+  <blockquote>
+    <p>参考</p>
+  </blockquote>
+</blockquote>
+
+<ol>
+  <li>
+    <p><a href="http://blog.sina.com.cn/s/blog_55465b470100s63h.html">说明很详细</a></p>
+  </li>
+  <li>
+    <p><a href="http://simen-net.iteye.com/blog/832391">这个有可能会用的着以后，搭建git server，在eclipse里集成git</a></p>
+  </li>
+  <li>
+    <p><a href="http://www.cnblogs.com/Jerry-Chou/archive/2012/05/14/2499088.html">git常用命令</a></p>
+  </li>
+</ol>
 ]]></content>
   </entry>
   
