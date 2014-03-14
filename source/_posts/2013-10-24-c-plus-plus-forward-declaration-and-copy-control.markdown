@@ -356,3 +356,80 @@ private:
 
 #endif
 ```
+
+一个简单的例子，就是来测试一下`class A=B`时究竟会不会同时调用赋值构造函数和拷贝构造函数。
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class object
+{
+private:
+    int data;
+public:
+    object(int d = 0):
+        data(d)
+    {
+        cout << "default constructor" << endl;
+    }
+    
+    object(const object& other):
+        data(other.data)
+    {
+        cout << "copy constructor" <<endl;
+    }
+    
+    object& operator=(const object& other)
+    {
+        if(&other != this)
+        {
+            data = other.data;
+            cout << "assignment constructor" <<endl;
+        }
+        return *this;
+    }
+};
+
+void behavior1(object other)	//形参调用copy constructor
+{
+    cout << "test behavior1" << endl;
+}
+
+void behavior2(object& other)
+{
+    cout << "test behavior2" << endl;
+}
+int main()
+{
+    object A;
+    cout << endl;
+    object B(A);
+    cout << endl;
+    object C = A;  //这个情况仍然只是调用copy constructor
+    cout << endl;
+    C=B;	   //只有这种情况下才会调用assignment constructor
+    cout << endl;
+    behavior1(A);
+    cout << endl;
+    behavior2(A);
+    return 0;
+}
+```
+
+测试结果显示如下：
+
+```text
+default constructor
+
+copy constructor
+
+copy constructor
+
+assignment constructor
+
+copy constructor
+test behavior1
+
+test behavior2
+```
