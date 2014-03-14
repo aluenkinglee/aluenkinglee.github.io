@@ -4,7 +4,7 @@
   <title><![CDATA[曾经渐行远，未免心戚戚]]></title>
   <link href="http://aluenkinglee.com/atom.xml" rel="self"/>
   <link href="http://aluenkinglee.com/"/>
-  <updated>2014-03-14T15:52:06+08:00</updated>
+  <updated>2014-03-14T16:05:33+08:00</updated>
   <id>http://aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
@@ -2485,6 +2485,85 @@ ip 与本机VirtualBox Host-Only Network的网卡ip在同一网段内（默认19
 </pre></td><td class="code"><pre><code class=""><span class="line">select id,place_lat,place_lon from nearbyinfo where place_lat &gt;100;
 </span><span class="line">UPDATE nearbyinfo t1,nearbyinfo t2 SET t1.place_lat=t1.place_lon,t2.place_lon=t2.place_lat where t1.id = t2.id and t1.place_lat&gt;100;
 </span><span class="line">select id,place_lat,place_lon from nearbyinfo where id in (1025,4974,4814,2685);</span></code></pre></td></tr></table></div></figure></notextile></div>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Python处理带有时区的的字符串]]></title>
+    <link href="http://aluenkinglee.com/blog/2013/04/16/pythonchu-li-dai-you-shi-qu-de-de-zi-fu-chuan/"/>
+    <updated>2013-04-16T15:54:00+08:00</updated>
+    <id>http://aluenkinglee.com/blog/2013/04/16/pythonchu-li-dai-you-shi-qu-de-de-zi-fu-chuan</id>
+    <content type="html"><![CDATA[<p>最近在处理一些微博的数据，其中从服务器返回来的json串最后转换成了python中的字典，
+只是可惜时间也被变成了字符串格式，好在python文档足够全且简单，可以使用datetime
+中的strptime来解决，尽管如此还是在时区那卡了会</p>
+
+<p>微博返回的时间数据格式如下：</p>
+
+<h5 id="fri-aug-12-140931-0800-2011">“Fri Aug 12 14:09:31 +0800 2011″</h5>
+
+<p>然后我这样处理的</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">time.strptime('Fri Aug 12 14:09:31 +0800 2011', '%a %b %d %H:%M:%S %z %Y')</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>当然也可以这样，只是试验下而已</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">dt2 = datetime.strptime('Fri Aug 12 14:09:31 +0800 2011', '%a %b %d %H:%M:%S %Z %Y')</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>然而却出现了如下的错误：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">ValueError: time data 'Fri Aug 12 14:09:31 +0800 2011' does not match format '%a %b %d %H:%M:%S %Z %Y'</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>查了下<a href="http://stackoverflow.com/questions/10540399/strftime-does-not-return-abbreviated-time-zone">资料</a>
+发现这个跟系统有关系，而且这个是bug，（虽然开发者不承认，但是我觉得还有有点关系….虽然它又跟locals有关系。。。识别起来
+确实很繁琐）比如现在我是在windows上处理的结果就是</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">&gt;&gt;&gt; print time.strftime("%a, %d %b %Y %I:%M:%S %p %Z", time.localtime(10.5))
+</span><span class="line">Thu, 01 Jan 1970 08:00:10 AM 中国标准时间
+</span><span class="line">&gt;&gt;&gt; print time.strftime("%a, %d %b %Y %I:%M %p %Z", time.gmtime())
+</span><span class="line">Tue, 16 Apr 2013 08:33 AM 中国标准时间
+</span><span class="line">&gt;&gt;&gt;</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>和那个+8000格格不入，好吧 反正数据的处理设计不到时区，那么可以这样子做</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">&gt;&gt;&gt; dt2 = datetime.strptime('Fri Aug 12 14:09:31 +0800 2011', '%a %b %d %H:%M:%S +0800 %Y')
+</span><span class="line">&gt;&gt;&gt; print dt2
+</span><span class="line">2011-08-12 14:09:31</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>对现在的需求来说,反而更好.</p>
+
+<h3 id="section">参考</h3>
+
+<ol>
+  <li>
+    <p><a href="http://bugs.python.org/issue6641">issue6641</a></p>
+  </li>
+  <li>
+    <p><a href="http://stackoverflow.com/questions/4788533/python-strftime-gmtime-not-respecting-timezone">python-strftime-gmtime-not-respecting-timezone</a></p>
+  </li>
+  <li>
+    <p><a href="http://stackoverflow.com/questions/10540399/strftime-does-not-return-abbreviated-time-zone">strftime-does-not-return-abbreviated-time-zone</a></p>
+  </li>
+  <li>
+    <p><a href="http://forum.open.weibo.com/read.php?tid=11780">微博使用</a></p>
+  </li>
+  <li>
+    <p><a href="http://docs.python.org/2/library/datetime.html#strftime-and-strptime-behavior">strftime-and-strptime-behavior</a></p>
+  </li>
+  <li>
+    <p><a href="http://stackoverflow.com/questions/466345/converting-string-into-datetime">converting-string-into-datetime</a></p>
+  </li>
+</ol>
 ]]></content>
   </entry>
   
