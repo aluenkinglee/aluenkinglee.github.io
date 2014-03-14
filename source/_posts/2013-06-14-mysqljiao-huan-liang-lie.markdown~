@@ -14,13 +14,13 @@ categories: python mysql
 select id,place_lat,place_lon from `nearbyinfo` where `nearbyinfo`.`place_lat`>0;
 ```
 
-正常的数据都是< **39.xxx, **160.2xxx >之间，如图所示:
+正常的数据都是< `39.xxx`, `160.2xxx` >之间，如图所示:
 
-![价格-人口关系图](https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-01-05-machine-learning-linear-regression/linear_regression_f1.png?raw=true "价格-人口关系图")
+![正常数据](https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/11.png?raw=true "正常数据")
 
 但是幸好及时发现了存在这样的数据，
 
-![价格-人口关系图](https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-01-05-machine-learning-linear-regression/linear_regression_f1.png?raw=true "价格-人口关系图")
+![异常数据](https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/12.png?raw=true "异常数据")
 
 一开始想的是想写sql语句试着把这两栏的数据给交换过来，可是sql太渣…然后就想着找
 到这些ID和他们的坐标值（都已经出来了），然后用python读出来写成update的语句，
@@ -46,7 +46,7 @@ UNLOCK TABLES;
 
 所以看起来会是这个样子:
 
-![价格-人口关系图](https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-01-05-machine-learning-linear-regression/linear_regression_f1.png?raw=true "价格-人口关系图")
+![交换之前](https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/12.png?raw=true "价格-人口关系图")
 
 然后执行下面的语句，会发生第二行swap了
 
@@ -54,7 +54,7 @@ UNLOCK TABLES;
 UPDATE test t1,test t2 SET t1.a=t1.b,t2.b=t2.a where t1.id =t2.id and t1.a>0;
 ```
 
-![价格-人口关系图](https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-01-05-machine-learning-linear-regression/linear_regression_f1.png?raw=true "价格-人口关系图")
+![价格-人口关系图](https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/12.png?raw=true "价格-人口关系图")
 
 在尝试一下就会变成原样。
 
