@@ -4,7 +4,7 @@
   <title><![CDATA[曾经渐行远，未免心戚戚]]></title>
   <link href="http://aluenkinglee.com/atom.xml" rel="self"/>
   <link href="http://aluenkinglee.com/"/>
-  <updated>2014-03-14T21:43:03+08:00</updated>
+  <updated>2014-03-24T21:29:32+08:00</updated>
   <id>http://aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
@@ -12,6 +12,159 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[计算给定数字中非零的个数]]></title>
+    <link href="http://aluenkinglee.com/blog/2014/03/24/ji-suan-gei-ding-shu-zi-zhong-fei-ling-de-ge-shu/"/>
+    <updated>2014-03-24T20:19:00+08:00</updated>
+    <id>http://aluenkinglee.com/blog/2014/03/24/ji-suan-gei-ding-shu-zi-zhong-fei-ling-de-ge-shu</id>
+    <content type="html"><![CDATA[<p>看到一个计算二进制数中非零个数的问题，很有意思。我之前知道有两种版本的，现在又看到了一个版本<code>hamming weight</code></p>
+
+<p>版本一大家肯定都能想的到，就是最最朴素的解法，查看该数字字符串表示中的1的个数。看起来应该
+像这个样子。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="kt">int</span> <span class="n">popcount_1</span><span class="p">(</span><span class="n">size_t</span> <span class="n">x</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">  <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="n">BUFFER_SIZE</span><span class="p">];</span>
+</span><span class="line">  <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">p</span> <span class="o">=</span> <span class="n">buf</span><span class="p">;</span>
+</span><span class="line">  <span class="kt">int</span> <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line">  <span class="n">itoa</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span> <span class="c1">//用二进制的表达式</span>
+</span><span class="line">  <span class="k">while</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">p</span><span class="o">++</span><span class="p">))</span> <span class="p">{</span> <span class="k">if</span><span class="p">(</span><span class="o">*</span><span class="n">p</span> <span class="o">==</span> <span class="sc">&#39;1&#39;</span><span class="p">)</span>  <span class="o">++</span><span class="n">cnt</span><span class="p">;}</span>
+</span><span class="line">  <span class="k">return</span> <span class="n">cnt</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>但是空间复杂度和时间复杂度很不理想。都是$\Omega(n)$。</p>
+
+<p>那么好，看下版本2，这个也很简单容易想到。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="kt">int</span> <span class="n">popcount_2</span><span class="p">(</span><span class="n">size_t</span> <span class="n">x</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">  <span class="kt">int</span> <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line">  <span class="k">while</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="n">x</span><span class="o">%</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>  <span class="o">++</span><span class="n">cnt</span><span class="p">;</span>
+</span><span class="line">    <span class="n">x</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">;</span>	
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line">  <span class="k">return</span> <span class="n">cnt</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>此时时间复杂度就降为$\Omega(log_{2}x)$。空间复杂度为$\Omega(1)$.</p>
+
+<p>还有一种，这个编程之美上讲的。但是这个情况下是有一些条件限制的。
+最好是数字的二进制表示大部分是0，这样计算的次数少，不然运算量也强不到哪去。
+对于我这种对位运算不感冒的表示我能看懂，真心想不到…</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="kt">int</span> <span class="n">popcount_3</span><span class="p">(</span><span class="n">size_t</span> <span class="n">x</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">  <span class="kt">int</span> <span class="n">cnt</span><span class="p">;</span>
+</span><span class="line">  <span class="k">for</span><span class="p">(</span><span class="n">cnt</span> <span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">x</span><span class="p">;</span> <span class="o">++</span><span class="n">cnt</span><span class="p">)</span>
+</span><span class="line">    <span class="n">x</span> <span class="o">&amp;=</span> <span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span><span class="line">  <span class="k">return</span> <span class="n">cnt</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>时间复杂度为$\Omega(cnt)$,所以运算还是挺快的。</p>
+
+<p>但是看了<a href="http://en.wikipedia.org/wiki/Hamming_weight">hamming weight</a>之后觉得更神奇了。还是那句话，真心想不到，
+不过看解释还是很明白的。<code>hamming weight</code>计算的是字符串中，非字符0的个数。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="c1">//types and constants used in the functions below</span>
+</span><span class="line">
+</span><span class="line"><span class="k">const</span> <span class="n">uint64_t</span> <span class="n">m1</span>  <span class="o">=</span> <span class="mh">0x5555555555555555</span><span class="p">;</span> <span class="c1">//binary:  1 zeros,  1 ones ...</span>
+</span><span class="line"><span class="k">const</span> <span class="n">uint64_t</span> <span class="n">m2</span>  <span class="o">=</span> <span class="mh">0x3333333333333333</span><span class="p">;</span> <span class="c1">//binary:  2 zeros,  2 ones ...</span>
+</span><span class="line"><span class="k">const</span> <span class="n">uint64_t</span> <span class="n">m4</span>  <span class="o">=</span> <span class="mh">0x0f0f0f0f0f0f0f0f</span><span class="p">;</span> <span class="c1">//binary:  4 zeros,  4 ones ...</span>
+</span><span class="line"><span class="k">const</span> <span class="n">uint64_t</span> <span class="n">m8</span>  <span class="o">=</span> <span class="mh">0x00ff00ff00ff00ff</span><span class="p">;</span> <span class="c1">//binary:  8 zeros,  8 ones ...</span>
+</span><span class="line"><span class="k">const</span> <span class="n">uint64_t</span> <span class="n">m16</span> <span class="o">=</span> <span class="mh">0x0000ffff0000ffff</span><span class="p">;</span> <span class="c1">//binary: 16 zeros, 16 ones ...</span>
+</span><span class="line"><span class="k">const</span> <span class="n">uint64_t</span> <span class="n">m32</span> <span class="o">=</span> <span class="mh">0x00000000ffffffff</span><span class="p">;</span> <span class="c1">//binary: 32 zeros, 32 ones</span>
+</span><span class="line"><span class="k">const</span> <span class="n">uint64_t</span> <span class="n">hff</span> <span class="o">=</span> <span class="mh">0xffffffffffffffff</span><span class="p">;</span> <span class="c1">//binary: all ones</span>
+</span><span class="line"><span class="k">const</span> <span class="n">uint64_t</span> <span class="n">h01</span> <span class="o">=</span> <span class="mh">0x0101010101010101</span><span class="p">;</span> <span class="c1">//the sum of 256 to the power of 0,1,2,3...</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">//This is a naive implementation, shown for comparison,</span>
+</span><span class="line"><span class="c1">//and to help in understanding the better functions.</span>
+</span><span class="line"><span class="c1">//It uses 24 arithmetic operations (shift, add, and).</span>
+</span><span class="line"><span class="kt">int</span> <span class="n">popcount_1</span><span class="p">(</span><span class="n">uint64_t</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line"><span class="n">giving</span> <span class="err">#</span> <span class="n">of</span> <span class="mi">1</span><span class="n">s</span> <span class="n">in</span> <span class="n">each</span> <span class="mi">2</span><span class="o">-</span><span class="n">bit</span> <span class="n">piece</span> <span class="n">of</span> <span class="n">A</span>
+</span><span class="line">    <span class="c1">//计算模式1下2-bit 形式中1的个数</span>
+</span><span class="line">    <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">&amp;</span> <span class="n">m1</span> <span class="p">)</span> <span class="o">+</span> <span class="p">((</span><span class="n">x</span> <span class="o">&gt;&gt;</span>  <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">m1</span> <span class="p">);</span> <span class="c1">//put count of each  2 bits into those  2 bits </span>
+</span><span class="line">    <span class="c1">//计算模式2下4-bit 形式中1的个数</span>
+</span><span class="line">    <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">&amp;</span> <span class="n">m2</span> <span class="p">)</span> <span class="o">+</span> <span class="p">((</span><span class="n">x</span> <span class="o">&gt;&gt;</span>  <span class="mi">2</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">m2</span> <span class="p">);</span> <span class="c1">//put count of each  4 bits into those  4 bits </span>
+</span><span class="line">    <span class="c1">//计算模式3下8-bit 形式中1的个数</span>
+</span><span class="line">    <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">&amp;</span> <span class="n">m4</span> <span class="p">)</span> <span class="o">+</span> <span class="p">((</span><span class="n">x</span> <span class="o">&gt;&gt;</span>  <span class="mi">4</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">m4</span> <span class="p">);</span> <span class="c1">//put count of each  8 bits into those  8 bits </span>
+</span><span class="line">    <span class="c1">//计算模式4下16-bit 形式中1的个数</span>
+</span><span class="line">    <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">&amp;</span> <span class="n">m8</span> <span class="p">)</span> <span class="o">+</span> <span class="p">((</span><span class="n">x</span> <span class="o">&gt;&gt;</span>  <span class="mi">8</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">m8</span> <span class="p">);</span> <span class="c1">//put count of each 16 bits into those 16 bits </span>
+</span><span class="line">    <span class="c1">//计算模式5下32-bit 形式中1的个数</span>
+</span><span class="line">    <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">&amp;</span> <span class="n">m16</span><span class="p">)</span> <span class="o">+</span> <span class="p">((</span><span class="n">x</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">m16</span><span class="p">);</span> <span class="c1">//put count of each 32 bits into those 32 bits </span>
+</span><span class="line">    <span class="c1">//计算模式6下64-bit 形式中1的个数</span>
+</span><span class="line">    <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">&amp;</span> <span class="n">m32</span><span class="p">)</span> <span class="o">+</span> <span class="p">((</span><span class="n">x</span> <span class="o">&gt;&gt;</span> <span class="mi">32</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">m32</span><span class="p">);</span> <span class="c1">//put count of each 64 bits into those 64 bits </span>
+</span><span class="line">    <span class="k">return</span> <span class="n">x</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>剩下的那个没有看懂，这个在cnt个数较多的时候用起来还是比较不错的。</p>
+
+<h2 id="section">参考</h2>
+
+<ol>
+  <li><a href="http://en.wikipedia.org/wiki/Hamming_weight">hamming weight</a></li>
+</ol>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[“奇异”的内存覆盖]]></title>

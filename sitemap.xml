@@ -79,15 +79,21 @@
         <lastmod>2014-03-04T22:04:27+08:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://aluenkinglee.com/blog/2014/03/24/ji-suan-gei-ding-shu-zi-zhong-fei-ling-de-ge-shu/
+        </loc>
+        <lastmod>2014-03-24T21:16:19+08:00</lastmod>
+    </url>
+    <url>
         <loc>http://aluenkinglee.com/robots.txt</loc>
         <lastmod>2014-03-04T21:49:06+08:00</lastmod>
     </url>
     <url>
         <loc>http://aluenkinglee.com/</loc>
-        <lastmod>2014-03-14T21:43:02+08:00</lastmod>
+        <lastmod>2014-03-24T21:16:19+08:00</lastmod>
     </url>
     <url>
         <loc>http://aluenkinglee.com/blog/archives/</loc>
-        <lastmod>2014-03-14T21:43:02+08:00</lastmod>
+        <lastmod>2014-03-24T21:16:19+08:00</lastmod>
     </url>
 </urlset>
