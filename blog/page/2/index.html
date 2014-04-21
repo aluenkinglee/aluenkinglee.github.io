@@ -9,9 +9,8 @@
   <meta name="author" content="Aluen King Lee">
 
   
-  <meta name="description" content="最近由于实验室需要研究SDN的一些东西，再此先来搭配下环境。
-对于虚拟机的一些选择，可以看这里:
-vm-setup-notes 我这里的环境是: os: debian 7(wheezy) 64bit xwindows: kde VM： virtualbox controller: pox ">
+  <meta name="description" content="突然有兴致想起了看会C++，因为最近一直是python，java，python的节奏…在这样下去，C++水平恐怕就停留在了只会编算法的地儿了… 随手一翻，看到了复制控制。对于这章，印象里的记忆是：
+» 如果一个类它有形如指针或者申请了其他的系统资源成员，这个时候就得注意了，如申请资源，如何释放资源 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -105,6 +104,58 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/10/24/c-plus-plus-forward-declaration-and-copy-control/">C++前置声明和复制控制</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-24T05:33:00+08:00" pubdate data-updated="true">Oct 24<span>th</span>, 2013</time>
+        
+        
+          | <a href="/blog/2013/10/24/c-plus-plus-forward-declaration-and-copy-control/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>突然有兴致想起了看会C++，因为最近一直是python，java，python的节奏…在这样下去，C++水平恐怕就停留在了只会编算法的地儿了…</p>
+
+<p>随手一翻，看到了复制控制。对于这章，印象里的记忆是：
+» 如果一个类它有形如指针或者申请了其他的系统资源成员，这个时候就得注意了，如申请资源，如何释放资源，复制的时候应该注意这些成员的行为是怎么样的。</p>
+
+<p>然后，就不是很清楚了。大概看了看 其实也差不多…好吧是差很多。编程的过程中出现了一些问题。在这里记录下来&gt;.&lt; 真实忘不了了！</p>
+
+<h5 id="section">复制构造函数</h5>
+<p>它是一个特殊的构造函数，而且形参常用const Type&amp; 来修饰(如果凶残点，用指针也不是不行，但一定得是这两种！想想是为什么？)</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/10/24/c-plus-plus-forward-declaration-and-copy-control/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -468,6 +519,10 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/04/21/feature-selection--infomation-gain/">特征选择-信息增益算法</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification/">A Scratch of Feature Selection in Traffic Classification</a>
       </li>
     
@@ -481,10 +536,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     
       <li class="post">
         <a href="/blog/2014/02/24/c-plus-plus-de-hashtablena-xie-shi/">C++的hashtable那些事</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/01/05/machine-learning-linear-regression/">Machine Learning :linear Regression</a>
       </li>
     
   </ul>

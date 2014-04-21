@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 特征选择 | 曾经渐行远，未免心戚戚]]></title>
   <link href="http://aluenkinglee.com/blog/categories/te-zheng-xuan-ze/atom.xml" rel="self"/>
   <link href="http://aluenkinglee.com/"/>
-  <updated>2014-04-21T15:09:23+08:00</updated>
+  <updated>2014-04-21T15:49:14+08:00</updated>
   <id>http://aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
@@ -14,32 +14,16 @@
 
   
   <entry>
-    <title type="html"><![CDATA[a scratch of feature selection in traffic classification]]></title>
-    <link href="http://aluenkinglee.com/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification/"/>
-    <updated>2014-04-20T21:02:00+08:00</updated>
-    <id>http://aluenkinglee.com/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification</id>
-    <content type="html"><![CDATA[<p>特征选取在减轻识别流量监测方面起着很重要的作用。该方法可以显著提高计算流量分类的性能。但是，大部分的特征不能应用在实时在线的流量分类中（有些特征只能在获取完整个流量才能得到，比如传输的数据大小，流的传输时长等）。所以在抉择分类的时候，需要一个优化过的特征集合在更短的时间内完成流量的分类。另外一种方案就是使用新型的网络架构如SDN/OpenFlow在目前已有的特征选择方法中，Chi-squared, Fuzzy-rough and Consistency-based的特征选择方法最适合P2P流量选择（那现在的手机端流量分析怎么样？）这些算法在使用ML进行在线P2P检测时会给出较好的特征子集。
+    <title type="html"><![CDATA[特征选择-信息增益算法]]></title>
+    <link href="http://aluenkinglee.com/blog/2014/04/21/feature-selection--infomation-gain/"/>
+    <updated>2014-04-21T15:41:00+08:00</updated>
+    <id>http://aluenkinglee.com/blog/2014/04/21/feature-selection--infomation-gain</id>
+    <content type="html"><![CDATA[<p><strong>信息增益</strong>：特征 $A$ 对于训练数据集$D$的信息增益 $g\left( D,A \right)$,定义为集合 $D$ 的经验熵 $H\left( D \right)$ 与特征 $A$ 在给定条件下 $D$ 
+的经验条件熵c之差。
 <!--more-->
-特征选取是寻找一个最小特征子集，可以快速有效的识别出实例的类别。如果利用一个特征进行分类聚类的结果与不使用它的结果没有很大的差别，则称整个特征时没有分类能力的。使用这些具备分类，聚类能力的特征，在分类的准确性和计算性能上都会得到提升。[1]主要研究的是在线流量分类中的流特征问题。然后考虑精度和性能的因素，选取了3中能够应用到P2P流量中的特征选择方法。</p>
-
-<p>[1]实现的主要方法是使用了几个特征选择算法来提出在线的流量特征，使用J48算法作为分类器。</p>
-
-<p>特征规模大小与分类器的效率和准确率息息相关，最优的特征集合可以减少分类器的建模和检测时间，从而提升分类器的性能[5]。主流的分类器有CSF, CON, Filter-Sub, Fuzzy-rough, Symmetrical-Uncert, Chi-squared,Info Gain, Relief, Principal and Latent-semantic。作者使用的Chi-squared, Consistency and fuzzy-rough算法，相关文献可以在论文[1]中找到。</p>
-
-<h2 id="section">在线特征提取</h2>
-
-<p>尽管Moore提出了248中流量特征，这些特征源自于同一个流中的报头信息。实际应用中的确不能全部都用到。具体操作是对现有的特征集使用那十个特征选择方法，分别选出各自的特征子集，然后应用到SVM分类器中，判别的准则为建模时间(训练时间)和准确率。然后合并准确率最高的前3个特征集合的并集作为最优特征子集。然后在分出那些特征可以在线获取（SOF-selection of features），他们作为分类器的输入-报文的特征向量。</p>
-
-<p>核心思想是使用监督方法对有标记的数据集进行分类时，对特征集合进行规约，减少特征集的大小。</p>
-
-<h4 id="section-1">实验</h4>
-
-<p><strong>信息增益</strong>：特征 $A$ 对于训练数据集$D$的信息增益 $g\left( D,A \right)$,定义为集合 $D$ 的经验熵 $H\left( D \right)$ 与特征 $A$ 在给定条件下 $D$ 
-的经验条件熵c之差。</p>
-
-<script type="math/tex; mode=display">
+$$
 g\left( D,A \right) =H\left( D \right) -H\left( { D }|{ A } \right) 
-</script>
+$$</p>
 
 <p>给定训练数据集$D$和特征$A$，经验熵$H(D)$表示对数据集$D$进行分类的不确定性，
 而经验条件熵$H\left( { D }|{ A } \right)$表示在特征$A$给定条件下对数据集$D$分类的的不确定性。他们的差
@@ -84,10 +68,31 @@ H(D|A)=\sum_{i=1}^{n}{\frac{|D_i|}{|D|}}H(D_i)=-\sum_{i=1}^{n}{\frac{\vert D_i \
 <script type="math/tex; mode=display">
 g\left( D,A \right) =H\left( D \right) -H\left( { D }|{ A } \right) 
 </script>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[a scratch of feature selection in traffic classification]]></title>
+    <link href="http://aluenkinglee.com/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification/"/>
+    <updated>2014-04-20T21:02:00+08:00</updated>
+    <id>http://aluenkinglee.com/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification</id>
+    <content type="html"><![CDATA[<p>特征选取在减轻识别流量监测方面起着很重要的作用。该方法可以显著提高计算流量分类的性能。但是，大部分的特征不能应用在实时在线的流量分类中（有些特征只能在获取完整个流量才能得到，比如传输的数据大小，流的传输时长等）。所以在抉择分类的时候，需要一个优化过的特征集合在更短的时间内完成流量的分类。另外一种方案就是使用新型的网络架构如SDN/OpenFlow在目前已有的特征选择方法中，Chi-squared, Fuzzy-rough and Consistency-based的特征选择方法最适合P2P流量选择（那现在的手机端流量分析怎么样？）这些算法在使用ML进行在线P2P检测时会给出较好的特征子集。
+<!--more-->
+特征选取是寻找一个最小特征子集，可以快速有效的识别出实例的类别。如果利用一个特征进行分类聚类的结果与不使用它的结果没有很大的差别，则称整个特征时没有分类能力的。使用这些具备分类，聚类能力的特征，在分类的准确性和计算性能上都会得到提升。[1]主要研究的是在线流量分类中的流特征问题。然后考虑精度和性能的因素，选取了3中能够应用到P2P流量中的特征选择方法。</p>
 
-<h6 id="section-2">使用信息熵增益算法对特征进行降纬</h6>
+<p>[1]实现的主要方法是使用了几个特征选择算法来提出在线的流量特征，使用J48算法作为分类器。</p>
 
-<p>实验前</p>
+<p>特征规模大小与分类器的效率和准确率息息相关，最优的特征集合可以减少分类器的建模和检测时间，从而提升分类器的性能[5]。主流的分类器有CSF, CON, Filter-Sub, Fuzzy-rough, Symmetrical-Uncert, Chi-squared,Info Gain, Relief, Principal and Latent-semantic。作者使用的Chi-squared, Consistency and fuzzy-rough算法，相关文献可以在论文[1]中找到。</p>
+
+<h2 id="section">在线特征提取</h2>
+
+<p>尽管Moore提出了248中流量特征，这些特征源自于同一个流中的报头信息。实际应用中的确不能全部都用到。具体操作是对现有的特征集使用那十个特征选择方法，分别选出各自的特征子集，然后应用到SVM分类器中，判别的准则为建模时间(训练时间)和准确率。然后合并准确率最高的前3个特征集合的并集作为最优特征子集。然后在分出那些特征可以在线获取（SOF-selection of features），他们作为分类器的输入-报文的特征向量。</p>
+
+<p>核心思想是使用监督方法对有标记的数据集进行分类时，对特征集合进行规约，减少特征集的大小。</p>
+
+<h6 id="section-1">使用信息熵增益算法对特征进行降纬</h6>
+
+<p>实验前,<a href="">信息熵增益算法</a></p>
 
 <p><code>text
 Instances:    42
@@ -208,7 +213,7 @@ Attributes:   12
 
 <p>分析，由于降维特征减少太多，走势已经不太吻合。</p>
 
-<h6 id="section-3">卡方分布提取特征算法</h6>
+<h6 id="section-2">卡方分布提取特征算法</h6>
 
 <p>对于这个算法，这里只给出特征选取的结果</p>
 
@@ -256,7 +261,7 @@ Kmeans实验和实验1一样</p>
 
 <p>最终选取的特征集合为23个</p>
 
-<h4 id="section-4">参考</h4>
+<h4 id="section-3">参考</h4>
 
 <p>[1]. Jamil, H.A., et al., Selection of On-line Features for Peer-to-Peer Network Traffic Classification, in Recent Advances in Intelligent Informatics. 2014, Springer. p. 379-390.</p>
 

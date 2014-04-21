@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 信息增益算法 | 曾经渐行远，未免心戚戚]]></title>
+  <link href="http://aluenkinglee.com/blog/categories/xin-xi-zeng-yi-suan-fa/atom.xml" rel="self"/>
+  <link href="http://aluenkinglee.com/"/>
+  <updated>2014-04-21T15:49:14+08:00</updated>
+  <id>http://aluenkinglee.com/</id>
+  <author>
+    <name><![CDATA[Aluen King Lee]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[特征选择-信息增益算法]]></title>
+    <link href="http://aluenkinglee.com/blog/2014/04/21/feature-selection--infomation-gain/"/>
+    <updated>2014-04-21T15:41:00+08:00</updated>
+    <id>http://aluenkinglee.com/blog/2014/04/21/feature-selection--infomation-gain</id>
+    <content type="html"><![CDATA[<p><strong>信息增益</strong>：特征 $A$ 对于训练数据集$D$的信息增益 $g\left( D,A \right)$,定义为集合 $D$ 的经验熵 $H\left( D \right)$ 与特征 $A$ 在给定条件下 $D$ 
+的经验条件熵c之差。
+<!--more-->
+$$
+g\left( D,A \right) =H\left( D \right) -H\left( { D }|{ A } \right) 
+$$</p>
+
+<p>给定训练数据集$D$和特征$A$，经验熵$H(D)$表示对数据集$D$进行分类的不确定性，
+而经验条件熵$H\left( { D }|{ A } \right)$表示在特征$A$给定条件下对数据集$D$分类的的不确定性。他们的差
+就是<code>信息增益</code>。表示由于特征$A$而使得对数据集$D$的分类不确定性减少的程度。
+显然，对于数据集$D$而言，信息增益依赖特征，不同的特征具有不同的信息增益，信息增益大的特征具有更强的分类能力。</p>
+
+<p>所以算法选择特征的准则就是：对于训练数据集$D$，计算其每个特征的信息增益，并比较他们的大小，选在信息增益最大的特征。</p>
+
+<p>设训练数据集为<script type="math/tex">\left\vert  D  \right\vert </script>表示样本大小，在我们这里就有42个实例。设有$K$个类<script type="math/tex">{C}_{k}</script>。
+令<script type="math/tex">\left\vert {C}_{k}  \right\vert</script>为属于类k的个数，即<script type="math/tex">\sum_{k=1}^{K}{\left|{C}_{k} \right|}=\left|D \right|</script>
+设特征A有n个不同的取值， <script type="math/tex">a_1, \ldots, a_n</script>，根据特征<script type="math/tex">A</script>的取值将<script type="math/tex">D</script>划分为n个子集，<script type="math/tex">D_1,D_2,\ldots,D_n</script>,<script type="math/tex">\left\vert D_i \right\vert</script>
+为<script type="math/tex">D_i</script>的样本个数，<script type="math/tex">\sum_{i=1}^{n}\left\vert D_i \right\vert = \left\vert D \right\vert</script>.记子集<script type="math/tex">D_i</script>中属于类<script type="math/tex">C_k</script>的样本的集合为<script type="math/tex">D_ik</script>,即
+<script type="math/tex">D_ik=D_i \cap C_k</script>,<script type="math/tex">|D_ik|</script>为<script type="math/tex">D_ik</script>的样本个数。于是信息增益算法如下：</p>
+
+<p><strong>信息增益算法</strong></p>
+
+<p>输入：训练集D和特征A</p>
+
+<p>输出：特征A对特征集D的信息增益<script type="math/tex">g(D,A)</script></p>
+
+<p>1.计算数据集<script type="math/tex">D</script>的经验熵<script type="math/tex">H(D)</script></p>
+
+<script type="math/tex; mode=display">
+H(D)=-\sum_{k=1}^{K}{\frac{\vert C_k \vert}{|D|}}\log_{2}{\frac{\vert C_k \vert}{|D|}}
+</script>
+
+<table>
+  <tbody>
+    <tr>
+      <td>2.计算特征<script type="math/tex">A</script>对数据集<script type="math/tex">D</script>的经验条件熵H(D</td>
+      <td>A)</td>
+    </tr>
+  </tbody>
+</table>
+
+<script type="math/tex; mode=display">
+H(D|A)=\sum_{i=1}^{n}{\frac{|D_i|}{|D|}}H(D_i)=-\sum_{i=1}^{n}{\frac{\vert D_i \vert}{|D|}} \sum_{k=1}^{K}{\frac{\vert D_{ik} \vert}{|D_i|}}\log_{2}{\frac{\vert D_{ik} \vert}{|D_i|}}
+</script>
+
+<p>3.计算信息增益</p>
+
+<script type="math/tex; mode=display">
+g\left( D,A \right) =H\left( D \right) -H\left( { D }|{ A } \right) 
+</script>
+]]></content>
+  </entry>
+  
+</feed>

@@ -5,13 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Python处理带有时区的的字符串 - 曾经渐行远，未免心戚戚</title>
+  <title>特征选择-信息增益算法 - 曾经渐行远，未免心戚戚</title>
   <meta name="author" content="Aluen King Lee">
 
   
-  <meta name="description" content="最近在处理一些微博的数据，其中从服务器返回来的json串最后转换成了python中的字典，
-只是可惜时间也被变成了字符串格式，好在python文档足够全且简单，可以使用datetime
-中的strptime来解决，尽管如此还是在时区那卡了会 微博返回的时间数据格式如下： “Fri Aug 12 &hellip;">
+  <meta name="description" content="信息增益：特征 $A$ 对于训练数据集$D$的信息增益 $g\left( D,A \right)$,定义为集合 $D$ 的经验熵 $H\left( D \right)$ 与特征 $A$ 在给定条件下 $D$ 的经验条件熵c之差。 $$
+g\left( D,A \right) =H\left( D &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://aluenkinglee.com/blog/2013/04/16/pythonchu-li-dai-you-shi-qu-de-de-zi-fu-chuan">
+  <link rel="canonical" href="http://aluenkinglee.com/blog/2014/04/21/feature-selection--infomation-gain">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="曾经渐行远，未免心戚戚" type="application/atom+xml">
@@ -108,7 +107,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   
   <header>
     
-      <h1 class="entry-title">Python处理带有时区的的字符串</h1>
+      <h1 class="entry-title">特征选择-信息增益算法</h1>
     
     
       <p class="meta">
@@ -124,7 +123,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   
 
 
-<time datetime="2013-04-16T15:54:00+08:00" pubdate data-updated="true">Apr 16<span>th</span>, 2013</time>
+<time datetime="2014-04-21T15:41:00+08:00" pubdate data-updated="true">Apr 21<span>st</span>, 2014</time>
         
         
           | <a href="#comments">Comments</a>
@@ -134,77 +133,56 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   </header>
 
 
-<div class="entry-content"><p>最近在处理一些微博的数据，其中从服务器返回来的json串最后转换成了python中的字典，
-只是可惜时间也被变成了字符串格式，好在python文档足够全且简单，可以使用datetime
-中的strptime来解决，尽管如此还是在时区那卡了会</p>
-
-<p>微博返回的时间数据格式如下：</p>
-
-<h5 id="fri-aug-12-140931-0800-2011">“Fri Aug 12 14:09:31 +0800 2011″</h5>
-
-<p>然后我这样处理的</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">time.strptime('Fri Aug 12 14:09:31 +0800 2011', '%a %b %d %H:%M:%S %z %Y')</span></code></pre></td></tr></table></div></figure></notextile></div>
+<div class="entry-content"><p><strong>信息增益</strong>：特征 $A$ 对于训练数据集$D$的信息增益 $g\left( D,A \right)$,定义为集合 $D$ 的经验熵 $H\left( D \right)$ 与特征 $A$ 在给定条件下 $D$ 
+的经验条件熵c之差。
 <!--more-->
-<p>当然也可以这样，只是试验下而已</p>
+$$
+g\left( D,A \right) =H\left( D \right) -H\left( { D }|{ A } \right) 
+$$</p>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">dt2 = datetime.strptime('Fri Aug 12 14:09:31 +0800 2011', '%a %b %d %H:%M:%S %Z %Y')</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>给定训练数据集$D$和特征$A$，经验熵$H(D)$表示对数据集$D$进行分类的不确定性，
+而经验条件熵$H\left( { D }|{ A } \right)$表示在特征$A$给定条件下对数据集$D$分类的的不确定性。他们的差
+就是<code>信息增益</code>。表示由于特征$A$而使得对数据集$D$的分类不确定性减少的程度。
+显然，对于数据集$D$而言，信息增益依赖特征，不同的特征具有不同的信息增益，信息增益大的特征具有更强的分类能力。</p>
 
-<p>然而却出现了如下的错误：</p>
+<p>所以算法选择特征的准则就是：对于训练数据集$D$，计算其每个特征的信息增益，并比较他们的大小，选在信息增益最大的特征。</p>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">ValueError: time data 'Fri Aug 12 14:09:31 +0800 2011' does not match format '%a %b %d %H:%M:%S %Z %Y'</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>设训练数据集为<script type="math/tex">\left\vert  D  \right\vert </script>表示样本大小，在我们这里就有42个实例。设有$K$个类<script type="math/tex">{C}_{k}</script>。
+令<script type="math/tex">\left\vert {C}_{k}  \right\vert</script>为属于类k的个数，即<script type="math/tex">\sum_{k=1}^{K}{\left|{C}_{k} \right|}=\left|D \right|</script>
+设特征A有n个不同的取值， <script type="math/tex">a_1, \ldots, a_n</script>，根据特征<script type="math/tex">A</script>的取值将<script type="math/tex">D</script>划分为n个子集，<script type="math/tex">D_1,D_2,\ldots,D_n</script>,<script type="math/tex">\left\vert D_i \right\vert</script>
+为<script type="math/tex">D_i</script>的样本个数，<script type="math/tex">\sum_{i=1}^{n}\left\vert D_i \right\vert = \left\vert D \right\vert</script>.记子集<script type="math/tex">D_i</script>中属于类<script type="math/tex">C_k</script>的样本的集合为<script type="math/tex">D_ik</script>,即
+<script type="math/tex">D_ik=D_i \cap C_k</script>,<script type="math/tex">|D_ik|</script>为<script type="math/tex">D_ik</script>的样本个数。于是信息增益算法如下：</p>
 
-<p>查了下<a href="http://stackoverflow.com/questions/10540399/strftime-does-not-return-abbreviated-time-zone">资料</a>
-发现这个跟系统有关系，而且这个是bug，（虽然开发者不承认，但是我觉得还有有点关系….虽然它又跟locals有关系。。。识别起来
-确实很繁琐）比如现在我是在windows上处理的结果就是</p>
+<p><strong>信息增益算法</strong></p>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">&gt;&gt;&gt; print time.strftime("%a, %d %b %Y %I:%M:%S %p %Z", time.localtime(10.5))
-</span><span class="line">Thu, 01 Jan 1970 08:00:10 AM 中国标准时间
-</span><span class="line">&gt;&gt;&gt; print time.strftime("%a, %d %b %Y %I:%M %p %Z", time.gmtime())
-</span><span class="line">Tue, 16 Apr 2013 08:33 AM 中国标准时间
-</span><span class="line">&gt;&gt;&gt;</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>输入：训练集D和特征A</p>
 
-<p>和那个+8000格格不入，好吧 反正数据的处理设计不到时区，那么可以这样子做</p>
+<p>输出：特征A对特征集D的信息增益<script type="math/tex">g(D,A)</script></p>
 
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">&gt;&gt;&gt; dt2 = datetime.strptime('Fri Aug 12 14:09:31 +0800 2011', '%a %b %d %H:%M:%S +0800 %Y')
-</span><span class="line">&gt;&gt;&gt; print dt2
-</span><span class="line">2011-08-12 14:09:31</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>1.计算数据集<script type="math/tex">D</script>的经验熵<script type="math/tex">H(D)</script></p>
 
-<p>对现在的需求来说,反而更好.</p>
+<script type="math/tex; mode=display">
+H(D)=-\sum_{k=1}^{K}{\frac{\vert C_k \vert}{|D|}}\log_{2}{\frac{\vert C_k \vert}{|D|}}
+</script>
 
-<h3 id="section">参考</h3>
+<table>
+  <tbody>
+    <tr>
+      <td>2.计算特征<script type="math/tex">A</script>对数据集<script type="math/tex">D</script>的经验条件熵H(D</td>
+      <td>A)</td>
+    </tr>
+  </tbody>
+</table>
 
-<ol>
-  <li>
-    <p><a href="http://bugs.python.org/issue6641">issue6641</a></p>
-  </li>
-  <li>
-    <p><a href="http://stackoverflow.com/questions/4788533/python-strftime-gmtime-not-respecting-timezone">python-strftime-gmtime-not-respecting-timezone</a></p>
-  </li>
-  <li>
-    <p><a href="http://stackoverflow.com/questions/10540399/strftime-does-not-return-abbreviated-time-zone">strftime-does-not-return-abbreviated-time-zone</a></p>
-  </li>
-  <li>
-    <p><a href="http://forum.open.weibo.com/read.php?tid=11780">微博使用</a></p>
-  </li>
-  <li>
-    <p><a href="http://docs.python.org/2/library/datetime.html#strftime-and-strptime-behavior">strftime-and-strptime-behavior</a></p>
-  </li>
-  <li>
-    <p><a href="http://stackoverflow.com/questions/466345/converting-string-into-datetime">converting-string-into-datetime</a></p>
-  </li>
-</ol>
+<script type="math/tex; mode=display">
+H(D|A)=\sum_{i=1}^{n}{\frac{|D_i|}{|D|}}H(D_i)=-\sum_{i=1}^{n}{\frac{\vert D_i \vert}{|D|}} \sum_{k=1}^{K}{\frac{\vert D_{ik} \vert}{|D_i|}}\log_{2}{\frac{\vert D_{ik} \vert}{|D_i|}}
+</script>
+
+<p>3.计算信息增益</p>
+
+<script type="math/tex; mode=display">
+g\left( D,A \right) =H\left( D \right) -H\left( { D }|{ A } \right) 
+</script>
 </div>
 
 
@@ -227,12 +205,12 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   
 
 
-<time datetime="2013-04-16T15:54:00+08:00" pubdate data-updated="true">Apr 16<span>th</span>, 2013</time>
+<time datetime="2014-04-21T15:41:00+08:00" pubdate data-updated="true">Apr 21<span>st</span>, 2014</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/python/'>python</a>, <a class='category' href='/blog/categories/shi-jian-ge-shi/'>时间格式</a>
+    <a class='category' href='/blog/categories/xin-xi-zeng-yi-suan-fa/'>信息增益算法</a>, <a class='category' href='/blog/categories/te-zheng-xuan-ze/'>特征选择</a>
   
 </span>
 
@@ -248,10 +226,8 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2013/03/15/puzzles-of-vars-properties-in-python/" title="Previous Post: python中关于变量属性的迷惑">&laquo; python中关于变量属性的迷惑</a>
+        <a class="basic-alignment left" href="/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification/" title="Previous Post: a scratch of feature selection in traffic classification">&laquo; a scratch of feature selection in traffic classification</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2013/04/17/jin-qi-zong-jie/" title="Next Post: 近期总结">近期总结 &raquo;</a>
       
     </p>
   </footer>
