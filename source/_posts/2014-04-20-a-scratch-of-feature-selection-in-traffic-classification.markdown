@@ -161,7 +161,12 @@ Ranked attributes:
 
 降维之后的聚类结果
 
+![降维之后的聚类结果](https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-04-20-a-scratch-of-feature-selection-in-traffic-classification/reduction2.png?raw=true "降维之后的聚类结果")
+
 降维之前的聚类结果
+
+![降维之前的聚类结果](https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-04-20-a-scratch-of-feature-selection-in-traffic-classification/%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%B7%E8%B7%9D%E7%A6%BB.png?raw=true "降维之前的聚类结果")
+
 
 效果非常吻合。
 
@@ -185,6 +190,9 @@ Attributes:   12
 ```
 
 降维之后的聚类结果
+
+![降维之后的聚类结果](https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-04-20-a-scratch-of-feature-selection-in-traffic-classification/reduction1.png?raw=true "降维之后的聚类结果")
+
 
 分析，由于降维特征减少太多，走势已经不太吻合。
 
