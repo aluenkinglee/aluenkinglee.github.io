@@ -23,7 +23,7 @@ categories: 特征选择 机器学习
 
 ######使用信息熵增益算法对特征进行降纬
 
-实验前,[信息熵增益算法]()
+实验前,[信息熵增益算法](http://www.aluenkinglee.com/blog/2014/04/21/feature-selection--infomation-gain/)
 
 ```text
 Instances:    42
