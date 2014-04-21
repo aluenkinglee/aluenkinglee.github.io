@@ -1,0 +1,642 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>a scratch of feature selection in traffic classification - 曾经渐行远，未免心戚戚</title>
+  <meta name="author" content="Aluen King Lee">
+
+  
+  <meta name="description" content="特征选取在减轻识别流量监测方面起着很重要的作用。该方法可以显著提高计算流量分类的性能。但是，大部分的特征不能应用在实时在线的流量分类中（有些特征只能在获取完整个流量才能得到，比如传输的数据大小，流的传输时长等）。所以在抉择分类的时候，需要一个优化过的特征集合在更短的时间内完成流量的分类。 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://aluenkinglee.com/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="曾经渐行远，未免心戚戚" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+<!-- mathjax config similar to math.stackexchange -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
+          MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
+                  data.math = data.math.replace(/^\s*<!\[CDATA\[\s*((?:\n|.)*)\s*\]\]>\s*$/m,"$1");
+                    });
+          });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">曾经渐行远，未免心戚戚</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:aluenkinglee.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">A Scratch of Feature Selection in Traffic Classification</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-20T21:02:00+08:00" pubdate data-updated="true">Apr 20<span>th</span>, 2014</time>
+        
+        
+          | <a href="#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>特征选取在减轻识别流量监测方面起着很重要的作用。该方法可以显著提高计算流量分类的性能。但是，大部分的特征不能应用在实时在线的流量分类中（有些特征只能在获取完整个流量才能得到，比如传输的数据大小，流的传输时长等）。所以在抉择分类的时候，需要一个优化过的特征集合在更短的时间内完成流量的分类。另外一种方案就是使用新型的网络架构如SDN/OpenFlow在目前已有的特征选择方法中，Chi-squared, Fuzzy-rough and Consistency-based的特征选择方法最适合P2P流量选择（那现在的手机端流量分析怎么样？）这些算法在使用ML进行在线P2P检测时会给出较好的特征子集。
+<!--more-->
+特征选取是寻找一个最小特征子集，可以快速有效的识别出实例的类别。如果利用一个特征进行分类聚类的结果与不使用它的结果没有很大的差别，则称整个特征时没有分类能力的。使用这些具备分类，聚类能力的特征，在分类的准确性和计算性能上都会得到提升。[1]主要研究的是在线流量分类中的流特征问题。然后考虑精度和性能的因素，选取了3中能够应用到P2P流量中的特征选择方法。</p>
+
+<p>[1]实现的主要方法是使用了几个特征选择算法来提出在线的流量特征，使用J48算法作为分类器。</p>
+
+<p>特征规模大小与分类器的效率和准确率息息相关，最优的特征集合可以减少分类器的建模和检测时间，从而提升分类器的性能[5]。主流的分类器有CSF, CON, Filter-Sub, Fuzzy-rough, Symmetrical-Uncert, Chi-squared,Info Gain, Relief, Principal and Latent-semantic。作者使用的Chi-squared, Consistency and fuzzy-rough算法，相关文献可以在论文[1]中找到。</p>
+
+<h2 id="section">在线特征提取</h2>
+
+<p>尽管Moore提出了248中流量特征，这些特征源自于同一个流中的报头信息。实际应用中的确不能全部都用到。具体操作是对现有的特征集使用那十个特征选择方法，分别选出各自的特征子集，然后应用到SVM分类器中，判别的准则为建模时间(训练时间)和准确率。然后合并准确率最高的前3个特征集合的并集作为最优特征子集。然后在分出那些特征可以在线获取（SOF-selection of features），他们作为分类器的输入-报文的特征向量。</p>
+
+<p>核心思想是使用监督方法对有标记的数据集进行分类时，对特征集合进行规约，减少特征集的大小。</p>
+
+<h4 id="section-1">实验</h4>
+
+<p><strong>信息增益</strong>：特征 $A$ 对于训练数据集$D$的信息增益 $g\left( D,A \right)$,定义为集合 $D$ 的经验熵 $H\left( D \right)$ 与特征 $A$ 在给定条件下 $D$ 
+的经验条件熵c之差。</p>
+
+<script type="math/tex; mode=display">
+g\left( D,A \right) =H\left( D \right) -H\left( { D }|{ A } \right) 
+</script>
+
+<p>给定训练数据集$D$和特征$A$，经验熵$H(D)$表示对数据集$D$进行分类的不确定性，
+而经验条件熵$H\left( { D }|{ A } \right)$表示在特征$A$给定条件下对数据集$D$分类的的不确定性。他们的差
+就是<code>信息增益</code>。表示由于特征$A$而使得对数据集$D$的分类不确定性减少的程度。
+显然，对于数据集$D$而言，信息增益依赖特征，不同的特征具有不同的信息增益，信息增益大的特征具有更强的分类能力。</p>
+
+<p>所以算法选择特征的准则就是：对于训练数据集$D$，计算其每个特征的信息增益，并比较他们的大小，选在信息增益最大的特征。</p>
+
+<p>设训练数据集为<script type="math/tex">\left\vert  D  \right\vert </script>表示样本大小，在我们这里就有42个实例。设有$K$个类<script type="math/tex">{C}_{k}</script>。
+令<script type="math/tex">\left\vert {C}_{k}  \right\vert</script>为属于类k的个数，即<script type="math/tex">\sum_{k=1}^{K}{\left|{C}_{k} \right|}=\left|D \right|</script>
+设特征A有n个不同的取值， <script type="math/tex">a_1, \ldots, a_n</script>，根据特征<script type="math/tex">A</script>的取值将<script type="math/tex">D</script>划分为n个子集，<script type="math/tex">D_1,D_2,\ldots,D_n</script>,<script type="math/tex">\left\vert D_i \right\vert</script>
+为<script type="math/tex">D_i</script>的样本个数，<script type="math/tex">\sum_{i=1}^{n}\left\vert D_i \right\vert = \left\vert D \right\vert</script>.记子集<script type="math/tex">D_i</script>中属于类<script type="math/tex">C_k</script>的样本的集合为<script type="math/tex">D_ik</script>,即
+<script type="math/tex">D_ik=D_i \cap C_k</script>,<script type="math/tex">|D_ik|</script>为<script type="math/tex">D_ik</script>的样本个数。于是信息增益算法如下：</p>
+
+<p><strong>信息增益算法</strong></p>
+
+<p>输入：训练集D和特征A</p>
+
+<p>输出：特征A对特征集D的信息增益<script type="math/tex">g(D,A)</script></p>
+
+<p>1.计算数据集<script type="math/tex">D</script>的经验熵<script type="math/tex">H(D)</script></p>
+
+<script type="math/tex; mode=display">
+H(D)=-\sum_{k=1}^{K}{\frac{\vert C_k \vert}{|D|}}\log_{2}{\frac{\vert C_k \vert}{|D|}}
+</script>
+
+<table>
+  <tbody>
+    <tr>
+      <td>2.计算特征<script type="math/tex">A</script>对数据集<script type="math/tex">D</script>的经验条件熵H(D</td>
+      <td>A)</td>
+    </tr>
+  </tbody>
+</table>
+
+<script type="math/tex; mode=display">
+H(D|A)=\sum_{i=1}^{n}{\frac{|D_i|}{|D|}}H(D_i)=-\sum_{i=1}^{n}{\frac{\vert D_i \vert}{|D|}} \sum_{k=1}^{K}{\frac{\vert D_{ik} \vert}{|D_i|}}\log_{2}{\frac{\vert D_{ik} \vert}{|D_i|}}
+</script>
+
+<p>3.计算信息增益</p>
+
+<script type="math/tex; mode=display">
+g\left( D,A \right) =H\left( D \right) -H\left( { D }|{ A } \right) 
+</script>
+
+<h6 id="section-2">使用信息熵增益算法对特征进行降纬</h6>
+
+<p>实验前</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">Instances:    42
+</span><span class="line">Attributes:   35
+</span><span class="line">              sip
+</span><span class="line">              sport
+</span><span class="line">              dip
+</span><span class="line">              dport
+</span><span class="line">              protocal
+</span><span class="line">              interval1
+</span><span class="line">              interval2
+</span><span class="line">              interval3
+</span><span class="line">              interval4
+</span><span class="line">              interval5
+</span><span class="line">              interval6
+</span><span class="line">              interval7
+</span><span class="line">              interval8
+</span><span class="line">              interval9
+</span><span class="line">              packet_len1
+</span><span class="line">              packet_len2
+</span><span class="line">              packet_len3
+</span><span class="line">              packet_len4
+</span><span class="line">              packet_len5
+</span><span class="line">              packet_len6
+</span><span class="line">              packet_len7
+</span><span class="line">              packet_len8
+</span><span class="line">              packet_len9
+</span><span class="line">              packet_len10
+</span><span class="line">              payload_len1
+</span><span class="line">              payload_len2
+</span><span class="line">              payload_len3
+</span><span class="line">              payload_len4
+</span><span class="line">              payload_len5
+</span><span class="line">              payload_len6
+</span><span class="line">              payload_len7
+</span><span class="line">              payload_len8
+</span><span class="line">              payload_len9
+</span><span class="line">              payload_len10
+</span><span class="line">              cluster
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>得到的属性的排序是</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">Ranked attributes:
+</span><span class="line"> 1.944968503161257472   12 interval7
+</span><span class="line"> 1.79590506127720192    22 packet_len8
+</span><span class="line"> 1.789000161744105216    9 interval4
+</span><span class="line"> 1.485875203840541952   32 payload_len8
+</span><span class="line"> 1.476115354039271936   24 packet_len10
+</span><span class="line"> 1.474554148784290048   19 packet_len5
+</span><span class="line"> 1.433523944277332992   11 interval6
+</span><span class="line"> 1.4172094615274624     20 packet_len6
+</span><span class="line"> 1.40428856745235968     6 interval1
+</span><span class="line"> 1.326924790992714496   34 payload_len10
+</span><span class="line"> 1.181689898847241984   18 packet_len4
+</span><span class="line"> 1.105237515513706624   23 packet_len9
+</span><span class="line"> 1.009802257207393664   28 payload_len4
+</span><span class="line"> 1.000000000000000896   31 payload_len7
+</span><span class="line"> 1.000000000000000896   30 payload_len6
+</span><span class="line"> 0.993447238380203776   21 packet_len7
+</span><span class="line"> 0.868563607479333888    3 dip
+</span><span class="line"> 0.832352013234566144   14 interval9
+</span><span class="line"> 0.829607103088203904   29 payload_len5
+</span><span class="line"> 0.781988055469156096   17 packet_len3
+</span><span class="line"> 0.781988055469156096   16 packet_len2
+</span><span class="line"> 0.737113917996471168   10 interval5
+</span><span class="line"> 0.544053730963280448    2 sport
+</span><span class="line"> 0                      27 payload_len3
+</span><span class="line"> 0                       5 protocal
+</span><span class="line"> 0                       1 sip
+</span><span class="line"> 0                       4 dport
+</span><span class="line"> 0                      33 payload_len9
+</span><span class="line"> 0                      25 payload_len1
+</span><span class="line"> 0                      15 packet_len1
+</span><span class="line"> 0                      13 interval8
+</span><span class="line"> 0                       7 interval2
+</span><span class="line"> 0                      26 payload_len2
+</span><span class="line"> 0                       8 interval3
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>所以对于属性payload_len3，protocal，sip，dport，payload_len9，payload_len1，payload_len2，packet_len1，interval8，interval2，interval3这十一个属性都可以去掉。
+降维之后的属性集合大小为23.</p>
+
+<p>降维之后的聚类结果</p>
+
+<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-04-20-a-scratch-of-feature-selection-in-traffic-classification/reduction2.png?raw=true" alt="降维之后的聚类结果" title="降维之后的聚类结果" /></p>
+
+<p>降维之前的聚类结果</p>
+
+<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-04-20-a-scratch-of-feature-selection-in-traffic-classification/%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%B7%E8%B7%9D%E7%A6%BB.png?raw=true" alt="降维之前的聚类结果" title="降维之前的聚类结果" /></p>
+
+<p>效果非常吻合。</p>
+
+<h6 id="pca">使用PCA对特征集规约</h6>
+
+<p>这个使用weka的来做的，做出来之后有12个特征（都是原有特征的线性组合）</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">Attributes:   12
+</span><span class="line">              0.333payload_len7+0.332packet_len7-0.307dip+0.295payload_len6+0.293packet_len6...
+</span><span class="line">              0.399packet_len8+0.398payload_len8-0.269payload_len5-0.268packet_len5+0.261interval5...
+</span><span class="line">              0.399interval4+0.309interval1-0.308packet_len10-0.274packet_len9-0.272payload_len9...
+</span><span class="line">              -0.366payload_len9-0.366packet_len9-0.349packet_len5-0.347payload_len5-0.288interval1...
+</span><span class="line">              -0.357interval3+0.351packet_len7+0.348payload_len7-0.324interval5+0.313interval7...
+</span><span class="line">              0.454interval6-0.424interval5-0.401interval1+0.262interval9+0.256packet_len4...
+</span><span class="line">              -0.402interval7-0.388payload_len6-0.387packet_len6-0.357interval8-0.26sport...
+</span><span class="line">              -0.597interval9+0.443packet_len10-0.427packet_len2-0.239packet_len3-0.209packet_len6...
+</span><span class="line">              0.865interval2+0.178interval3+0.168packet_len10+0.149packet_len4-0.146payload_len9...
+</span><span class="line">              -0.751sport+0.346interval3+0.286dip+0.216interval7-0.178packet_len2...
+</span><span class="line">              -0.434interval3+0.425interval2+0.315payload_len9+0.312packet_len9-0.311sport...
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>降维之后的聚类结果</p>
+
+<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-04-20-a-scratch-of-feature-selection-in-traffic-classification/reduction1.png?raw=true" alt="降维之后的聚类结果" title="降维之后的聚类结果" /></p>
+
+<p>分析，由于降维特征减少太多，走势已经不太吻合。</p>
+
+<h6 id="section-3">卡方分布提取特征算法</h6>
+
+<p>对于这个算法，这里只给出特征选取的结果</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">Ranked attributes:
+</span><span class="line">157.0864   12 interval7
+</span><span class="line">145.6184   22 packet_len8
+</span><span class="line">130.1739   20 packet_len6
+</span><span class="line">123.7833    6 interval1
+</span><span class="line">123.0833    9 interval4
+</span><span class="line">118.16     32 payload_len8
+</span><span class="line">108.7528   34 payload_len10
+</span><span class="line">108.5061   24 packet_len10
+</span><span class="line">103.1333   18 packet_len4
+</span><span class="line"> 92.3818   11 interval6
+</span><span class="line"> 85.5423   23 packet_len9
+</span><span class="line"> 81.0409   19 packet_len5
+</span><span class="line"> 61.9733   28 payload_len4
+</span><span class="line"> 42        31 payload_len7
+</span><span class="line"> 42        29 payload_len5
+</span><span class="line"> 42        30 payload_len6
+</span><span class="line"> 42        21 packet_len7
+</span><span class="line"> 39.4135   16 packet_len2
+</span><span class="line"> 39.4135   17 packet_len3
+</span><span class="line"> 38.4      14 interval9
+</span><span class="line"> 37.9167    2 sport
+</span><span class="line"> 36.9542    3 dip
+</span><span class="line"> 33.9      10 interval5
+</span><span class="line">  0         5 protocal
+</span><span class="line">  0        33 payload_len9
+</span><span class="line">  0         4 dport
+</span><span class="line">  0         1 sip
+</span><span class="line">  0        25 payload_len1
+</span><span class="line">  0        15 packet_len1
+</span><span class="line">  0        13 interval8
+</span><span class="line">  0         8 interval3
+</span><span class="line">  0         7 interval2
+</span><span class="line">  0        26 payload_len2
+</span><span class="line">  0        27 payload_len3
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>被取消的特征同样是那11个特征，只是排序结果不一样了。
+所以理所当然kmeans实验室一致的。
+Kmeans实验和实验1一样</p>
+
+<p>最终选取的特征集合为23个</p>
+
+<h4 id="section-4">参考</h4>
+
+<p>[1]. Jamil, H.A., et al., Selection of On-line Features for Peer-to-Peer Network Traffic Classification, in Recent Advances in Intelligent Informatics. 2014, Springer. p. 379-390.</p>
+
+<p>[2]. Zhen, L. and L. Qiong, A new feature selection method for internet traffic classification using ml. Physics Procedia, 2012. 33: p. 1338-1345.</p>
+
+<p>[3]. Moore, A.W. and D. Zuev. Internet traffic classification using bayesian analysis techniques. in ACM SIGMETRICS Performance Evaluation Review. 2005: ACM.</p>
+
+<p>[4]. Dash, M. and P.W. Koot, Feature selection for clustering, in Encyclopedia of database systems. 2009, Springer. p. 1119-1125.</p>
+
+<p>[5]. 统计学习方法。李航</p>
+
+<p>[6]. Mitra, P., C.A. Murthy and S.K. Pal, Unsupervised feature selection using feature similarity. IEEE transactions on pattern analysis and machine intelligence, 2002. 24(3): p. 301-312.</p>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Aluen King Lee</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-20T21:02:00+08:00" pubdate data-updated="true">Apr 20<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ji-qi-xue-xi/'>机器学习</a>, <a class='category' href='/blog/categories/te-zheng-xuan-ze/'>特征选择</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/03/04/qi-yi-de-nei-cun-fu-gai/" title="Previous Post: “奇异”的内存覆盖">&laquo; “奇异”的内存覆盖</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+
+  <section>
+    <h1>Comments</h1>
+    <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"aluenkinglee"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END --></div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification/">A Scratch of Feature Selection in Traffic Classification</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/04/qi-yi-de-nei-cun-fu-gai/">“奇异”的内存覆盖</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/">理解TCP中的序列号和确认号</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/24/c-plus-plus-de-hashtablena-xie-shi/">C++的hashtable那些事</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/01/05/machine-learning-linear-regression/">Machine Learning :linear Regression</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+<section>
+  <h1>My Douban</h1>
+  <div>
+  <!--添加到这-->
+  <script type="text/javascript" src="http://www.douban.com/service/badge/aluenkinglee/?selection=random&amp;picsize=small&amp;show=dolist&amp;n=8&amp;cat=book&amp;columns=3"></script>
+  </div>
+</section> 
+<section>
+<h1>Recent Comments</h1>
+<ul class="ds-recent-comments" data-num-items="10" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="18"></ul>
+
+</section> 
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Aluen King Lee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
