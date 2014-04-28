@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 特征选择 | 曾经渐行远，未免心戚戚]]></title>
   <link href="http://aluenkinglee.com/blog/categories/te-zheng-xuan-ze/atom.xml" rel="self"/>
   <link href="http://aluenkinglee.com/"/>
-  <updated>2014-04-21T15:49:14+08:00</updated>
+  <updated>2014-04-28T22:27:19+08:00</updated>
   <id>http://aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
@@ -92,7 +92,7 @@ g\left( D,A \right) =H\left( D \right) -H\left( { D }|{ A } \right)
 
 <h6 id="section-1">使用信息熵增益算法对特征进行降纬</h6>
 
-<p>实验前,<a href="">信息熵增益算法</a></p>
+<p>实验前,<a href="http://www.aluenkinglee.com/blog/2014/04/21/feature-selection--infomation-gain/">信息熵增益算法</a></p>
 
 <p><code>text
 Instances:    42

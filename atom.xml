@@ -4,7 +4,7 @@
   <title><![CDATA[曾经渐行远，未免心戚戚]]></title>
   <link href="http://aluenkinglee.com/atom.xml" rel="self"/>
   <link href="http://aluenkinglee.com/"/>
-  <updated>2014-04-21T15:49:14+08:00</updated>
+  <updated>2014-04-28T22:27:19+08:00</updated>
   <id>http://aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
@@ -12,6 +12,587 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[some commen list problems in the interview]]></title>
+    <link href="http://aluenkinglee.com/blog/2014/04/28/some-commen-list-problems-in-the-interview/"/>
+    <updated>2014-04-28T21:54:00+08:00</updated>
+    <id>http://aluenkinglee.com/blog/2014/04/28/some-commen-list-problems-in-the-interview</id>
+    <content type="html"><![CDATA[<p>链表是最基本的数据结构，面试官也常常用链表来考察面试者的基本能力，而且链表相关的操作相对而言比较简单，也适合考察写代码的能力。链表的操作也离不开指针，指针又很容易导致出错。综合多方面的原因，链表题目在面试中占据着很重要的地位。本文对链表相关的面试题做了较为全面的整理，希望能对找工作的同学有所帮助。
+链表结点声明如下：</p>
+
+<!-- more -->
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="c1">///=======链表</span>
+</span><span class="line"><span class="k">struct</span> <span class="n">ListNode</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="kt">int</span> <span class="n">data</span><span class="p">;</span>
+</span><span class="line">    <span class="n">ListNode</span> <span class="o">*</span> <span class="n">next</span><span class="p">;</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h5 id="section">求单链表中结点的个数</h5>
+
+<p>最最基本的，应该能够迅速写出正确的代码，注意检查链表是否为空。时间复杂度为O（n）。参考代码如下：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="c1">/// 求单链表中结点的个数</span>
+</span><span class="line"><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">getListLenght</span><span class="p">(</span><span class="n">ListNode</span><span class="o">*</span> <span class="n">head</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="n">head</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+</span><span class="line">        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line">    <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line">    <span class="n">ListNode</span><span class="o">*</span> <span class="n">current</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span>
+</span><span class="line">    <span class="k">for</span><span class="p">(;</span> <span class="n">current</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">;</span> <span class="n">len</span><span class="o">++</span><span class="p">)</span>
+</span><span class="line">        <span class="n">current</span> <span class="o">=</span> <span class="n">current</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">    <span class="k">return</span> <span class="n">len</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h5 id="section-1">将单链表反转</h5>
+
+<p>从头到尾遍历原链表，每遍历一个结点，将其摘下放在新链表的最前端。注意链表为空和只有一个结点的情况。时间复杂度为O（n）。参考代码如下：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="c1">/// 将单链表反转</span>
+</span><span class="line"><span class="n">ListNode</span> <span class="o">*</span> <span class="n">reverseList</span><span class="p">(</span><span class="n">ListNode</span> <span class="o">*</span> <span class="n">head</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="c1">/// 边界</span>
+</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="n">head</span><span class="o">==</span><span class="nb">NULL</span> <span class="o">||</span> <span class="n">head</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">head</span><span class="p">;</span>
+</span><span class="line">    <span class="n">ListNode</span><span class="o">*</span> <span class="n">cur</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span>
+</span><span class="line">    <span class="c1">/// 反转后的新链表头指针，初始为NULL</span>
+</span><span class="line">    <span class="n">ListNode</span><span class="o">*</span> <span class="n">rHead</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class="line">    <span class="n">ListNode</span><span class="o">*</span> <span class="n">temp</span>  <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class="line">    <span class="k">while</span><span class="p">(</span><span class="n">cur</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">temp</span> <span class="o">=</span> <span class="n">cur</span><span class="p">;</span>
+</span><span class="line">        <span class="n">cur</span> <span class="o">=</span> <span class="n">cur</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">        <span class="c1">/// 将废弃结点摘下，插入新链表的最前端</span>
+</span><span class="line">        <span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">rHead</span><span class="p">;</span>
+</span><span class="line">        <span class="n">rHead</span> <span class="o">=</span> <span class="n">temp</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">return</span> <span class="n">rHead</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h5 id="kk--0">查找单链表中的倒数第K个结点（k &gt; 0）</h5>
+
+<p>主要思路就是使用两个指针，先让前面的指针走到正向第k个结点，这样前后两个指针的距离差
+是k - 1，之后前后两个指针一起向前走，前面的指针走到最后一个结点时，后面指针所指结点就是倒数第k个结点。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="c1">///  查找单链表中的倒数第K个结点（k &gt; 0）</span>
+</span><span class="line"><span class="n">ListNode</span> <span class="o">*</span> <span class="n">getRKthNode</span><span class="p">(</span><span class="n">ListNode</span> <span class="o">*</span> <span class="n">head</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">k</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="n">k</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">head</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="c1">/// 这里k的计数是从1开始的，若k为0或链表为空返回NULL</span>
+</span><span class="line">        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class="line">    <span class="n">ListNode</span><span class="o">*</span> <span class="n">ahead</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span>
+</span><span class="line">    <span class="n">ListNode</span><span class="o">*</span> <span class="n">behind</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">for</span><span class="p">(;</span> <span class="n">ahead</span><span class="o">!=</span><span class="nb">NULL</span> <span class="o">&amp;&amp;</span> <span class="n">k</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">;</span> <span class="o">--</span><span class="n">k</span><span class="p">)</span>   <span class="c1">/// 遍历完前k个节点</span>
+</span><span class="line">        <span class="n">ahead</span> <span class="o">=</span> <span class="n">ahead</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">    <span class="k">if</span><span class="p">(</span> <span class="n">k</span> <span class="o">&gt;</span> <span class="mi">0</span>  <span class="p">)</span>            <span class="c1">/// 结点个数小于k，返回NULL</span>
+</span><span class="line">        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class="line">    <span class="k">while</span><span class="p">(</span><span class="n">ahead</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>    <span class="c1">/// 前后两个指针一起向前走，直到前面的指针指向NULL</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">ahead</span> <span class="o">=</span> <span class="n">ahead</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">        <span class="n">behind</span> <span class="o">=</span> <span class="n">behind</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">return</span> <span class="n">behind</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h5 id="section-2">查找单链表的中间结点</h5>
+
+<p>也是设置两个指针，只不过这里是，两个指针同时向前走，前面的指针每次走两步，后面的指针每次走一步，前面的指针走到最后一个结点时，后面的指针所指结点就是中间结点，即第（n/2+1）个结点。注意链表为空，链表结点个数为1和2的情况。时间复杂度O（n）</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="c1">///  查找单链表的中间结点</span>
+</span><span class="line"><span class="c1">///  获取单链表中间结点，若链表长度为n(n&gt;0)，则返回第n/2+1个结点</span>
+</span><span class="line"><span class="n">ListNode</span> <span class="o">*</span> <span class="n">getMidNode</span><span class="p">(</span><span class="n">ListNode</span> <span class="o">*</span> <span class="n">head</span> <span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="c1">/// 边界值处理，空或者只有一个节点</span>
+</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="n">head</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">||</span> <span class="n">head</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">head</span><span class="p">;</span>
+</span><span class="line">    <span class="n">ListNode</span><span class="o">*</span> <span class="n">ahead</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span>
+</span><span class="line">    <span class="n">ListNode</span><span class="o">*</span> <span class="n">behind</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">/// 注意判断条件</span>
+</span><span class="line">    <span class="k">while</span><span class="p">(</span><span class="n">ahead</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>    <span class="c1">/// 前面指针每次走两步，直到指向最后一个结点，后面指针每次走一步</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">ahead</span> <span class="o">=</span> <span class="n">ahead</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">        <span class="n">behind</span> <span class="o">=</span> <span class="n">behind</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">        <span class="c1">/// 注意判断条件</span>
+</span><span class="line">        <span class="k">if</span><span class="p">(</span><span class="n">ahead</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+</span><span class="line">            <span class="n">ahead</span> <span class="o">=</span> <span class="n">ahead</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">return</span> <span class="n">behind</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h5 id="section-3">从尾到头打印单链表</h5>
+
+<p>顺序颠倒，使用栈。系统栈或者自己写栈用。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="c1">/// 逆序打印</span>
+</span><span class="line"><span class="kt">void</span> <span class="n">RPrintList2</span><span class="p">(</span><span class="n">ListNode</span><span class="o">*</span> <span class="n">head</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="n">stack</span><span class="o">&lt;</span><span class="n">ListNode</span><span class="o">*&gt;</span> <span class="n">s</span><span class="p">;</span>
+</span><span class="line">    <span class="n">ListNode</span> <span class="o">*</span> <span class="n">tmp</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span>
+</span><span class="line">    <span class="k">while</span><span class="p">(</span><span class="n">tmp</span><span class="o">!=</span><span class="nb">NULL</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">s</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">tmp</span><span class="p">);</span>
+</span><span class="line">        <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="n">s</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">tmp</span> <span class="o">=</span> <span class="n">s</span><span class="p">.</span><span class="n">top</span><span class="p">();</span>
+</span><span class="line">        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">tmp</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">&lt;&lt;</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span class="line">        <span class="n">s</span><span class="p">.</span><span class="n">pop</span><span class="p">();</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line"><span class="kt">void</span> <span class="n">RPrintList3</span><span class="p">(</span><span class="n">ListNode</span><span class="o">*</span> <span class="n">head</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="n">head</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+</span><span class="line">        <span class="k">return</span><span class="p">;</span>
+</span><span class="line">    <span class="n">RPrintList3</span><span class="p">(</span><span class="n">head</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">);</span>
+</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span><span class="n">head</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">&lt;&lt;</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h5 id="phead1-phead2-">已知两个单链表pHead1 和pHead2 各自有序，把它们合并成一个链表依然有序</h5>
+
+<p>类似归并排序</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="c1">/// 已知两个单链表pHead1 和pHead2 各自有序，把它们合并成一个链表依然有序</span>
+</span><span class="line"><span class="c1">/// 会改变原有链表结构，妥妥的</span>
+</span><span class="line"><span class="n">ListNode</span> <span class="o">*</span> <span class="n">MergeSortedList</span><span class="p">(</span><span class="n">ListNode</span> <span class="o">*</span> <span class="n">head1</span><span class="p">,</span> <span class="n">ListNode</span> <span class="o">*</span> <span class="n">head2</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="n">head1</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">head2</span><span class="p">;</span>
+</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="n">head2</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">head1</span><span class="p">;</span>
+</span><span class="line">    <span class="n">ListNode</span><span class="o">*</span> <span class="n">mergeHead</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class="line">    <span class="n">ListNode</span><span class="o">*</span> <span class="n">temp</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="n">head1</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">&gt;</span> <span class="n">head2</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">mergeHead</span> <span class="o">=</span> <span class="n">head1</span><span class="p">;</span>
+</span><span class="line">        <span class="n">head1</span> <span class="o">=</span> <span class="n">head1</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">        <span class="n">mergeHead</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span> <span class="c1">/// 注意语句顺序，防止head1变成悬空节点</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">else</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">mergeHead</span> <span class="o">=</span> <span class="n">head2</span><span class="p">;</span>
+</span><span class="line">        <span class="n">head2</span> <span class="o">=</span> <span class="n">head2</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">        <span class="n">mergeHead</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span> <span class="c1">/// 注意语句顺序，防止head2变成悬空节点</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="n">temp</span> <span class="o">=</span> <span class="n">mergeHead</span><span class="p">;</span>
+</span><span class="line">    <span class="k">while</span><span class="p">(</span><span class="n">head1</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span> <span class="n">head2</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">if</span><span class="p">(</span><span class="n">head1</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">&gt;</span><span class="n">head2</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">)</span>
+</span><span class="line">        <span class="p">{</span>
+</span><span class="line">            <span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">head1</span><span class="p">;</span>
+</span><span class="line">            <span class="n">head1</span> <span class="o">=</span> <span class="n">head1</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">            <span class="n">temp</span><span class="o">=</span><span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">            <span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">        <span class="k">else</span>
+</span><span class="line">        <span class="p">{</span>
+</span><span class="line">            <span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">head2</span><span class="p">;</span>
+</span><span class="line">            <span class="n">head2</span> <span class="o">=</span> <span class="n">head2</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">            <span class="n">temp</span><span class="o">=</span><span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">            <span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="n">head1</span><span class="o">!=</span><span class="nb">NULL</span><span class="p">)</span>
+</span><span class="line">        <span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">head1</span><span class="p">;</span>
+</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="n">head2</span><span class="o">!=</span><span class="nb">NULL</span><span class="p">)</span>
+</span><span class="line">        <span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">head2</span><span class="p">;</span>
+</span><span class="line">    <span class="k">return</span> <span class="n">mergeHead</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>递归版本</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="c1">/// 已知两个单链表pHead1 和pHead2 各自有序，把它们合并成一个链表依然有序</span>
+</span><span class="line"><span class="n">ListNode</span> <span class="o">*</span> <span class="n">MergeSortedList2</span><span class="p">(</span><span class="n">ListNode</span> <span class="o">*</span> <span class="n">head1</span><span class="p">,</span> <span class="n">ListNode</span> <span class="o">*</span> <span class="n">head2</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="n">head1</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">head2</span><span class="p">;</span>
+</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="n">head2</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">head1</span><span class="p">;</span>
+</span><span class="line">    <span class="n">ListNode</span><span class="o">*</span> <span class="n">mergeHead</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="n">head1</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">&gt;</span> <span class="n">head2</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">mergeHead</span> <span class="o">=</span> <span class="n">head1</span><span class="p">;</span>
+</span><span class="line">        <span class="n">head1</span> <span class="o">=</span> <span class="n">head1</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">        <span class="n">mergeHead</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">MergeSortedList2</span><span class="p">(</span><span class="n">head1</span><span class="p">,</span><span class="n">head2</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">else</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">mergeHead</span> <span class="o">=</span> <span class="n">head2</span><span class="p">;</span>
+</span><span class="line">        <span class="n">head2</span> <span class="o">=</span> <span class="n">head2</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">        <span class="n">mergeHead</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">MergeSortedList2</span><span class="p">(</span><span class="n">head1</span><span class="p">,</span><span class="n">head2</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">return</span> <span class="n">mergeHead</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h5 id="section-4">判断两个单链表是否相交</h5>
+
+<p>如果两个链表相交于某一节点，那么在这个相交节点之后的所有节点都是两个链表所共有的。
+也就是说，如果两个链表相交，那么最后一个节点肯定是共有的。先遍历第一个链表，记住
+最后一个节点，然后遍历第二个链表，到最后一个节点时和第一个链表的最后一个节点做比
+较，如果相同，则相交，否则不相交。时间复杂度为O(len1+len2)，因为只需要一个额外指
+针保存最后一个节点地址，空间复杂度为O(1)</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="kt">bool</span> <span class="n">isIntersected</span><span class="p">(</span><span class="n">ListNode</span> <span class="o">*</span> <span class="n">head1</span><span class="p">,</span> <span class="n">ListNode</span> <span class="o">*</span> <span class="n">head2</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="n">head1</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">||</span> <span class="n">head2</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+</span><span class="line">        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class="line">    <span class="n">ListNode</span><span class="o">*</span> <span class="n">tail1</span><span class="o">=</span><span class="n">head1</span><span class="p">;</span>
+</span><span class="line">    <span class="n">ListNode</span><span class="o">*</span> <span class="n">tail2</span><span class="o">=</span><span class="n">head2</span><span class="p">;</span>
+</span><span class="line">    <span class="k">while</span><span class="p">(</span><span class="n">tail1</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+</span><span class="line">        <span class="n">tail1</span> <span class="o">=</span> <span class="n">tail1</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">    <span class="k">while</span><span class="p">(</span><span class="n">tail2</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+</span><span class="line">        <span class="n">tail2</span> <span class="o">=</span> <span class="n">tail2</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">    <span class="c1">///若相交，尾节点可定相同</span>
+</span><span class="line">    <span class="k">return</span> <span class="p">(</span><span class="n">tail1</span> <span class="o">==</span> <span class="n">tail2</span><span class="p">);</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h5 id="section-5">求两个单链表相交的第一个节点</h5>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="n">ListNode</span><span class="o">*</span> <span class="n">findFirstIntersectedNode</span><span class="p">(</span><span class="n">ListNode</span> <span class="o">*</span> <span class="n">head1</span><span class="p">,</span> <span class="n">ListNode</span> <span class="o">*</span> <span class="n">head2</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="c1">/// 边界值检查</span>
+</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="n">head1</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">||</span> <span class="n">head2</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+</span><span class="line">        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class="line">    <span class="n">ListNode</span><span class="o">*</span> <span class="n">tail1</span><span class="o">=</span><span class="n">head1</span><span class="p">;</span>
+</span><span class="line">    <span class="n">ListNode</span><span class="o">*</span> <span class="n">tail2</span><span class="o">=</span><span class="n">head2</span><span class="p">;</span>
+</span><span class="line">    <span class="kt">int</span> <span class="n">len1</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+</span><span class="line">    <span class="kt">int</span> <span class="n">len2</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+</span><span class="line">    <span class="k">while</span><span class="p">(</span><span class="n">tail1</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">tail1</span> <span class="o">=</span> <span class="n">tail1</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">        <span class="n">len1</span><span class="o">++</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">while</span><span class="p">(</span><span class="n">tail2</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">tail2</span> <span class="o">=</span> <span class="n">tail2</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">        <span class="n">len2</span><span class="o">++</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">///若相交，尾节点肯定相同</span>
+</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="n">tail1</span> <span class="o">!=</span> <span class="n">tail2</span><span class="p">)</span>
+</span><span class="line">        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class="line">    <span class="n">ListNode</span><span class="o">*</span> <span class="n">node1</span><span class="o">=</span><span class="n">head1</span><span class="p">;</span>
+</span><span class="line">    <span class="n">ListNode</span><span class="o">*</span> <span class="n">node2</span><span class="o">=</span><span class="n">head2</span><span class="p">;</span>
+</span><span class="line">    <span class="kt">int</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+</span><span class="line">    <span class="c1">/// 找到两个链表等长的位置。</span>
+</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="n">len1</span><span class="o">&gt;</span><span class="n">len2</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">k</span><span class="o">=</span><span class="n">len1</span><span class="o">-</span><span class="n">len2</span><span class="p">;</span>
+</span><span class="line">        <span class="k">while</span><span class="p">(</span><span class="n">k</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span>
+</span><span class="line">            <span class="n">node1</span><span class="o">=</span><span class="n">node1</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">else</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">k</span><span class="o">=</span><span class="n">len2</span><span class="o">-</span><span class="n">len1</span><span class="p">;</span>
+</span><span class="line">        <span class="k">while</span><span class="p">(</span><span class="n">k</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span>
+</span><span class="line">            <span class="n">node2</span><span class="o">=</span><span class="n">node2</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="c1">/// 两个链表未相交之前，节点肯定不同</span>
+</span><span class="line">    <span class="k">while</span><span class="p">(</span><span class="n">node1</span><span class="o">!=</span><span class="n">node2</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">node1</span><span class="o">=</span><span class="n">node1</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">        <span class="n">node2</span><span class="o">=</span><span class="n">node2</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">return</span> <span class="n">node1</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h5 id="head--node-o1-node">给出一单链表头指针 head 和一节点指针 node ，O(1)时间复杂度删除节点 node</h5>
+
+<p>对于删除节点，我们普通的思路就是让该节点的前一个节点指向该节点的下一个节点，这种情况需要遍历找到该节点的前一个节点，时间复杂度为O(n)。对于链表，链表中的每个节点结构都是一样的，所以我们可以把该节点的下一个节点的数据复制到该节点，然后删除下一个节点即可。要注意最后一个节点的情况，这个时候只能用常见的方法来操作，先找到前一个节点，但总体的平均时间复杂度还是O(1)</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="kt">void</span> <span class="n">deleteNode</span><span class="p">(</span><span class="n">ListNode</span> <span class="o">*</span> <span class="n">head</span><span class="p">,</span> <span class="n">ListNode</span> <span class="o">*</span> <span class="n">node</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="c1">/// 边界值</span>
+</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="n">node</span><span class="o">==</span><span class="nb">NULL</span><span class="p">)</span>
+</span><span class="line">        <span class="k">return</span> <span class="p">;</span>
+</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">!=</span><span class="nb">NULL</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="c1">/// 把后面的节点值复制到本位置</span>
+</span><span class="line">        <span class="n">node</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="n">node</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span>
+</span><span class="line">        <span class="n">ListNode</span><span class="o">*</span> <span class="n">temp</span> <span class="o">=</span> <span class="n">node</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">        <span class="n">node</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">node</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">        <span class="k">delete</span> <span class="n">temp</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class="line">    <span class="c1">/// 删除的是最后一个节点，只能用遍历法</span>
+</span><span class="line">        <span class="n">ListNode</span><span class="o">*</span> <span class="n">cur</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span>
+</span><span class="line">        <span class="k">while</span><span class="p">(</span> <span class="n">cur</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">!=</span> <span class="n">node</span><span class="p">)</span>
+</span><span class="line">            <span class="n">cur</span> <span class="o">=</span> <span class="n">cur</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">        <span class="n">cur</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>
+</span><span class="line">        <span class="k">delete</span> <span class="n">node</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[特征选择-信息增益算法]]></title>
@@ -92,7 +673,7 @@ g\left( D,A \right) =H\left( D \right) -H\left( { D }|{ A } \right)
 
 <h6 id="section-1">使用信息熵增益算法对特征进行降纬</h6>
 
-<p>实验前,<a href="">信息熵增益算法</a></p>
+<p>实验前,<a href="http://www.aluenkinglee.com/blog/2014/04/21/feature-selection--infomation-gain/">信息熵增益算法</a></p>
 
 <div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>

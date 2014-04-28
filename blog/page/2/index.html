@@ -9,8 +9,7 @@
   <meta name="author" content="Aluen King Lee">
 
   
-  <meta name="description" content="突然有兴致想起了看会C++，因为最近一直是python，java，python的节奏…在这样下去，C++水平恐怕就停留在了只会编算法的地儿了… 随手一翻，看到了复制控制。对于这章，印象里的记忆是：
-» 如果一个类它有形如指针或者申请了其他的系统资源成员，这个时候就得注意了，如申请资源，如何释放资源 &hellip;">
+  <meta name="description" content="首先看下$\LaTeX$的例子 块状的$\LaTeX$ 数学公式 (1) % <![CDATA[ \begin{align*} & \phi(x,y) = \phi \left(\sum_{i=1}^n x_ie_i, \sum_{j=1}^n y_je_j \right) = \sum_{i=1 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -104,6 +103,72 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/11/13/use-mathjax-in-octopress-to-write-beautiful-latex/">Use MathJax in Octopress to Write Beautiful LaTex</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-13T12:37:00+08:00" pubdate data-updated="true">Nov 13<span>th</span>, 2013</time>
+        
+        
+          | <a href="/blog/2013/11/13/use-mathjax-in-octopress-to-write-beautiful-latex/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h4 id="latex">首先看下$\LaTeX$的例子</h4>
+
+<ul>
+  <li>块状的$\LaTeX$ 数学公式 (1)</li>
+</ul>
+
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align*}
+  & \phi(x,y) = \phi \left(\sum_{i=1}^n x_ie_i, \sum_{j=1}^n y_je_j \right)
+  = \sum_{i=1}^n \sum_{j=1}^n x_i y_j \phi(e_i, e_j) = \\
+  & (x_1, \ldots, x_n) \left( \begin{array}{ccc}
+      \phi(e_1, e_1) & \cdots & \phi(e_1, e_n) \\
+      \vdots & \ddots & \vdots \\
+      \phi(e_n, e_1) & \cdots & \phi(e_n, e_n)
+    \end{array} \right)
+  \left( \begin{array}{c}
+      y_1 \\
+      \vdots \\
+      y_n
+    \end{array} \right)
+\end{align*}
+ %]]></script>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/11/13/use-mathjax-in-octopress-to-write-beautiful-latex/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -519,6 +584,10 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/04/28/some-commen-list-problems-in-the-interview/">Some Commen List Problems in the Interview</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/04/21/feature-selection--infomation-gain/">特征选择-信息增益算法</a>
       </li>
     
@@ -532,10 +601,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     
       <li class="post">
         <a href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/">理解TCP中的序列号和确认号</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/02/24/c-plus-plus-de-hashtablena-xie-shi/">C++的hashtable那些事</a>
       </li>
     
   </ul>
