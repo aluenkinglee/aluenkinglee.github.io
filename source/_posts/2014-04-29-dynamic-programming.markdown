@@ -3,7 +3,7 @@ layout: post
 title: "dynamic programming"
 date: 2014-04-29 19:34
 comments: true
-categories: 
+categories: 动态规划
 ---
 好几年了，没有特意去做与ACM相关的算法题了，时至今日，也确实忘得差不多了，不过，现在也到了该拾起来的时候了。
 
