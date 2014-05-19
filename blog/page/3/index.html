@@ -9,7 +9,9 @@
   <meta name="author" content="Aluen King Lee">
 
   
-  <meta name="description" content="当初使用C++，java的时候，变量的属性（可访问性，scope这类的意思）如public，private，protected，static这类很好理解。 但是Python中默认的成员函数，成员变量都是公开的(public),而且python中没有类似public, &hellip;">
+  <meta name="description" content="最近在处理一些微博的数据，其中从服务器返回来的json串最后转换成了python中的字典，
+只是可惜时间也被变成了字符串格式，好在python文档足够全且简单，可以使用datetime
+中的strptime来解决，尽管如此还是在时区那卡了会 微博返回的时间数据格式如下： “Fri Aug 12 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -103,6 +105,60 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/04/16/pythonchu-li-dai-you-shi-qu-de-de-zi-fu-chuan/">Python处理带有时区的的字符串</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-16T15:54:00+08:00" pubdate data-updated="true">Apr 16<span>th</span>, 2013</time>
+        
+        
+          | <a href="/blog/2013/04/16/pythonchu-li-dai-you-shi-qu-de-de-zi-fu-chuan/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>最近在处理一些微博的数据，其中从服务器返回来的json串最后转换成了python中的字典，
+只是可惜时间也被变成了字符串格式，好在python文档足够全且简单，可以使用datetime
+中的strptime来解决，尽管如此还是在时区那卡了会</p>
+
+<p>微博返回的时间数据格式如下：</p>
+
+<h5 id="fri-aug-12-140931-0800-2011">“Fri Aug 12 14:09:31 +0800 2011″</h5>
+
+<p>然后我这样处理的</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">time.strptime('Fri Aug 12 14:09:31 +0800 2011', '%a %b %d %H:%M:%S %z %Y')</span></code></pre></td></tr></table></div></figure></notextile></div>
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/04/16/pythonchu-li-dai-you-shi-qu-de-de-zi-fu-chuan/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -262,6 +318,10 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/05/19/threading-why-import-it-into-os/">Threading:why Import It Into Os</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/05/19/my-understanding-about-kmp/">我对KMP算法的理解</a>
       </li>
     
@@ -275,10 +335,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     
       <li class="post">
         <a href="/blog/2014/04/29/dynamic-programming/">Dynamic Programming</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/28/some-commen-list-problems-in-the-interview/">Some Commen List Problems in the Interview</a>
       </li>
     
   </ul>

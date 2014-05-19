@@ -4,7 +4,7 @@
   <title><![CDATA[曾经渐行远，未免心戚戚]]></title>
   <link href="http://aluenkinglee.com/atom.xml" rel="self"/>
   <link href="http://aluenkinglee.com/"/>
-  <updated>2014-05-19T23:08:34+08:00</updated>
+  <updated>2014-05-19T23:18:48+08:00</updated>
   <id>http://aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
@@ -12,6 +12,76 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[threading:why import it into os]]></title>
+    <link href="http://aluenkinglee.com/blog/2014/05/19/threading-why-import-it-into-os/"/>
+    <updated>2014-05-19T23:14:00+08:00</updated>
+    <id>http://aluenkinglee.com/blog/2014/05/19/threading-why-import-it-into-os</id>
+    <content type="html"><![CDATA[<p>线程的引入是为了提高CPU利用率。线程给操作系统带来的创建维护和管理负担要轻。因为与线程相关的信息比较少，交情的负担意味着线程的代价或开销比较少。当处理器除一个进程并激活另一个进程时，就要发生上下文切换。为了发生上下文切换，操作系统必须启动和重新启动每个进程所需的信息。这就意味着必须保存描述进程存在状态的有关信息，在进程再次激活时，就可以从离开的地点继续执行。</p>
+
+<h6 id="section">那么系统在进程切换时需要保存那些信息呢？</h6>
+
+<ol>
+  <li>
+    <p>所需信息包括可执行程序、堆栈、以及静态与动态分配变量内存的指针。</p>
+  </li>
+  <li>
+    <p>寄存器组中包含执行下一条指令的指针这样的信息 。</p>
+  </li>
+  <li>
+    <p>重新任命进程时需要进程的状态（进程是被挂起还是被阻塞）和优先权。同时程序的I/O状态也被保存。</p>
+  </li>
+  <li>
+    <p>保存进程的规划信息，内存管理信息以及计数信息。</p>
+  </li>
+  <li>
+    <p>进程需要文件描述器和读写指针来继续使用资源。</p>
+  </li>
+</ol>
+
+<h6 id="section-1">而线程同样需要上下文。当线程被抢先时同样也会发生上下文切换。</h6>
+
+<h6 id="section-2">与进程相比线程的优势如下：</h6>
+
+<ol>
+  <li>
+    <p>线程不需要地址空间。线程包含在进程的地址空间中。（所以在重新任命进程时所需的线程都不需要）</p>
+  </li>
+  <li>
+    <p>线程的上下文只包含一个堆栈、一个寄存器组和一个优先权。</p>
+  </li>
+  <li>
+    <p>寄存器组包含程序或指令指针以及堆栈指针。</p>
+  </li>
+  <li>
+    <p>线程的文本包含在他的进程的文本中。</p>
+  </li>
+  <li>
+    <p>进程拥有的所有资源都属于线程。所以与资源相关的所有信息不是线程上下文的部分。</p>
+  </li>
+  <li>
+    <p>其他信息如规划、计数等都是由进程所定义。无需包含在线程的上下文中。</p>
+  </li>
+</ol>
+
+<p>线程与进程的相同之处是：都有ID，寄存器组、状态、以及优先权。线程与子进程共享父进程的资源。</p>
+
+<h6 id="section-3">他们的不同之处是：</h6>
+
+<ol>
+  <li>
+    <p>线程没有自己的地址空间，如果进程创建了多个所有的线程都将包含在他的地址空间中。</p>
+  </li>
+  <li>
+    <p>父进程和子进程之间必须通过进程间通信机制来进行通信。而进程中的多个线程之间是通过读取和写入数据到进程变量来通信。</p>
+  </li>
+  <li>
+    <p>子进程对其他子进程不施加控制，而进程的线程被看做同位体（peer）并对进程的其他的线程施加控制。</p>
+  </li>
+</ol>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[我对KMP算法的理解]]></title>
@@ -4312,85 +4382,6 @@ ip 与本机VirtualBox Host-Only Network的网卡ip在同一网段内（默认19
 <p>这些数据的来源是源自微博中周边微博这类地理位置的API。出于实验的目的，我把海淀区划分了15个区域，取区域内的标志性地点的经纬度（可以随时增加其他点），再以一个较低的频率（为了尽量避免取到重复数据）去取这15个点的周边微博（全部含有地理标签）。</p>
 
 <p>对于这些数据的想法，目前是把这些数据标示在地图上，先得到直观上的点的分布，再分析为什么会再此聚集，和什么属性相关。这是基本的想法。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Python处理带有时区的的字符串]]></title>
-    <link href="http://aluenkinglee.com/blog/2013/04/16/pythonchu-li-dai-you-shi-qu-de-de-zi-fu-chuan/"/>
-    <updated>2013-04-16T15:54:00+08:00</updated>
-    <id>http://aluenkinglee.com/blog/2013/04/16/pythonchu-li-dai-you-shi-qu-de-de-zi-fu-chuan</id>
-    <content type="html"><![CDATA[<p>最近在处理一些微博的数据，其中从服务器返回来的json串最后转换成了python中的字典，
-只是可惜时间也被变成了字符串格式，好在python文档足够全且简单，可以使用datetime
-中的strptime来解决，尽管如此还是在时区那卡了会</p>
-
-<p>微博返回的时间数据格式如下：</p>
-
-<h5 id="fri-aug-12-140931-0800-2011">“Fri Aug 12 14:09:31 +0800 2011″</h5>
-
-<p>然后我这样处理的</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">time.strptime('Fri Aug 12 14:09:31 +0800 2011', '%a %b %d %H:%M:%S %z %Y')</span></code></pre></td></tr></table></div></figure></notextile></div>
-<!--more-->
-<p>当然也可以这样，只是试验下而已</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">dt2 = datetime.strptime('Fri Aug 12 14:09:31 +0800 2011', '%a %b %d %H:%M:%S %Z %Y')</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>然而却出现了如下的错误：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">ValueError: time data 'Fri Aug 12 14:09:31 +0800 2011' does not match format '%a %b %d %H:%M:%S %Z %Y'</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>查了下<a href="http://stackoverflow.com/questions/10540399/strftime-does-not-return-abbreviated-time-zone">资料</a>
-发现这个跟系统有关系，而且这个是bug，（虽然开发者不承认，但是我觉得还有有点关系….虽然它又跟locals有关系。。。识别起来
-确实很繁琐）比如现在我是在windows上处理的结果就是</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">&gt;&gt;&gt; print time.strftime("%a, %d %b %Y %I:%M:%S %p %Z", time.localtime(10.5))
-</span><span class="line">Thu, 01 Jan 1970 08:00:10 AM 中国标准时间
-</span><span class="line">&gt;&gt;&gt; print time.strftime("%a, %d %b %Y %I:%M %p %Z", time.gmtime())
-</span><span class="line">Tue, 16 Apr 2013 08:33 AM 中国标准时间
-</span><span class="line">&gt;&gt;&gt;</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>和那个+8000格格不入，好吧 反正数据的处理设计不到时区，那么可以这样子做</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">&gt;&gt;&gt; dt2 = datetime.strptime('Fri Aug 12 14:09:31 +0800 2011', '%a %b %d %H:%M:%S +0800 %Y')
-</span><span class="line">&gt;&gt;&gt; print dt2
-</span><span class="line">2011-08-12 14:09:31</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>对现在的需求来说,反而更好.</p>
-
-<h3 id="section">参考</h3>
-
-<ol>
-  <li>
-    <p><a href="http://bugs.python.org/issue6641">issue6641</a></p>
-  </li>
-  <li>
-    <p><a href="http://stackoverflow.com/questions/4788533/python-strftime-gmtime-not-respecting-timezone">python-strftime-gmtime-not-respecting-timezone</a></p>
-  </li>
-  <li>
-    <p><a href="http://stackoverflow.com/questions/10540399/strftime-does-not-return-abbreviated-time-zone">strftime-does-not-return-abbreviated-time-zone</a></p>
-  </li>
-  <li>
-    <p><a href="http://forum.open.weibo.com/read.php?tid=11780">微博使用</a></p>
-  </li>
-  <li>
-    <p><a href="http://docs.python.org/2/library/datetime.html#strftime-and-strptime-behavior">strftime-and-strptime-behavior</a></p>
-  </li>
-  <li>
-    <p><a href="http://stackoverflow.com/questions/466345/converting-string-into-datetime">converting-string-into-datetime</a></p>
-  </li>
-</ol>
 ]]></content>
   </entry>
   

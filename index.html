@@ -9,7 +9,7 @@
   <meta name="author" content="Aluen King Lee">
 
   
-  <meta name="description" content="和朴素的字符串匹配算法相比，KMP加快匹配的关键在于当某个位置不匹配了，不在模版不再是向右滑动一个位置，而是跟匹配处相关的一个值。这样，在字符串的匹配时间就是和搜索串长度相关的一个值。 至于相关的资料，参阅了六之再续：KMP算法之总结篇（12.09修订，必懂KMP，只是这个个人感觉有点凌乱。 &hellip;">
+  <meta name="description" content="线程的引入是为了提高CPU利用率。线程给操作系统带来的创建维护和管理负担要轻。因为与线程相关的信息比较少，交情的负担意味着线程的代价或开销比较少。当处理器除一个进程并激活另一个进程时，就要发生上下文切换。为了发生上下文切换，操作系统必须启动和重新启动每个进程所需的信息。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -103,6 +103,106 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/05/19/threading-why-import-it-into-os/">Threading:why Import It Into Os</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-19T23:14:00+08:00" pubdate data-updated="true">May 19<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/05/19/threading-why-import-it-into-os/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>线程的引入是为了提高CPU利用率。线程给操作系统带来的创建维护和管理负担要轻。因为与线程相关的信息比较少，交情的负担意味着线程的代价或开销比较少。当处理器除一个进程并激活另一个进程时，就要发生上下文切换。为了发生上下文切换，操作系统必须启动和重新启动每个进程所需的信息。这就意味着必须保存描述进程存在状态的有关信息，在进程再次激活时，就可以从离开的地点继续执行。</p>
+
+<h6 id="section">那么系统在进程切换时需要保存那些信息呢？</h6>
+
+<ol>
+  <li>
+    <p>所需信息包括可执行程序、堆栈、以及静态与动态分配变量内存的指针。</p>
+  </li>
+  <li>
+    <p>寄存器组中包含执行下一条指令的指针这样的信息 。</p>
+  </li>
+  <li>
+    <p>重新任命进程时需要进程的状态（进程是被挂起还是被阻塞）和优先权。同时程序的I/O状态也被保存。</p>
+  </li>
+  <li>
+    <p>保存进程的规划信息，内存管理信息以及计数信息。</p>
+  </li>
+  <li>
+    <p>进程需要文件描述器和读写指针来继续使用资源。</p>
+  </li>
+</ol>
+
+<h6 id="section-1">而线程同样需要上下文。当线程被抢先时同样也会发生上下文切换。</h6>
+
+<h6 id="section-2">与进程相比线程的优势如下：</h6>
+
+<ol>
+  <li>
+    <p>线程不需要地址空间。线程包含在进程的地址空间中。（所以在重新任命进程时所需的线程都不需要）</p>
+  </li>
+  <li>
+    <p>线程的上下文只包含一个堆栈、一个寄存器组和一个优先权。</p>
+  </li>
+  <li>
+    <p>寄存器组包含程序或指令指针以及堆栈指针。</p>
+  </li>
+  <li>
+    <p>线程的文本包含在他的进程的文本中。</p>
+  </li>
+  <li>
+    <p>进程拥有的所有资源都属于线程。所以与资源相关的所有信息不是线程上下文的部分。</p>
+  </li>
+  <li>
+    <p>其他信息如规划、计数等都是由进程所定义。无需包含在线程的上下文中。</p>
+  </li>
+</ol>
+
+<p>线程与进程的相同之处是：都有ID，寄存器组、状态、以及优先权。线程与子进程共享父进程的资源。</p>
+
+<h6 id="section-3">他们的不同之处是：</h6>
+
+<ol>
+  <li>
+    <p>线程没有自己的地址空间，如果进程创建了多个所有的线程都将包含在他的地址空间中。</p>
+  </li>
+  <li>
+    <p>父进程和子进程之间必须通过进程间通信机制来进行通信。而进程中的多个线程之间是通过读取和写入数据到进程变量来通信。</p>
+  </li>
+  <li>
+    <p>子进程对其他子进程不施加控制，而进程的线程被看做同位体（peer）并对进程的其他的线程施加控制。</p>
+  </li>
+</ol>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -738,56 +838,6 @@ x|y=1\sim N(\mu_1,\Sigma)
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/02/24/c-plus-plus-de-hashtablena-xie-shi/">C++的hashtable那些事</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-24T05:29:00+08:00" pubdate data-updated="true">Feb 24<span>th</span>, 2014</time>
-        
-        
-          | <a href="/blog/2014/02/24/c-plus-plus-de-hashtablena-xie-shi/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>对于想知道hashtable原理的的人来说，多少对基本的数据结构和算法都有些了解，所以不再细说。</p>
-
-<p>平常我们所说的一些容器来说，比如vector，list，stack之类，他们中的元素都是可以排序的，可以归为序列式容器，基于连续内存的vector可以实现随机存储，但是搜索的复杂度是O（n），list也是如此。
-在关联式容器中，每个数据有一个键值和一个实值。元素插入到关联式容器中，容器内部结构根据其键值依据某个特定的规则将这个元素放置于适当的位置，从而实现插入和搜索是对数平均时间（基于红黑树），甚至是尽可能的是常数级别（就是这里说的散列表），其效率依赖于数据的特性和规则的设计。关联式的容器没有所谓的头尾，不会有begin(),end(),push_back()等这样的行为。</p>
-
-<p>数组是个很好的内建数据结构，你甚至可以把数组看成一个最简单的hash表，index是种键值，而内容则是value。是不是很好，常数级寻址。但是也有问题，通常我们面对的键值不仅仅是简单的无符号的整数之流，还有很多的string啊，复杂的类对象啊，而这些问题就是hash函数所要处理的问题。hash函数把这个对象映射到[0-表的长度-1]之间。但是，不能够保证每个元素的键值与函数值是一一对应的，因此极有可能出现对于不同的元素，却计算出了相同的函数值，这样就产生了“冲突”，换句话说，就是把不同的元素分在了相同的“类”之中。 总的来说，“直接定址”与“解决冲突”是哈希表的两大特点。首先，为什么会出现冲突？基于这种想法设计出来的结构无疑是一种空间换时间的典范，尽管现在硬件越来越牛逼，但并不意味着可以随便挥霍，矛盾就出现在空间的数据往往小于我们要处理的数据规模，所以我们不可能设计出一种一一对应的函数来。而解决冲突就是hash第二个要解决的问题。</p>
-
-<p>对于冲突的解决，往往有线性探测和二测探测以及开链法（类似list），前两种往往在数据规模小的情况下，即空间浪费的时候效率较高，这也意味着空间利用率不是很理想，而开链法，器负载系数大于1，就是索引的数组被极大利用了。
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/02/24/c-plus-plus-de-hashtablena-xie-shi/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -803,6 +853,10 @@ x|y=1\sim N(\mu_1,\Sigma)
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/05/19/threading-why-import-it-into-os/">Threading:why Import It Into Os</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/05/19/my-understanding-about-kmp/">我对KMP算法的理解</a>
       </li>
     
@@ -816,10 +870,6 @@ x|y=1\sim N(\mu_1,\Sigma)
     
       <li class="post">
         <a href="/blog/2014/04/29/dynamic-programming/">Dynamic Programming</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/28/some-commen-list-problems-in-the-interview/">Some Commen List Problems in the Interview</a>
       </li>
     
   </ul>
