@@ -9,7 +9,7 @@
   <meta name="author" content="Aluen King Lee">
 
   
-  <meta name="description" content="判别模型和生成模型分析 在学习复习ML内容时，中文检索生成模型搜到了该这里本文主要参考该文章，并稍作整理。 ">
+  <meta name="description" content="和朴素的字符串匹配算法相比，KMP加快匹配的关键在于当某个位置不匹配了，不在模版不再是向右滑动一个位置，而是跟匹配处相关的一个值。这样，在字符串的匹配时间就是和搜索串长度相关的一个值。 至于相关的资料，参阅了六之再续：KMP算法之总结篇（12.09修订，必懂KMP，只是这个个人感觉有点凌乱。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -103,6 +103,325 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/05/19/my-understanding-about-kmp/">我对KMP算法的理解</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-19T22:56:00+08:00" pubdate data-updated="true">May 19<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/05/19/my-understanding-about-kmp/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>和朴素的字符串匹配算法相比，KMP加快匹配的关键在于当某个位置不匹配了，不在模版不再是向右滑动一个位置，而是跟匹配处相关的一个值。这样，在字符串的匹配时间就是和搜索串长度相关的一个值<script type="math/tex">O(n)</script>。</p>
+
+<p>至于相关的资料，参阅了<a href="http://blog.csdn.net/v_july_v/article/details/7041827">六之再续：KMP算法之总结篇（12.09修订，必懂KMP</a>，只是这个个人感觉有点凌乱。</p>
+
+<p>定义要搜索的字符串模式是<script type="math/tex">P</script>,搜索的源是文本<script type="math/tex">T</script>.那让我们看看next数组怎么诞生的。</p>
+
+<h4 id="section">局部匹配表</h4>
+
+<p>理解KMP算法的关键就是<strong>局部匹配表</strong>,或者形象的称作为<strong>next数组</strong>，
+<a href="http://book.douban.com/subject/1885170/">算法导论</a>p571页详细的描述了推导的过程，并给出了证明。但是仍然还是晦涩难懂的。</p>
+
+<p>对于这个推论：设<script type="math/tex">P</script>是长度为<script type="math/tex">m</script>的模式，next是P的前缀函数，对于<script type="math/tex">q=2,3,...,m</script></p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+
+next\left[ q \right] =\begin{Bmatrix} 0 & \quad if\quad { E }_{ q }\quad =\quad \phi  \\ 1+max\{ k\in { E }_{ q-1 }\}  & \quad if\quad { E }_{ q-1 }\quad =\phi  \end{Bmatrix}
+ %]]></script>
+
+<p>直观来说就是才用动规的方法，求<script type="math/tex">next\left[ q \right]</script>的最长前缀的长度。</p>
+
+<p>那么好吧，再来个直观点的手写算法吧╮(╯▽╰)╭。</p>
+
+<p>就以书上的例子为准，见下图。</p>
+
+<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-05-19-my-understanding-about-kmp/1.png?raw=true" alt="a)" title="a)" /></p>
+
+<p>前q=5个字符匹配，标记为绿色。</p>
+
+<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-05-19-my-understanding-about-kmp/2.png?raw=true" alt="b)" title="b)" /></p>
+
+<p>很明显，s+1的位置是无效的，但是s+2的位置很有可能是有效的，所以，可以直接向右移动2个位置。</p>
+
+<p>推导中的使用的有用信息可以通过模式自身的比较来预处理计算得到。在这里，可以发现P的最长前缀同时也是<script type="math/tex">P_5</script>的一个真后缀<script type="math/tex">P_3</script>.这些信息可以预先急死俺，用数组next来表示，next[5]=3. 一般化的公式为，在位移s处有q个字符成功匹配，囊而下个有可能有效的位移是<script type="math/tex">s=s-(q-next[q])</script>.</p>
+
+<p>上面提到了<strong>真后缀</strong>,让我们给出定义来。</p>
+
+<p><strong>真前缀</strong>： 字符串中去除1个至多个尾部字符的字符串集合。比如aabac的真前缀为a,aa,aab,aaba.</p>
+
+<p><strong>真后缀</strong>： 字符串中去除1个至多个头部字符的字符串集合。比如aabac的真后缀为c,ac,bac,abac.</p>
+
+<p>好了 ，有了上面的定义，我们就可以简单，最重要的是明白计算next值了：<code>某个位置的next值为，到此位置的字符串产生的真前缀和真后缀</code><strong>并集</strong><code>中的最长元素的长度</code>。</p>
+
+<p>就比如上面的那个例子，模式串为”ababaca”</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">&quot;a&quot;的真前缀和真后缀都为空集，next[0]=0;
+</span><span class="line">
+</span><span class="line">&quot;ab&quot;的真前缀为[b],真后缀为[a], next[1]=0;
+</span><span class="line">
+</span><span class="line">&quot;aba&quot;的真前缀为[a,ab],真后缀为[a,ba],next[2]=1;
+</span><span class="line">
+</span><span class="line">&quot;abab&quot;的真前缀为[a,ab,aba],真后缀为[b,ab,bab],next[3]=2;
+</span><span class="line">
+</span><span class="line">&quot;ababa&quot;的真前缀为[a,ab,aba,abab],真后缀为[baba,aba,ba,a],next[4]=3;
+</span><span class="line">
+</span><span class="line">&quot;ababac&quot;的真前缀为[a,ab,aba,abab,ababa],真后缀为[babac,abac,bac,ac,c],next[5]=0;
+</span><span class="line">
+</span><span class="line">&quot;ababaca&quot;的真前缀为[a,ab,aba,abab,ababa,ababac],真后缀为[babaca,abaca,baca,aca,ca,a],next[5]=1;
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="section-1">如何使用</h4>
+
+<p>见上面的例子吧，很好理解不是。</p>
+
+<p>对了一下是代码。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="kt">void</span> <span class="n">compute_prefix</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">p</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">next</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="n">next</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+</span><span class="line">    <span class="kt">int</span> <span class="n">len</span> <span class="o">=</span> <span class="n">strlen</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+</span><span class="line">    <span class="kt">int</span> <span class="n">k</span> <span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">q</span><span class="p">;</span>
+</span><span class="line">    <span class="k">for</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span> <span class="n">q</span> <span class="o">&lt;</span> <span class="n">len</span><span class="p">;</span> <span class="n">q</span><span class="o">++</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="c1">///前q个字符中，前缀字符串集和后缀字符串集中最长的交集元素的长度</span>
+</span><span class="line">        <span class="k">while</span><span class="p">(</span> <span class="p">(</span><span class="n">k</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">!=</span> <span class="n">p</span><span class="p">[</span><span class="n">q</span><span class="p">])</span> <span class="p">)</span>
+</span><span class="line">            <span class="n">k</span> <span class="o">=</span> <span class="n">next</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
+</span><span class="line">        <span class="c1">/// 请看前面的那个状态转移函数的公式</span>
+</span><span class="line">        <span class="k">if</span><span class="p">(</span> <span class="n">p</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">==</span> <span class="n">p</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="p">)</span>
+</span><span class="line">            <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+</span><span class="line">        <span class="n">next</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="o">=</span> <span class="n">k</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="kt">void</span> <span class="n">kmp_match</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">T</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">P</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="kt">bool</span> <span class="n">flag</span><span class="o">=</span><span class="kc">false</span><span class="p">;</span>
+</span><span class="line">    <span class="kt">int</span> <span class="n">n</span><span class="o">=</span><span class="n">strlen</span><span class="p">(</span><span class="n">T</span><span class="p">);</span>
+</span><span class="line">    <span class="kt">int</span> <span class="n">m</span><span class="o">=</span><span class="n">strlen</span><span class="p">(</span><span class="n">P</span><span class="p">);</span>
+</span><span class="line">    <span class="kt">int</span> <span class="o">*</span><span class="n">next</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="n">m</span><span class="p">];</span>
+</span><span class="line">    <span class="n">compute_prefix</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">next</span><span class="p">);</span>
+</span><span class="line">    <span class="kt">int</span> <span class="n">q</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+</span><span class="line">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">while</span><span class="p">(</span><span class="n">q</span><span class="o">&gt;</span><span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">P</span><span class="p">[</span><span class="n">q</span><span class="p">]</span><span class="o">!=</span><span class="n">T</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</span><span class="line">            <span class="n">q</span><span class="o">=</span><span class="n">next</span><span class="p">[</span><span class="n">q</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
+</span><span class="line">        <span class="k">if</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">q</span><span class="p">]</span><span class="o">==</span><span class="n">T</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</span><span class="line">            <span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+</span><span class="line">        <span class="k">if</span><span class="p">(</span><span class="n">q</span><span class="o">==</span><span class="n">m</span><span class="p">)</span>
+</span><span class="line">        <span class="p">{</span>
+</span><span class="line">            <span class="n">flag</span><span class="o">=</span><span class="kc">true</span><span class="p">;</span>
+</span><span class="line">            <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;math occurs with &quot;</span><span class="o">&lt;&lt;</span><span class="n">i</span><span class="o">-</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+</span><span class="line">            <span class="n">q</span><span class="o">=</span><span class="n">next</span><span class="p">[</span><span class="n">q</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="n">flag</span><span class="o">==</span><span class="kc">false</span><span class="p">)</span>
+</span><span class="line">        <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;there is no math!&quot;</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="section-2">总结</h4>
+
+<p>相对于朴素的匹配算法，这里并不是在匹配失败后直接无脑的外后移一位就可以了，而是利用了模式串本身的信息，<strong>位移的距离=已经匹配的长度-该位置next值</strong>。</p>
+
+<p>希望对你有用。当然要是觉得有问题直接留言好了，一起学吧。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/30/generative-method/">Generative Method</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-30T22:52:00+08:00" pubdate data-updated="true">Apr 30<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/04/30/generative-method/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>线性回归模型和logistic回归是判别模型，也就是根据特征值来求结果的概率。形式化表
+示为<script type="math/tex">p(y|x;\theta)</script>在参数<script type="math/tex">\theta</script>确定的情况下，求解条件概率<script type="math/tex">p(y|x)</script>。
+通俗的解释为在给定特征后预测结果出现的概率。</p>
+
+<p>就按照Andrew Ng讲的那样，确定肿瘤是良性的还是恶性的，可以使用判别模型的方法是先
+从历史数据中学习到模型，然后通过提取肿瘤的特征来预测出它是良性恶性的概率。</p>
+
+<p>反过来，要是我们先从良性肿瘤学习出良性肿瘤的模型，从恶性肿瘤学习出恶性肿瘤的模型，
+然后提取肿瘤的特征，放到良性肿瘤的模型看下概率，在放到恶性肿瘤的模型看下概率，哪个
+大是哪个。</p>
+
+<p>形式化表示为求<script type="math/tex">P(X|Y)</script>,x是特征，y是类型即模型。
+利用贝叶斯公式发现两个模型的统一性：</p>
+
+<script type="math/tex; mode=display">
+p(y|x)=\frac { p(x|y)p(y) }{ p(x) } 
+</script>
+
+<p>由于我们关注的是 y 的离散值结果中哪个概率大（比如良性肿瘤和恶性肿瘤哪个概率大），
+而并不是关心具体的概率，因此上式改写为：</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+
+\quad \quad \quad \quad \begin{eqnarray} \max _{ y }{ p(y|x) }  & = & \max _{ y }{ \frac { p(x|y)p(y) }{ p(x) }  }  \\  & = &\max _{ y } p(x|y)p(y) \end{eqnarray}
+ %]]></script>
+
+<table>
+  <tbody>
+    <tr>
+      <td>其中$$p(x</td>
+      <td>y)<script type="math/tex">称为后验概率,</script>p(y)$$称为先验概率.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>由<script type="math/tex">p(x|y)*p(y)=p(x,y)</script>,因此有时称判别模型求的是条件概率，生成模型求的是联
+合概率。</p>
+
+<p>常见的判别模型有线性回归、对数回归、线性判别分析、支持向量机、boosting、条件
+随机场、神经网络等。</p>
+
+<p>常见的生产模型有隐马尔科夫模型、朴素贝叶斯模型、高斯混合模型、LDA、Restricted 
+Boltzmann Machine 等。</p>
+
+<p>上篇博客较为详细地介绍了两个模型</p>
+
+<h3 id="gaussian-discriminant-analysis">高斯判别分析（Gaussian discriminant analysis）</h3>
+
+<h5 id="section">多维正太分布</h5>
+
+<p>多变量正态分布描述的是n维随机变量的分布情况。所以这里的<script type="math/tex">\mu </script>变成了n维随机变量，<script type="math/tex">\sigma </script>也变成了
+矩阵<script type="math/tex">\Sigma </script>.记做<script type="math/tex">N(\mu,\Sigma)</script>.假设有 n 个随机变量<script type="math/tex">X_1,X_2,\cdots ,X_n</script>.所以显而易见，<script type="math/tex">\mu </script>的第i个分量是<script type="math/tex">E(X_i),\Sigma_{ii}=Var(X_i),\Sigma_{ij}=Cov(X_i,X_j)</script>.</p>
+
+<p>概率密度函数如下：</p>
+
+<script type="math/tex; mode=display">
+p(x;\mu,\Sigma)=\frac { 1 }{ \left( 2\pi  \right) ^{ n/2 }\left| \Sigma  \right| ^{ 1/2 } } exp\left( -\frac { 1 }{ 2 } \left( x-\mu \right)^T \Sigma^{-1}{\left(x-\mu\right)} \right) 
+</script>
+
+<h5 id="section-1">模型分析与应用</h5>
+
+<table>
+  <tbody>
+    <tr>
+      <td>如果输入特征x连续型随机变量，那么可以使用高斯判别分析模型来确定$$p(x</td>
+      <td>y)$$。模型如下,先以二元分布即伯努利分布来说（因为前面的例子是二元的）:</td>
+    </tr>
+  </tbody>
+</table>
+
+<script type="math/tex; mode=display">
+y\sim Bernoulli\left( \phi \right) \\
+x|y=0\sim N(\mu_0,\Sigma)\\
+x|y=1\sim N(\mu_1,\Sigma)
+</script>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -469,110 +788,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/01/05/machine-learning-linear-regression/">Machine Learning :linear Regression</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-01-05T12:00:00+08:00" pubdate data-updated="true">Jan 5<span>th</span>, 2014</time>
-        
-        
-          | <a href="/blog/2014/01/05/machine-learning-linear-regression/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>机器学习中，总体来说是分为两类问题：</p>
-
-<p>1.有监督的学习方法
-2.无监督的学习方法</p>
-
-<p>其他是这两者的综合，比如说半监督学习方法，强化学习（这个还未接触过）。</p>
-
-<p>本文呢，先从有监督的学习方法开始讲起，主要是记载学习过程中个人认为最重要的地方。</p>
-
-<p>对于监督学习中的两类问题，或者说三类吧，分别是：回归问题，分类问题和标注问题（tagging）。后面这个很有意思，不过在这里现说一下回归和分类的区别，假如我们要
-做一个连续变量的预测，比如说房价的预测，或者明日气温的预测，都是属于回归问题；而对于离散变量的预测，比如判断一个病人是否得了癌症，良性还是恶心，则是一个明显的分
-类问题。</p>
-
-<p>接下来的文章，大概是对Andrew Ng视频的一个简单的总结，会结合变成实例（octave和C++）来插叙。
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/01/05/machine-learning-linear-regression/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/12/31/ke-ai-de-armadillo/">可爱的Armadillo</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-31T10:25:00+08:00" pubdate data-updated="true">Dec 31<span>st</span>, 2013</time>
-        
-        
-          | <a href="/blog/2013/12/31/ke-ai-de-armadillo/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>最近又重新看了一下coursera上的<a href="https://class.coursera.org/ml-004/lecture/index">机器学习</a>(Andrew Ng讲的)，比起之前上老师的课和<a href="http://book.douban.com/subject/1102235/" title="机器学习">机器学习</a>这本书来说，简直好太多。当初选修这个课程的时候明显感到编程实践环节太少，很不适应，只有一个大作业而已。好在这里的Quara和Programming Excises很给力。</p>
-
-<p>我的设想是这样，octave作为一种快速验证想法的工具不适合应用在实际的生产环境中的，毕竟计算速度还是可以依靠集群和并行化来加快大数据处理。在此参考了C++的<a href="http://en.wikipedia.org/wiki/Comparison_of_linear_algebra_libraries">线性代数库</a>之后选择了Armadillo,毕竟经常更新并且从官网资料来看，和octave代码相似便于移植，再说，从它本身和其他的对比来看，速度也是相当快的。</p>
-
-<p>不过，在安装完Armadillo之后，编译example目录下的例子并不通过，提示</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/12/31/ke-ai-de-armadillo/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -588,6 +803,14 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/05/19/my-understanding-about-kmp/">我对KMP算法的理解</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/30/generative-method/">Generative Method</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/04/30/discriminative-model-vs-generative-model/">Discriminative Model vs. Generative Model</a>
       </li>
     
@@ -597,14 +820,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     
       <li class="post">
         <a href="/blog/2014/04/28/some-commen-list-problems-in-the-interview/">Some Commen List Problems in the Interview</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/21/feature-selection--infomation-gain/">特征选择-信息增益算法</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification/">A Scratch of Feature Selection in Traffic Classification</a>
       </li>
     
   </ul>

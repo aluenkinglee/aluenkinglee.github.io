@@ -9,7 +9,8 @@
   <meta name="author" content="Aluen King Lee">
 
   
-  <meta name="description" content="首先需要声明的一点是，到目前（2013/11）Nox在所有SDN控制器中不是最火的（相比Pox，floodlight），但是作为最先开发的一个SDN而言，还是有研究意义的。 ">
+  <meta name="description" content="机器学习中，总体来说是分为两类问题： 1.有监督的学习方法
+2.无监督的学习方法 其他是这两者的综合，比如说半监督学习方法，强化学习（这个还未接触过）。 本文呢，先从有监督的学习方法开始讲起，主要是记载学习过程中个人认为最重要的地方。 对于监督学习中的两类问题，或者说三类吧，分别是：回归问题， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -103,6 +104,110 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/01/05/machine-learning-linear-regression/">Machine Learning :linear Regression</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-05T12:00:00+08:00" pubdate data-updated="true">Jan 5<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/01/05/machine-learning-linear-regression/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>机器学习中，总体来说是分为两类问题：</p>
+
+<p>1.有监督的学习方法
+2.无监督的学习方法</p>
+
+<p>其他是这两者的综合，比如说半监督学习方法，强化学习（这个还未接触过）。</p>
+
+<p>本文呢，先从有监督的学习方法开始讲起，主要是记载学习过程中个人认为最重要的地方。</p>
+
+<p>对于监督学习中的两类问题，或者说三类吧，分别是：回归问题，分类问题和标注问题（tagging）。后面这个很有意思，不过在这里现说一下回归和分类的区别，假如我们要
+做一个连续变量的预测，比如说房价的预测，或者明日气温的预测，都是属于回归问题；而对于离散变量的预测，比如判断一个病人是否得了癌症，良性还是恶心，则是一个明显的分
+类问题。</p>
+
+<p>接下来的文章，大概是对Andrew Ng视频的一个简单的总结，会结合变成实例（octave和C++）来插叙。
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/01/05/machine-learning-linear-regression/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/12/31/ke-ai-de-armadillo/">可爱的Armadillo</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-31T10:25:00+08:00" pubdate data-updated="true">Dec 31<span>st</span>, 2013</time>
+        
+        
+          | <a href="/blog/2013/12/31/ke-ai-de-armadillo/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>最近又重新看了一下coursera上的<a href="https://class.coursera.org/ml-004/lecture/index">机器学习</a>(Andrew Ng讲的)，比起之前上老师的课和<a href="http://book.douban.com/subject/1102235/" title="机器学习">机器学习</a>这本书来说，简直好太多。当初选修这个课程的时候明显感到编程实践环节太少，很不适应，只有一个大作业而已。好在这里的Quara和Programming Excises很给力。</p>
+
+<p>我的设想是这样，octave作为一种快速验证想法的工具不适合应用在实际的生产环境中的，毕竟计算速度还是可以依靠集群和并行化来加快大数据处理。在此参考了C++的<a href="http://en.wikipedia.org/wiki/Comparison_of_linear_algebra_libraries">线性代数库</a>之后选择了Armadillo,毕竟经常更新并且从官网资料来看，和octave代码相似便于移植，再说，从它本身和其他的对比来看，速度也是相当快的。</p>
+
+<p>不过，在安装完Armadillo之后，编译example目录下的例子并不通过，提示</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/12/31/ke-ai-de-armadillo/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -529,100 +634,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/03/15/puzzles-of-vars-properties-in-python/">Python中关于变量属性的迷惑</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-15T17:06:00+08:00" pubdate data-updated="true">Mar 15<span>th</span>, 2013</time>
-        
-        
-          | <a href="/blog/2013/03/15/puzzles-of-vars-properties-in-python/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>当初使用C++，java的时候，变量的属性（可访问性，scope这类的意思）如public，private，protected，static这类很好理解。</p>
-
-<p>但是Python中默认的成员函数，成员变量都是公开的(public),而且python中没有类似public,private等关键词来修饰成员函数，成员变量。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/03/15/puzzles-of-vars-properties-in-python/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/03/15/some-important-details-in-python-personal/">Python中得一些重要的细节</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-15T16:17:00+08:00" pubdate data-updated="true">Mar 15<span>th</span>, 2013</time>
-        
-        
-          | <a href="/blog/2013/03/15/some-important-details-in-python-personal/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>字符串可以被下表索引，和C一样，第一个字符同样是0。</p>
-
-<p>Python中并没有单独的字符类型，一个字符就是长度为1的字符串。</p>
-
-<p>和C字符串不同的是，python字符串值不能更改。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/03/15/some-important-details-in-python-personal/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -640,6 +651,14 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/05/19/my-understanding-about-kmp/">我对KMP算法的理解</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/30/generative-method/">Generative Method</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/04/30/discriminative-model-vs-generative-model/">Discriminative Model vs. Generative Model</a>
       </li>
     
@@ -649,14 +668,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     
       <li class="post">
         <a href="/blog/2014/04/28/some-commen-list-problems-in-the-interview/">Some Commen List Problems in the Interview</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/21/feature-selection--infomation-gain/">特征选择-信息增益算法</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification/">A Scratch of Feature Selection in Traffic Classification</a>
       </li>
     
   </ul>
