@@ -30,7 +30,12 @@ $$
 
 就以书上的例子为准，见下图。
 
+![a)](https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-05-19-my-understanding-about-kmp/1.png?raw=true "a)")
+
+
 前q=5个字符匹配，标记为绿色。
+
+![b)](https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-05-19-my-understanding-about-kmp/1.png?raw=true "b)")
 
 很明显，s+1的位置是无效的，但是s+2的位置很有可能是有效的，所以，可以直接向右移动2个位置。
 
