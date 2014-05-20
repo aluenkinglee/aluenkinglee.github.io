@@ -9,7 +9,7 @@
   <meta name="author" content="Aluen King Lee">
 
   
-  <meta name="description" content="线程的引入是为了提高CPU利用率。线程给操作系统带来的创建维护和管理负担要轻。因为与线程相关的信息比较少，交情的负担意味着线程的代价或开销比较少。当处理器除一个进程并激活另一个进程时，就要发生上下文切换。为了发生上下文切换，操作系统必须启动和重新启动每个进程所需的信息。 &hellip;">
+  <meta name="description" content="就是把一些常用命令记录下来拉。一直在用，可就是容易忘记命令。 floodlight 控制器启动之后，因为不正常的关闭程序（ctrl+c）造成6633端口还在被占用。 流程如下： netstat -nlp 查看占用端口号的服务 找到该端口号的进程，可以使用grep 找到该进程id kill pid &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -103,6 +103,159 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/05/20/kill-process-on-some-port-under-linux-platform/">Linux下通过端口杀死进程</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-20T10:41:00+08:00" pubdate data-updated="true">May 20<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/05/20/kill-process-on-some-port-under-linux-platform/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>就是把一些常用命令记录下来拉。一直在用，可就是容易忘记命令。</p>
+
+<p>floodlight 控制器启动之后，因为不正常的关闭程序（ctrl+c）造成6633端口还在被占用。</p>
+
+<p>流程如下：</p>
+
+<ol>
+  <li>
+    <p>netstat -nlp 查看占用端口号的服务</p>
+  </li>
+  <li>
+    <p>找到该端口号的进程，可以使用grep</p>
+  </li>
+  <li>
+    <p>找到该进程id</p>
+  </li>
+  <li>
+    <p>kill pid</p>
+  </li>
+</ol>
+
+<h5 id="section">查看占用端口号的服务</h5>
+
+<p>可以使用netstat命令</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">Active Internet connections (only servers)
+</span><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+</span><span class="line">Active Internet connections (only servers)
+</span><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+</span><span class="line">tcp        0      0 0.0.0.0:6633            0.0.0.0:*               LISTEN      6267/java
+</span><span class="line">tcp        0      0 0.0.0.0:3307            0.0.0.0:*               LISTEN      12711/
+</span><span class="line">tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      3936/httpd
+</span><span class="line">tcp        0      0 0.0.0.0:21              0.0.0.0:*               LISTEN      3910/
+</span><span class="line">tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      3753/sshd
+</span><span class="line">tcp        0      0 0.0.0.0:25              0.0.0.0:*               LISTEN      3786/
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>######用管道符给grep处理</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"> netstat -nlp | grep 6633
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>既然取出一行了，那就容易了，再筛选一下，用awk分割取出其中一个</p>
+
+<h6 id="section-1">读取出端口号</h6>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">netstat -nlp | grep 6633 | awk <span class="s1">&#39;{print $7}&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>6267/java</p>
+
+<p>意思是取第七个字段，这里默认应该是用tab字符分割的，已经读取出来了，但是还得拿到/前面的数字</p>
+
+<h6 id="awk">取/前面的数字就可以了，这里还是可以用awk处理</h6>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">netstat -nlp | grep 6633 | awk <span class="s1">&#39;{print $7}&#39;</span> | awk -F<span class="s2">&quot;/&quot;</span> <span class="s1">&#39;{ print $1 }&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>6267</p>
+
+<h6 id="kill">把这个数字传给kill就可以</h6>
+
+<p>kill命令不能跟在管道符后面继续处理了，会出错的.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nb">kill</span> <span class="o">[</span><span class="s1">&#39;] netstat -nlp | grep 6633 | awk &#39;</span><span class="o">{</span>print <span class="nv">$7</span><span class="o">}</span><span class="s1">&#39; | awk -F&quot;/&quot; &#39;</span><span class="o">{</span> print <span class="nv">$1</span> <span class="o">}</span><span class="s1">&#39; [&#39;</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<blockquote>
+  <blockquote>
+    <p>其它类似的命令</p>
+  </blockquote>
+</blockquote>
+
+<ol>
+  <li>查看端口属于哪个程序？端口被哪个进程占用</li>
+</ol>
+
+<p>也可以使用lsof命令。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nv">$ </span>lsof -i :6633
+</span><span class="line">
+</span><span class="line">COMMAND   PID   USER      FD   TYPE    DEVICE  SIZE/OFF NODE NAME
+</span><span class="line">java    7838   kinglee   50r   IPv6  35452317       0t0  TCP *:6633 <span class="o">(</span>LISTEN<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="reference">reference</h4>
+
+<ol>
+  <li>
+    <p><a href="http://baike.baidu.com/link?url=idG3yCyykQj00QVBW_jreekVZWjIGU5urL553dG9o4ZYgwpbnjd7jJ2DVjxrm5EZ">netstat</a></p>
+  </li>
+  <li>
+    <p><a href="http://www.cnblogs.com/peter9/archive/2011/07/28/2362156.html">Linux下通过端口杀死进程</a></p>
+  </li>
+  <li>
+    <p><a href="http://blog.csdn.net/andy572633/article/details/7211546">linux下杀死进程（kill）的N种方法</a></p>
+  </li>
+</ol>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -790,54 +943,6 @@ x|y=1\sim N(\mu_1,\Sigma)
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/">理解TCP中的序列号和确认号</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-26T22:34:00+08:00" pubdate data-updated="true">Feb 26<span>th</span>, 2014</time>
-        
-        
-          | <a href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>之所以写这么一篇文章是因为被wireshark的序列号搞晕了，我不知道你们是否这样，当你读这篇article时，肯定你已经熟悉了TCP那个三次握手，
-或者是SYN,SYN|ACK,ACK. 而我要做的也就是这个，提取一个流的前N个packets，针对目前的需求，只需要在传输层截取UDP和TCP的前多少个流即可。
-所以我得分析网络层的这些协议底层到底是怎么回事，在结合libpcap完成流的提取任务。</p>
-
-<p>相对来说TCP还是个复杂的协议，而且值得清楚的认识以下。那么结合wireshark和代码来认识下TCP里面的东西。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -853,6 +958,10 @@ x|y=1\sim N(\mu_1,\Sigma)
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/05/20/kill-process-on-some-port-under-linux-platform/">Linux下通过端口杀死进程</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/05/19/threading-why-import-it-into-os/">Threading:why Import It Into Os</a>
       </li>
     
@@ -866,10 +975,6 @@ x|y=1\sim N(\mu_1,\Sigma)
     
       <li class="post">
         <a href="/blog/2014/04/30/discriminative-model-vs-generative-model/">Discriminative Model vs. Generative Model</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/29/dynamic-programming/">Dynamic Programming</a>
       </li>
     
   </ul>

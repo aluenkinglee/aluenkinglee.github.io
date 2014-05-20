@@ -9,7 +9,8 @@
   <meta name="author" content="Aluen King Lee">
 
   
-  <meta name="description" content="对于想知道hashtable原理的的人来说，多少对基本的数据结构和算法都有些了解，所以不再细说。 平常我们所说的一些容器来说，比如vector，list，stack之类，他们中的元素都是可以排序的，可以归为序列式容器，基于连续内存的vector可以实现随机存储，但是搜索的复杂度是O（n）， &hellip;">
+  <meta name="description" content="之所以写这么一篇文章是因为被wireshark的序列号搞晕了，我不知道你们是否这样，当你读这篇article时，肯定你已经熟悉了TCP那个三次握手，
+或者是SYN,SYN|ACK,ACK. 而我要做的也就是这个，提取一个流的前N个packets，针对目前的需求， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -103,6 +104,54 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/">理解TCP中的序列号和确认号</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-26T22:34:00+08:00" pubdate data-updated="true">Feb 26<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>之所以写这么一篇文章是因为被wireshark的序列号搞晕了，我不知道你们是否这样，当你读这篇article时，肯定你已经熟悉了TCP那个三次握手，
+或者是SYN,SYN|ACK,ACK. 而我要做的也就是这个，提取一个流的前N个packets，针对目前的需求，只需要在传输层截取UDP和TCP的前多少个流即可。
+所以我得分析网络层的这些协议底层到底是怎么回事，在结合libpcap完成流的提取任务。</p>
+
+<p>相对来说TCP还是个复杂的协议，而且值得清楚的认识以下。那么结合wireshark和代码来认识下TCP里面的东西。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -584,51 +633,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/04/17/jin-qi-zong-jie/">近期总结</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-17T17:13:00+08:00" pubdate data-updated="true">Apr 17<span>th</span>, 2013</time>
-        
-        
-          | <a href="/blog/2013/04/17/jin-qi-zong-jie/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>一直以来对数据挖掘，推荐的算法比较感兴趣，可是大家也都知道如果只是看课本上的那些理论性的公式和说辞会给人一种很空泛的感觉，所以个人感觉迫切需要做这方面的实践。可惜做这些的最最最遗憾缺少的就是数据的问题。所以我的给自己整点数据。</p>
-
-<p>还好这学期算是有时间，相对于上个学期一周n多的课程和大作业来说算是幸福多的了。（而且那个时候还要给师兄们各种帮忙，要写android程序版本中的几个activity，呵呵，不过很有意思，师兄有一个是做LBS信息匿名处理服务的，挺有意思，对比微博，人人中的定位&gt;.&lt;就会发现这个很有必要的，获取一个人的坐标信息还是很容易的。）所以就琢磨这弄点数据自己来搞，一开始我是想获得微博的数据，具体来说是获得某个人过去说过的话，然后分析什么样的人，什么样的性格，心理怎么样。（我认为计算机和其他学科的交叉才是王道，说到底，计算机，算法毕竟只是一种计算的工具和技术，和其他学科（比如地理，心理学，生物学）的交叉才会有更多新的发现，现在数据量都很多，人工时处理不了的。机器学习和数据挖掘的应用领域啦~）
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/04/17/jin-qi-zong-jie/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -646,6 +650,10 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/05/20/kill-process-on-some-port-under-linux-platform/">Linux下通过端口杀死进程</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/05/19/threading-why-import-it-into-os/">Threading:why Import It Into Os</a>
       </li>
     
@@ -659,10 +667,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     
       <li class="post">
         <a href="/blog/2014/04/30/discriminative-model-vs-generative-model/">Discriminative Model vs. Generative Model</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/29/dynamic-programming/">Dynamic Programming</a>
       </li>
     
   </ul>

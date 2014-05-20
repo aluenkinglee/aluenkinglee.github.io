@@ -4,7 +4,7 @@
   <title><![CDATA[曾经渐行远，未免心戚戚]]></title>
   <link href="http://aluenkinglee.com/atom.xml" rel="self"/>
   <link href="http://aluenkinglee.com/"/>
-  <updated>2014-05-19T23:18:48+08:00</updated>
+  <updated>2014-05-20T19:15:24+08:00</updated>
   <id>http://aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
@@ -12,6 +12,129 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Linux下通过端口杀死进程]]></title>
+    <link href="http://aluenkinglee.com/blog/2014/05/20/kill-process-on-some-port-under-linux-platform/"/>
+    <updated>2014-05-20T10:41:00+08:00</updated>
+    <id>http://aluenkinglee.com/blog/2014/05/20/kill-process-on-some-port-under-linux-platform</id>
+    <content type="html"><![CDATA[<p>就是把一些常用命令记录下来拉。一直在用，可就是容易忘记命令。</p>
+
+<p>floodlight 控制器启动之后，因为不正常的关闭程序（ctrl+c）造成6633端口还在被占用。</p>
+
+<p>流程如下：</p>
+
+<ol>
+  <li>
+    <p>netstat -nlp 查看占用端口号的服务</p>
+  </li>
+  <li>
+    <p>找到该端口号的进程，可以使用grep</p>
+  </li>
+  <li>
+    <p>找到该进程id</p>
+  </li>
+  <li>
+    <p>kill pid</p>
+  </li>
+</ol>
+
+<h5 id="section">查看占用端口号的服务</h5>
+
+<p>可以使用netstat命令</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">Active Internet connections (only servers)
+</span><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+</span><span class="line">Active Internet connections (only servers)
+</span><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+</span><span class="line">tcp        0      0 0.0.0.0:6633            0.0.0.0:*               LISTEN      6267/java
+</span><span class="line">tcp        0      0 0.0.0.0:3307            0.0.0.0:*               LISTEN      12711/
+</span><span class="line">tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      3936/httpd
+</span><span class="line">tcp        0      0 0.0.0.0:21              0.0.0.0:*               LISTEN      3910/
+</span><span class="line">tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      3753/sshd
+</span><span class="line">tcp        0      0 0.0.0.0:25              0.0.0.0:*               LISTEN      3786/
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>######用管道符给grep处理</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"> netstat -nlp | grep 6633
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>既然取出一行了，那就容易了，再筛选一下，用awk分割取出其中一个</p>
+
+<h6 id="section-1">读取出端口号</h6>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">netstat -nlp | grep 6633 | awk <span class="s1">&#39;{print $7}&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>6267/java</p>
+
+<p>意思是取第七个字段，这里默认应该是用tab字符分割的，已经读取出来了，但是还得拿到/前面的数字</p>
+
+<h6 id="awk">取/前面的数字就可以了，这里还是可以用awk处理</h6>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">netstat -nlp | grep 6633 | awk <span class="s1">&#39;{print $7}&#39;</span> | awk -F<span class="s2">&quot;/&quot;</span> <span class="s1">&#39;{ print $1 }&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>6267</p>
+
+<h6 id="kill">把这个数字传给kill就可以</h6>
+
+<p>kill命令不能跟在管道符后面继续处理了，会出错的.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nb">kill</span> <span class="o">[</span><span class="s1">&#39;] netstat -nlp | grep 6633 | awk &#39;</span><span class="o">{</span>print <span class="nv">$7</span><span class="o">}</span><span class="s1">&#39; | awk -F&quot;/&quot; &#39;</span><span class="o">{</span> print <span class="nv">$1</span> <span class="o">}</span><span class="s1">&#39; [&#39;</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<blockquote>
+  <blockquote>
+    <p>其它类似的命令</p>
+  </blockquote>
+</blockquote>
+
+<ol>
+  <li>查看端口属于哪个程序？端口被哪个进程占用</li>
+</ol>
+
+<p>也可以使用lsof命令。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nv">$ </span>lsof -i :6633
+</span><span class="line">
+</span><span class="line">COMMAND   PID   USER      FD   TYPE    DEVICE  SIZE/OFF NODE NAME
+</span><span class="line">java    7838   kinglee   50r   IPv6  35452317       0t0  TCP *:6633 <span class="o">(</span>LISTEN<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="reference">reference</h4>
+
+<ol>
+  <li>
+    <p><a href="http://baike.baidu.com/link?url=idG3yCyykQj00QVBW_jreekVZWjIGU5urL553dG9o4ZYgwpbnjd7jJ2DVjxrm5EZ">netstat</a></p>
+  </li>
+  <li>
+    <p><a href="http://www.cnblogs.com/peter9/archive/2011/07/28/2362156.html">Linux下通过端口杀死进程</a></p>
+  </li>
+  <li>
+    <p><a href="http://blog.csdn.net/andy572633/article/details/7211546">linux下杀死进程（kill）的N种方法</a></p>
+  </li>
+</ol>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[threading:why import it into os]]></title>
@@ -4260,128 +4383,6 @@ ip 与本机VirtualBox Host-Only Network的网卡ip在同一网段内（默认19
 </pre></td><td class="code"><pre><code class=""><span class="line">select id,place_lat,place_lon from nearbyinfo where place_lat &gt;100;
 </span><span class="line">UPDATE nearbyinfo t1,nearbyinfo t2 SET t1.place_lat=t1.place_lon,t2.place_lon=t2.place_lat where t1.id = t2.id and t1.place_lat&gt;100;
 </span><span class="line">select id,place_lat,place_lon from nearbyinfo where id in (1025,4974,4814,2685);</span></code></pre></td></tr></table></div></figure></notextile></div>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[近期总结]]></title>
-    <link href="http://aluenkinglee.com/blog/2013/04/17/jin-qi-zong-jie/"/>
-    <updated>2013-04-17T17:13:00+08:00</updated>
-    <id>http://aluenkinglee.com/blog/2013/04/17/jin-qi-zong-jie</id>
-    <content type="html"><![CDATA[<p>一直以来对数据挖掘，推荐的算法比较感兴趣，可是大家也都知道如果只是看课本上的那些理论性的公式和说辞会给人一种很空泛的感觉，所以个人感觉迫切需要做这方面的实践。可惜做这些的最最最遗憾缺少的就是数据的问题。所以我的给自己整点数据。</p>
-
-<p>还好这学期算是有时间，相对于上个学期一周n多的课程和大作业来说算是幸福多的了。（而且那个时候还要给师兄们各种帮忙，要写android程序版本中的几个activity，呵呵，不过很有意思，师兄有一个是做LBS信息匿名处理服务的，挺有意思，对比微博，人人中的定位&gt;.&lt;就会发现这个很有必要的，获取一个人的坐标信息还是很容易的。）所以就琢磨这弄点数据自己来搞，一开始我是想获得微博的数据，具体来说是获得某个人过去说过的话，然后分析什么样的人，什么样的性格，心理怎么样。（我认为计算机和其他学科的交叉才是王道，说到底，计算机，算法毕竟只是一种计算的工具和技术，和其他学科（比如地理，心理学，生物学）的交叉才会有更多新的发现，现在数据量都很多，人工时处理不了的。机器学习和数据挖掘的应用领域啦~）
-<!-- more -->
-不过跟老板交涉的结果是，嗯，想法是不错，可惜缺少可以定量分析心理学的依据，毕竟你不是研究过心理学的，没有话语权,论文不好发，没个几年时间你不好毕业&gt;&lt;。。好吧，从此我就踏上了LBSNs的不归路，呵呵。话说虽然Foursquare现在半死不活的，但是我个人认为不是LBS的不成功，而是Foursquare本省商业模式的问题，这个得专门写一篇文章，不在这里跑题了。</p>
-
-<p>在LBSN中除了可以分析用户的行为轨迹，感觉这里面没有可以继续深入的了，因为在继续做下去就是匿名，而且很多人都已经做过了。基于地理位置上的数据挖掘和推荐貌似还不是很多(资料查的少的缘故，不敢妄下定论)。</p>
-
-<p>通过新浪微博API调用获取地理位置信息</p>
-
-<h6 id="section">目的</h6>
-
-<p>获取带地理标签的微博数据，为以后分析数据使用。</p>
-
-<h6 id="section-1">相关工作</h6>
-
-<p><code>目前获取微博信息的方法有两种</code> </p>
-
-<ol>
-  <li>
-    <p>编写网络爬虫抓取带地理标签的微博</p>
-  </li>
-  <li>
-    <p>通过OAuth2.0认证使用微博提供的API获取微博</p>
-  </li>
-</ol>
-
-<p><code>网络爬虫的基本工作流程如下</code> </p>
-
-<ol>
-  <li>
-    <p>首先选取一部分精心挑选的种子URL；</p>
-  </li>
-  <li>
-    <p>将这些URL放入待抓取URL队列；</p>
-  </li>
-  <li>
-    <p>从待抓取URL队列中取出待抓取在URL，解析DNS，并且得到主机的ip，并将URL对应的网页下载下来，存储进已下载网页库中。此外，将这些URL放进已抓取URL队列。</p>
-  </li>
-  <li>
-    <p>分析已抓取URL队列中的URL，分析其中的其他URL，并且将URL放入待抓取URL队列，从而进入下一个循环。</p>
-  </li>
-</ol>
-
-<p><code>抓取策略</code></p>
-
-<p>在爬虫系统中，待抓取URL队列是很重要的一部分。待抓取URL队列中的URL以什么样的顺序排列也是一个很重要的问题，因为这涉及到先抓取那个页面，后抓取哪个页面。而决定这些URL排列顺序的方法，叫做抓取策略。下面重点介绍几种常见的抓取策略：</p>
-
-<ul>
-  <li>
-    <p>深度优先遍历策略</p>
-  </li>
-  <li>
-    <p>宽度优先遍历策略</p>
-  </li>
-  <li>
-    <p>反向链接数策略</p>
-  </li>
-  <li>
-    <p>Partial PageRank策略</p>
-  </li>
-</ul>
-
-<p>可是在使用这种方法的过程中，发现了微博在使用cookie登陆的过程中有个加密的处理，这个加密算法一时没有弄明白，我不知道具体的加密步骤所以也反解不出来。所以就使用了另外的方法。</p>
-
-<p><code>使用OAuth2.0认证</code></p>
-
-<p>OAuth（开放授权）是一个开放标准，允许用户让第三方应用访问该用户在某一网站上存储的私密的资源（如照片，视频，联系人列表），而无需将用户名和密码提供给第三方应用。</p>
-
-<p>OAuth允许用户提供一个令牌，而不是用户名和密码来访问他们存放在特定服务提供者的数据。每一个令牌授权一个特定的网站（例如，视频编辑网站)在特定的时段（例如，接下来的2小时内）内访问特定的资源（例如仅仅是某一相册中的视频）。这样，OAuth让用户可以授权第三方网站访问他们存储在另外服务提供者的某些特定信息，而非所有内容。</p>
-
-<h6 id="section-2">认证和授权过程</h6>
-
-<p><code>在认证和授权的过程中涉及的三方包括</code></p>
-
-<ol>
-  <li>
-    <p>服务提供方，用户使用服务提供方来存储受保护的资源，如照片，视频，联系人列表。</p>
-  </li>
-  <li>
-    <p>用户 ，存放在服务提供方的受保护的资源的拥有者。</p>
-  </li>
-  <li>
-    <p>客户端 ，要访问服务提供方资源的第三方应用。在认证过程之前，客户端要向服务提供者申请客户端标识。</p>
-  </li>
-</ol>
-
-<p><code>使用OAuth进行认证和授权的过程如下所示</code></p>
-
-<ol>
-  <li>用户访问客户端的网站，想操作自己存放在服务提供方的资源。</li>
-  <li>客户端向服务提供方请求一个临时令牌。</li>
-  <li>服务提供方验证客户端的身份后，授予一个临时令牌。</li>
-  <li>客户端获得临时令牌后，将用户引导至服务提供方的授权页面请求用户授权。在这个过程中将临时令牌和客户端的回调连接发送给服务提供方。</li>
-  <li>用户在服务提供方的网页上输入用户名和密码，然后授权该客户端访问所请求的资源。</li>
-  <li>授权成功后，服务提供方引导用户返回客户端的网页。</li>
-  <li>客户端根据临时令牌从服务提供方那里获取访问令牌 。</li>
-  <li>服务提供方根据临时令牌和用户的授权情况授予客户端访问令牌。</li>
-  <li>客户端使用获取的访问令牌访问存放在服务提供方上的受保护的资源</li>
-</ol>
-
-<h6 id="section-3">方法</h6>
-
-<p>前期比较了两种方案，决定优先使用网路爬虫的方案。</p>
-
-<p>在使用爬虫的方案时，尽管在使用cookie模拟登陆renren.com，douban.com可以成功，但还是在weibo.com这遇到了另外一个头痛加密数据的问题，之前的工作没有办法得到应用。而且短时间内数据加密的方式解决不了。放弃。</p>
-
-<p>使用OAuth认证调用微博API的方案可以很方便的通过认证并且得到带有地理位置标签的数据。目前获得了35000条微博的数据。</p>
-
-<p>对其返回的数据分析发现，该数据结构足以满足需求，用户id，发布微博时间，发布地点，微博文本内容等。</p>
-
-<p>这些数据的来源是源自微博中周边微博这类地理位置的API。出于实验的目的，我把海淀区划分了15个区域，取区域内的标志性地点的经纬度（可以随时增加其他点），再以一个较低的频率（为了尽量避免取到重复数据）去取这15个点的周边微博（全部含有地理标签）。</p>
-
-<p>对于这些数据的想法，目前是把这些数据标示在地图上，先得到直观上的点的分布，再分析为什么会再此聚集，和什么属性相关。这是基本的想法。</p>
 ]]></content>
   </entry>
   
