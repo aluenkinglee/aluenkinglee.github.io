@@ -82,8 +82,19 @@ $$
 { d }^{ \ast  }=\max _{ \alpha ,\beta :{ \alpha  }_{ i }\ge 0 }{ \min _{ w }{ L\left( w,\alpha ,\beta  \right)  }  } \le { \min _{ w }{ \max _{ \alpha ,\beta :{ \alpha  }_{ i }\ge 0 }{ L\left( w,\alpha ,\beta  \right)  }  }  }={ p }^{ \ast  }
  $$
 
- 存在 $${ w }^{ \ast  },{ \alpha }^{ \ast  },{ \beta }^{ \ast  }$$ 使得$${ w }^{ \ast  }$$是原问题的解，$${ \alpha }^{ \ast  },{ \beta }^{ \ast  }$$  是对偶问题的解。还有 { p }^{ \ast  }={ d}^{ \ast  } = L({ w }^{ \ast  },{ \alpha }^{ \ast  },{ \beta }^{ \ast  })$$ 
+ 存在 $${ w }^{ \ast  },{ \alpha }^{ \ast  },{ \beta }^{ \ast  }$$ 使得$${ w }^{ \ast  }$$是原问题的解，$${ \alpha }^{ \ast  },{ \beta }^{ \ast  }$$  是对偶问题的解。还有 $${ p }^{ \ast  }={ d}^{ \ast  } = L({ w }^{ \ast  },{ \alpha }^{ \ast  },{ \beta }^{ \ast  })$$ 
 
- 另外， 满足库恩-塔克条件（Karush-Kuhn-Tucker, KKT condition），该条件如下：
+ 另外，  $${ w }^{ \ast  },{ \alpha }^{ \ast  },{ \beta }^{ \ast  }$$ 满足库恩-塔克条件（Karush-Kuhn-Tucker, KKT condition），该条件如下：
+
+![库恩-塔克条件（Karush-Kuhn-Tucker, KKT condition）](https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-06-03-lagrange-duality/kkt.png?raw=true 库恩-塔克条件（Karush-Kuhn-Tucker, KKT condition）")
+
+ 所以如果 $${ w }^{ \ast  },{ \alpha }^{ \ast  },{ \beta }^{ \ast  }$$  满足了库恩-塔克条件，那么他们就是原问题和对偶问题的解。当$$g_{i}(w^{ \ast  })=0$$ 时，w处于可行域的边界上，这时才是起作用的约束。而其他位于可行域内部（ $$g_{i}(w^{ \ast  })<0$$ 的）点都是不起作用的约束，其 $${ \alpha }^{ \ast  }=0$$。这个KKT双重补足条件会用来解释支持向量和SMO的收敛测试。
 
  KKT的总体思想是将极值会在可行域边界上取得，也就是不等式为0或等式约束里取得，而最优下降方向一般是这些等式的线性组合，其中每个元素要么是不等式为0的约束，要么是等式约束。对于在可行域边界内的点，对最优解不起作用，因此前面的系数为0。
+
+
+>> 参考
+
+1. Andrew Ng的原始课件讲义
+
+2. 统计学习方法
