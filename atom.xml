@@ -4,7 +4,7 @@
   <title><![CDATA[曾经渐行远，未免心戚戚]]></title>
   <link href="http://aluenkinglee.com/atom.xml" rel="self"/>
   <link href="http://aluenkinglee.com/"/>
-  <updated>2014-05-20T19:15:24+08:00</updated>
+  <updated>2014-06-04T09:24:35+08:00</updated>
   <id>http://aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
@@ -12,6 +12,232 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[拉格朗日对偶]]></title>
+    <link href="http://aluenkinglee.com/blog/2014/06/03/lagrange-duality/"/>
+    <updated>2014-06-03T21:41:00+08:00</updated>
+    <id>http://aluenkinglee.com/blog/2014/06/03/lagrange-duality</id>
+    <content type="html"><![CDATA[<p>在解决约束最优化的额问题中，常常利用拉格朗日对偶性将原始问题转化为对偶问题，通过解对偶问题得到原始问题的解。该方法主要应用的SVM和最大熵模型中。</p>
+
+<p>先抛开上面的二次规划问题，先来看看存在等式约束的极值问题求法，比如下面的最优化问题：</p>
+
+<script type="math/tex; mode=display">
+\min _{ w }{ f\left( w \right)  } \\ s.t\quad h_{ i }\left( w \right) =0,\quad i=1,\cdots ,l
+</script>
+
+<p>目标函数是f(w)，下面是等式约束。通常解法是引入拉格朗日算子，这里使用<script type="math/tex">\beta</script>来表示算子，得到拉格朗日公式为</p>
+
+<!-- more -->
+
+<script type="math/tex; mode=display">
+L \left( w,\beta  \right) =f\left( w \right) +\sum _{ i=1 }^{ l }{ \beta _{ i }h_{ i } } \left( w \right) 
+</script>
+
+<p>L是等式约束的个数。</p>
+
+<p>然后分别对w和 <script type="math/tex">\beta</script>求偏导，使得偏导数等于0，然后解出w和 <script type="math/tex">\beta_i</script>。至于为什么引入拉格朗日算子可以求出极值，原因是f(w)
+的dw变化方向受其他不等式的约束，dw的变化方向与f(w)的梯度垂直时才能获得极值，而且在极值处，f(w)的梯度与其他等式梯度的线性组合平行，因此他们之间存在线性关系。（参考《最优化与KKT条件》）
+然后我们探讨有不等式约束的极值问题求法，问题如下：</p>
+
+<script type="math/tex; mode=display">
+\min _{ w }{ f\left( w \right)  } \\ 
+s.t\quad h_{ i }\left( w \right) =0,\quad i=1,\cdots ,l\\ 
+\quad \quad \quad g_{ i }\left( w \right) \le 0,\quad i=1,\cdots ,k
+</script>
+
+<p>我们定义一般化的拉格朗日公式</p>
+
+<script type="math/tex; mode=display">
+L\left( w,\beta  \right) =f\left( w \right) +\sum _{ i=1 }^{ k }{ \alpha _{ i }g_{ i } } \left( w \right) \sum _{ i=1 }^{ l }{ \beta _{ i }h_{ i } } \left( w \right) 
+</script>
+
+<p>这里的<script type="math/tex">\alpha _{ i } </script>和<script type="math/tex">\beta _{ i } </script> 都是拉格朗日算子。如果按这个公式求解，会出现问题，因为我们求解的是最小值，而这里的 <script type="math/tex">g_{ i } \left( w \right) </script>已经不是0了，我们可以将 <script type="math/tex">\alpha _{ i } </script>调整成很大的正值，来使最后的函数结果是负无穷。因此我们需要排除这种情况，我们定义下面的函数：</p>
+
+<script type="math/tex; mode=display">
+{ \theta  }_{p  }\left( w \right) =\max _{ \alpha ,\beta :{ \alpha  }_{ i }\ge 0 }{ L\left( w,\alpha ,\beta  \right)  } 
+</script>
+
+<p>这里的P代表primal。假设<script type="math/tex">g_{ i }\left( w \right)</script> &gt;0 或者<script type="math/tex">h_{ i }\left( w \right) \neq 0</script> ，那么我们总是可以调整 <script type="math/tex">\alpha_i</script>和<script type="math/tex">\beta_i</script> 来使得<script type="math/tex"> { \theta  }_{ p  }\left( w \right)</script>有最大值为正无穷。而只有g和h满足约束时，<script type="math/tex"> { \theta  }_{ p }\left( w \right)</script> 为f(w)。这个函数的精妙之处在于 <script type="math/tex">\alpha_i \ge 0</script>，而且求极大值。</p>
+
+<p>因此,</p>
+
+<script type="math/tex; mode=display">
+{ \theta  }_{ p  }\left( w \right) =\begin{cases} f\left( w \right) ,\quad w满足原始问题约束 \\ +\infty ，其他\quad  \end{cases}
+</script>
+
+<p>所以如果考虑极小化问题</p>
+
+<script type="math/tex; mode=display">
+{ \min _{ w }{ { \theta  }_{p  }\left( w \right)  }  }={ \min _{ w }{ \max _{ \alpha ,\beta :{ \alpha  }_{ i }\ge 0 }{ L\left( w,\alpha ,\beta  \right)  }  }  }
+</script>
+
+<p>它是原始问题的等价解，原始最优化问题转化成了拉格朗日函数的极小极大问题，这时候把原始问题的最优值记为：</p>
+
+<script type="math/tex; mode=display">
+{ p }^{ \ast  }=\min _{ w }{ { \theta  }_{ p }\left( w \right)  } 
+</script>
+
+<p>哎哟，看看我们的等价形式哦，首先有两个参数，其中还是一个不等式约束=。=,考虑下对偶吧，极小极大问题转化为等价的极大极小问题。</p>
+
+<h4 id="section">对偶形式</h4>
+
+<p>定义<script type="math/tex">{ \theta  }_{ D }\left( \alpha ,\beta  \right) =\min _{ w }{ L\left( w,\alpha ,\beta  \right)  } </script>，在考虑极大化<script type="math/tex">{ \theta  }_{ D }\left( \alpha ,\beta  \right) </script>,先把这两个参数看成固定值，求关于w的最小值，之后在求对偶的最大值即</p>
+
+<script type="math/tex; mode=display">
+\max _{ \alpha ,\beta :{ \alpha  }_{ i }\ge 0 }{ { \theta  }_{ D }\left( \alpha ,\beta  \right)  } =\max _{ \alpha ,\beta :{ \alpha  }_{ i }\ge 0 }{ \min _{ w }{ L\left( w,\alpha ,\beta  \right)  }  } 
+</script>
+
+<p>这个问题是原问题的对偶问题，相对于原问题只是更换了min和max的顺序，而一般更换顺序的结果是Max Min(X) &lt;= MinMax(X)。然而在这里两者相等。用<script type="math/tex">{ d }^{ \ast  }</script> 来表示对偶问题如下：</p>
+
+<script type="math/tex; mode=display">
+{ d }^{ \ast  }=\max _{ \alpha ,\beta :{ \alpha  }_{ i }\ge 0 }{ \min _{ w }{ L\left( w,\alpha ,\beta  \right)  }  } \le { \min _{ w }{ \max _{ \alpha ,\beta :{ \alpha  }_{ i }\ge 0 }{ L\left( w,\alpha ,\beta  \right)  }  }  }={ p }^{ \ast  }
+ </script>
+
+<p>存在 <script type="math/tex">{ w }^{ \ast  },{ \alpha }^{ \ast  },{ \beta }^{ \ast  }</script> 使得<script type="math/tex">{ w }^{ \ast  }</script>是原问题的解，<script type="math/tex">{ \alpha }^{ \ast  },{ \beta }^{ \ast  }</script>  是对偶问题的解。还有 <script type="math/tex">{ p }^{ \ast  }={ d}^{ \ast  } = L({ w }^{ \ast  },{ \alpha }^{ \ast  },{ \beta }^{ \ast  })</script> </p>
+
+<p>另外，  <script type="math/tex">{ w }^{ \ast  },{ \alpha }^{ \ast  },{ \beta }^{ \ast  }</script> 满足库恩-塔克条件（Karush-Kuhn-Tucker, KKT condition），该条件如下：</p>
+
+<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-06-03-lagrange-duality/kkt.png?raw=true 库恩-塔克条件（Karush-Kuhn-Tucker, KKT condition）&quot;" alt="库恩-塔克条件（Karush-Kuhn-Tucker, KKT condition）" /></p>
+
+<p>所以如果 <script type="math/tex">{ w }^{ \ast  },{ \alpha }^{ \ast  },{ \beta }^{ \ast  }</script>  满足了库恩-塔克条件，那么他们就是原问题和对偶问题的解。当<script type="math/tex">g_{i}(w^{ \ast  })=0</script> 时，w处于可行域的边界上，这时才是起作用的约束。而其他位于可行域内部（ <script type="math/tex">% &lt;![CDATA[
+g_{i}(w^{ \ast  })<0 %]]&gt;</script> 的）点都是不起作用的约束，其 <script type="math/tex">{ \alpha }^{ \ast  }=0</script>。这个KKT双重补足条件会用来解释支持向量和SMO的收敛测试。</p>
+
+<p>KKT的总体思想是将极值会在可行域边界上取得，也就是不等式为0或等式约束里取得，而最优下降方向一般是这些等式的线性组合，其中每个元素要么是不等式为0的约束，要么是等式约束。对于在可行域边界内的点，对最优解不起作用，因此前面的系数为0。</p>
+
+<blockquote>
+  <blockquote>
+    <p>参考</p>
+  </blockquote>
+</blockquote>
+
+<ol>
+  <li>
+    <p>Andrew Ng的原始课件讲义</p>
+  </li>
+  <li>
+    <p>统计学习方法</p>
+  </li>
+</ol>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[从逻辑回归分类到SVM分类]]></title>
+    <link href="http://aluenkinglee.com/blog/2014/06/03/my-understanding-about-svm/"/>
+    <updated>2014-06-03T20:53:00+08:00</updated>
+    <id>http://aluenkinglee.com/blog/2014/06/03/my-understanding-about-svm</id>
+    <content type="html"><![CDATA[<p>上一章讲到了线性回归的一个典型算法，核心思想就是利用最小二乘法最为损失函数，不断使用梯度下降法（或者使用随机梯度下降法（stochastic gradient descent））来更新theta值。</p>
+
+<p>后来降到了分类，逻辑回归只不过有个很好的性质就是值分布在0到1之间，正好可以利用到分类上。logistic回归就是要学习得到θ，使得正例的特征远大于 0，负例的特征远
+小于 0，强调在全部训练实例上达到这个目标。为什么说逻辑回归是个线性模型？这是因为该模型是将特性的线性组合作为自变量，然后使用logistic函数（或者说是sigmoid函数）将自变量映射到（0-1）上，将值和概率结合之后从而应用到分类上。
+函数表示形式：</p>
+
+<script type="math/tex; mode=display">
+h_{ \theta  }\left( x \right) =g\left( \theta ^{ T }x \right) =\frac { 1 }{ 1+{e  }^{ -\theta^{T}x } }
+</script>
+
+<!-- more -->
+
+<p>其中 x 是 n 维特征向量，函数 g 就是 logistic 函数
+从线性回归到了逻辑回归，从逻辑回归又到了分类，那么再来看看SVM这个有监督的分类学习算法。
+在这里我们使用的y的取值记为1和-1，所以对logistic 回归中的做下替换，令logistic回归中的y=0和y=1变为y=-1,y=1。同时将θ替换成 w 和 b。
+所以有<script type="math/tex">\Theta^{T}x=\theta_0x_0+\theta_1x_1+\cdots +\theta_nx_n</script>，现在使用b替换<script type="math/tex">\theta_0</script>,替换后的形式变为<script type="math/tex">w^{ T }x=w_{ 1 }x_{ 1 }+\cdots +w_{ n }x_{ n }+b</script>，这样做之后，我们的假设函数就变成了</p>
+
+<script type="math/tex; mode=display">
+h_{ b,w }\left( x \right) =g\left( w^{ T }x+b \right)
+</script>
+
+<p>和逻辑回归的形式很相像。</p>
+
+<p>表达形式就引申到这里，在来谈下SVM的思想，当我们学习线性回归时，我们的想法就是使用最小二乘法拟合数据，而在分类问题中，我们的想法就是找到一条直线，使正负样本离这个线或者超平面尽可能的远。也就是<code>间隔</code>最大。用一句话来说就是：<strong>在特征空间上的间隔最大的线性分类器。所以我们所有的努力都在如何是间隔最大化上，而这个可以转化为一个凸二次规划的问题</strong>。所以SVM的学习算法就是求解凸二次规划的最优化算法。</p>
+
+<h5 id="functional-margingeometric-margin">函数间隔（functional margin）和几何间隔（geometric margin）</h5>
+
+<p>我们定义函数间隔就是：对于给定的数据集T和超平面（w,b），样本点<script type="math/tex">\left( x^{(i)},y^{(i)} \right) </script>到超平面的函数间隔为：
+$$
+\widehat { \gamma  } ^{ (i) }=y^{ (i) }(w^{T}\cdot x^{ (i) }+b) 
+$$</p>
+
+<p>函数间隔或者间隔本身描述了一种确信度。离超平面越远，间隔值就越大，可信度就越大。</p>
+
+<p>刚刚我们定义的函数间隔是针对某一个样本的，现在我们定义全局样本上的函数间隔，定义超平面关于数据集的函数间隔为超平面中所有样本点函数间隔的最小值，就是在训练样本上分类正例和负例确信度最小那个函数间隔，即</p>
+
+<script type="math/tex; mode=display">
+\widehat {\gamma }=\min _{ i=1,...m }{ \widehat { \gamma  } ^{ (i) } }
+</script>
+
+<p>但是有个问题，如果按比例的增加w和b，那么函数间隔也会按比例改变，这个对结果没有影响，但是问题会变得不好描述，不能定量的计算，所以我们就需要把它规范化(normalization)。只需要结果除以<script type="math/tex">\left\| w \right\| </script>就好了，这个时候<script type="math/tex">w/\left\| w \right\| </script>就成为了单位向量，所以函数间隔和几何间隔的关系也就是这样简单，几何间隔就是规范化后的函数间隔。无论w和b怎么折腾，几何间隔都不会改变。</p>
+
+<p>定义几何间隔就是：对于给定的数据集T和超平面（w,b），样本点<script type="math/tex">\left( x^{(i)},y^{(i)} \right) </script>到超平面的几何间隔为：</p>
+
+<script type="math/tex; mode=display">
+{ \gamma  } ^{ (i) }=y^{ (i) }(w^{T}\cdot x^{ (i) }+b)/\left\| w \right\|
+</script>
+
+<p>定义超平面关于数据集的几何间隔为超平面中所有样本点几何间隔的最小值,即</p>
+
+<script type="math/tex; mode=display">
+{ \gamma  }=\min _{ i=1,...m }{ { \gamma  }^{ (i) } }
+</script>
+
+<p>最优间隔分类器（optimal margin classifier）（利用间隔最大化）</p>
+
+<p>回想前面我们提到我们的目标是寻找一个超平面，使得离超平面比较近的点能有更大的
+间距。 也就是我们不考虑所有的点都必须远离超平面，我们关心求得的超平面能够让所有点中离它最近的点具有最大间距。形象的说，我们将上面的图看作是一张纸，我们要找一条折线，按照这条折线折叠后，离折线最近的点的间距比其他折线都要大。形式化表示为：</p>
+
+<script type="math/tex; mode=display">
+\max _{ \gamma ,w,b }{ \gamma  } \\ s.t\quad { y }^{ \left( i \right)  }\left( { w }^{ T }{ x }^{ \left( i \right)  }+b \right) \ge \gamma ,i=1,\cdots ,m\\ \left\| w \right\| =1
+</script>
+
+<table>
+  <tbody>
+    <tr>
+      <td>这里用</td>
+      <td> </td>
+      <td>w</td>
+      <td> </td>
+      <td>=1 规约 w，使得<script type="math/tex"> w^{T}\cdot x+b</script>是几何间隔。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>到此，我们已经将模型定义出来了。如果求得了 w 和 b，那么来一个特征 x，我们就能
+够分类了，称为最优间隔分类器。接下的问题就是如何求解 w 和 b 的问题了。</p>
+
+<p>由于||w|| = 1不是凸函数，我们想先处理转化一下，考虑几何间隔和函数间隔的关系，
+<script type="math/tex"> \gamma =\frac { \hat { \gamma  }  }{ \left\| w \right\|  } </script>，我们改写一下上面的式子：</p>
+
+<script type="math/tex; mode=display">
+\max _{ \gamma ,w,b }{ \frac { \widehat { \gamma  }  }{ \left\| w \right\|  }  } \\ s.t\quad { y }^{ \left( i \right)  }\left( { w }^{ T }{ x }^{ \left( i \right)  }+b \right) \ge \widehat { \gamma  } ,i=1,\cdots ,m
+</script>
+
+<p>因为函数间隔值得改变对结果没有影响，所以可以给它个固定值比如1.将 <script type="math/tex">\hat { \gamma  } =1</script>代入上面的最优化问题，因为最大化<script type="math/tex"> \frac { 1 }{ \left\| w \right\|  } </script>最小化<script type="math/tex"> \frac { 1 }{ 2 } \left\| w \right\| ^{ 2 }</script>是等价的，于是将上面改写成这样：</p>
+
+<script type="math/tex; mode=display">
+\min _{ \gamma ,w,b }{ \frac { 1 }{ 2 }  } { \left\| w \right\|  }^{ 2 }\\ s.t\quad { y }^{ \left( i \right)  }\left( { w }^{ T }{ x }^{ \left( i \right)  }+b \right) -1\ge 0,i=1,\cdots ,m
+</script>
+
+<p>这就变成了一个凸二次规划问题，详情见<a href="http://zh.wikipedia.org/wiki/%E4%BA%8C%E6%AC%A1%E8%A7%84%E5%88%92">凸二次规划</a></p>
+
+<p>接下来是关于拉格朗日对偶的问题，在这之后，在描述SVM中最简单的分类器——<strong>线性可分支持向量机</strong>，因为这个情况下，数据是线性可分的，而且噪音没有，只需要通过<strong>硬间隔最大化</strong>,即可学习一个线性的分类器，又称硬间隔支持向量机。</p>
+
+<blockquote>
+  <blockquote>
+    <p>参考</p>
+  </blockquote>
+</blockquote>
+
+<ol>
+  <li>
+    <p>Andrew Ng的原始课件讲义</p>
+  </li>
+  <li>
+    <p>统计学习方法</p>
+  </li>
+</ol>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Linux下通过端口杀死进程]]></title>
@@ -4192,197 +4418,6 @@ f_x(x_1,...,x_k)=\frac{1}{(2\pi)^{k/2}|\Sigma|^{1/2}}exp(-\frac{1}{2}(x-\mu)^T\S
 </span><span class="line">
 </span><span class="line">test behavior2
 </span></code></pre></td></tr></table></div></figure></notextile></div>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[virtualbox网络环境和登录]]></title>
-    <link href="http://aluenkinglee.com/blog/2013/10/20/virtualbox-network-environment-and-login/"/>
-    <updated>2013-10-20T22:46:00+08:00</updated>
-    <id>http://aluenkinglee.com/blog/2013/10/20/virtualbox-network-environment-and-login</id>
-    <content type="html"><![CDATA[<p>最近由于实验室需要研究SDN的一些东西，再此先来搭配下环境。
-对于虚拟机的一些选择，可以看这里:
-<a href="http://mininet.org/vm-setup-notes/">vm-setup-notes</a> 
-我这里的环境是:</p>
-
-<p><code>os:            debian 7(wheezy) 64bit</code></p>
-
-<p><code>xwindows:      kde</code></p>
-
-<p><code>VM：           virtualbox</code></p>
-
-<p><code>controller:    pox</code></p>
-
-<!--more-->
-
-<p>按照上述的网址，可以比较容易的搭配出来需要的环境，下面就说以下之后遇到的问题。</p>
-
-<ul>
-  <li>virtualbox的鼠标独占问题，只是提示太不明明显了！对于那个right ctrl的提示我郁闷了好一会，我以为是鼠标右键+ctrl…其实是右边的ctrl键。对于这个键的设定，你可以从“管理”&gt;“全局设定”&gt;”热键”来设置你喜欢的按键..我就吐槽这么一句，之前vmware对此的说明很明了！</li>
-  <li>Using Host-only adapter to SSH guest from host.</li>
-</ul>
-
-<h3 id="nat">NAT模式</h3>
-<p>特点：
-1. 如果主机可以上网，虚拟机可以上网
-2. 虚拟机之间不能ping通
-3. 虚拟机可以ping通主机（此时ping虚拟机的网关，即是ping主机）
-4. 主机不能ping通虚拟机</p>
-
-<p>但是这个情况下是不能满足我的使用条件…我需要在host登录到guest中，so pass</p>
-
-<h3 id="section">桥接模式</h3>
-<p>特点：
-1. 如果主机可以上网，虚拟机可以上网
-2. 虚拟机之间可以ping通
-3. 虚拟机可以ping通主机
-4. 主机可以ping通虚拟机 (以上各点基于一个前提：主机可以上网)
-5. 如果主机不可以上网，所有1-4特点均无</p>
-
-<p>这个挺好，觉得可以满足我的要求但是，发现它的IP地址要求是自动非配的，我们实验室的IP是校园内网固定IP…</p>
-
-<h3 id="host-only-adapter">Host-only Adapter模式</h3>
-
-<p>特点：</p>
-
-<ol>
-  <li>虚拟机<code>不</code>可以上网</li>
-  <li>虚拟机之间可以ping通</li>
-  <li>虚拟机可以ping通主机（注意虚拟机与主机通信是通过主机的名为VirtualBox Host-Only Network的网卡，因此ip
-是该网卡ip <code>192.168.56.1</code>，而不是你现在正在上网所用的ip）</li>
-  <li>主机可以ping通虚拟机</li>
-</ol>
-
-<p>应用场景：
-需要搭建一个模拟局域网，所有机器可以互访。（颇不得以选这个的..）</p>
-
-<p>ip样式：<code>netstat -rn</code>查看路由表
-ip 与本机VirtualBox Host-Only Network的网卡ip在同一网段内（默认192.168.56.*）
-网关 本机VirtualBox Host-Only Network的网卡ip（默认192.168.56.1）</p>
-
-<h3 id="section-1">登录虚拟机</h3>
-<p>登录虚拟机，首先开开virtualbox的虚拟机</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">mininet-vm login: mininet
-</span><span class="line">Password: mininet</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>接下来查看我们的vm地址：（在guest里面操作）</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">sudo ifconfig</span></code></pre></td></tr></table></div></figure></notextile></div>
-<p>例如我这里的ip地址是<code>192.168.56.101</code>,然后就使用我们可爱的SSH</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">ssh -Y mininet@192.168.56.101</span></code></pre></td></tr></table></div></figure></notextile></div>
-<p>输入密码就可以了</p>
-
-<p>当然上面的不好看，做下别名好了。（在我们host里面操作）</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">sudo nano /etc/hosts
-</span><span class="line">192.168.56.101 mininet-vm</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>保存即可，这样子就可以使用</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">ssh -Y mininet@mininet-vm</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>接下来就可以去玩下面的实验了^^</p>
-
-<blockquote>
-  <p>参考文档:</p>
-</blockquote>
-
-<blockquote>
-  <p><a href="http://blog.csdn.net/yxc135/article/details/8458939">VirtualBox虚拟机网络环境解析</a></p>
-</blockquote>
-
-<blockquote>
-  <p><a href="http://www.live-in.org/archives/832.html">ssh命令用于远程登录上Linux主机</a></p>
-</blockquote>
-
-<blockquote>
-  <p><a href="http://mininet.org/vm-setup-notes/">SSH into VM</a></p>
-</blockquote>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[MySql交换两列]]></title>
-    <link href="http://aluenkinglee.com/blog/2013/06/14/mysqljiao-huan-liang-lie/"/>
-    <updated>2013-06-14T15:35:00+08:00</updated>
-    <id>http://aluenkinglee.com/blog/2013/06/14/mysqljiao-huan-liang-lie</id>
-    <content type="html"><![CDATA[<p>事情的起因是这个发现数据库中出现了某两列数据正好颠倒了，大部分数据都是正常的，
-这些错误的原因是数据源有问题，今天在进一步的做标签聚类的时候分析的时候发现这
-些占很小比例的误差，辛亏发现了，否则做出来的结果有可能会郁闷很久。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">select id,place_lat,place_lon from `nearbyinfo` where `nearbyinfo`.`place_lat`&gt;0;</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>正常的数据都是&lt; <code>39.xxx</code>, <code>160.2xxx</code> &gt;之间，如图所示:
-<!--more--></p>
-
-<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/11.png?raw=true" alt="正常数据" title="正常数据" /></p>
-
-<p>但是幸好及时发现了存在这样的数据，</p>
-
-<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/12.png?raw=true" alt="异常数据" title="异常数据" /></p>
-
-<p>一开始想的是想写sql语句试着把这两栏的数据给交换过来，可是sql太渣…然后就想着找
-到这些ID和他们的坐标值（都已经出来了），然后用python读出来写成update的语句，
-然后在执行一下就可以了，这也太…</p>
-
-<p>辛亏最终还是找到了，在这还是完整的说明一下吧。首先创建一个表，在Mysql中</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">CREATE DATABASE  IF NOT EXISTS `weibodata` 
-</span><span class="line">USE `weibodata`;
-</span><span class="line">DROP TABLE IF EXISTS `test`;
-</span><span class="line">CREATE TABLE `test` (
-</span><span class="line">  `id` int(11) NOT NULL AUTO_INCREMENT,
-</span><span class="line">  `a` varchar(45) DEFAULT NULL,
-</span><span class="line">  `b` varchar(45) DEFAULT NULL,
-</span><span class="line">  PRIMARY KEY (`id`)
-</span><span class="line">) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-</span><span class="line">LOCK TABLES `test` WRITE;
-</span><span class="line">INSERT INTO `test` VALUES (1,'-1','4'),(2,'3','2');
-</span><span class="line">UNLOCK TABLES;</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>所以看起来会是这个样子:</p>
-
-<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/12.png?raw=true" alt="交换之前" title="交换之前" /></p>
-
-<p>然后执行下面的语句，会发生第二行swap了</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">UPDATE test t1,test t2 SET t1.a=t1.b,t2.b=t2.a where t1.id =t2.id and t1.a&gt;0;</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/12.png?raw=true" alt="交换之后" title="交换之后" /></p>
-
-<p>在尝试一下就会变成原样。</p>
-
-<p>问题解决了。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">select id,place_lat,place_lon from nearbyinfo where place_lat &gt;100;
-</span><span class="line">UPDATE nearbyinfo t1,nearbyinfo t2 SET t1.place_lat=t1.place_lon,t2.place_lon=t2.place_lat where t1.id = t2.id and t1.place_lat&gt;100;
-</span><span class="line">select id,place_lat,place_lon from nearbyinfo where id in (1025,4974,4814,2685);</span></code></pre></td></tr></table></div></figure></notextile></div>
 ]]></content>
   </entry>
   

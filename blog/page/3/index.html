@@ -9,7 +9,9 @@
   <meta name="author" content="Aluen King Lee">
 
   
-  <meta name="description" content="一直以来对数据挖掘，推荐的算法比较感兴趣，可是大家也都知道如果只是看课本上的那些理论性的公式和说辞会给人一种很空泛的感觉，所以个人感觉迫切需要做这方面的实践。可惜做这些的最最最遗憾缺少的就是数据的问题。所以我的给自己整点数据。 还好这学期算是有时间， &hellip;">
+  <meta name="description" content="最近由于实验室需要研究SDN的一些东西，再此先来搭配下环境。
+对于虚拟机的一些选择，可以看这里:
+vm-setup-notes 我这里的环境是: os: debian 7(wheezy) 64bit xwindows: kde VM： virtualbox controller: pox ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -103,6 +105,111 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/10/20/virtualbox-network-environment-and-login/">Virtualbox网络环境和登录</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-20T22:46:00+08:00" pubdate data-updated="true">Oct 20<span>th</span>, 2013</time>
+        
+        
+          | <a href="/blog/2013/10/20/virtualbox-network-environment-and-login/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>最近由于实验室需要研究SDN的一些东西，再此先来搭配下环境。
+对于虚拟机的一些选择，可以看这里:
+<a href="http://mininet.org/vm-setup-notes/">vm-setup-notes</a> 
+我这里的环境是:</p>
+
+<p><code>os:            debian 7(wheezy) 64bit</code></p>
+
+<p><code>xwindows:      kde</code></p>
+
+<p><code>VM：           virtualbox</code></p>
+
+<p><code>controller:    pox</code></p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/10/20/virtualbox-network-environment-and-login/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/06/14/mysqljiao-huan-liang-lie/">MySql交换两列</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-14T15:35:00+08:00" pubdate data-updated="true">Jun 14<span>th</span>, 2013</time>
+        
+        
+          | <a href="/blog/2013/06/14/mysqljiao-huan-liang-lie/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>事情的起因是这个发现数据库中出现了某两列数据正好颠倒了，大部分数据都是正常的，
+这些错误的原因是数据源有问题，今天在进一步的做标签聚类的时候分析的时候发现这
+些占很小比例的误差，辛亏发现了，否则做出来的结果有可能会郁闷很久。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">select id,place_lat,place_lon from `nearbyinfo` where `nearbyinfo`.`place_lat`&gt;0;</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>正常的数据都是&lt; <code>39.xxx</code>, <code>160.2xxx</code> &gt;之间，如图所示:
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/06/14/mysqljiao-huan-liang-lie/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -361,6 +468,14 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/06/03/lagrange-duality/">拉格朗日对偶</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/03/my-understanding-about-svm/">从逻辑回归分类到SVM分类</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/05/20/kill-process-on-some-port-under-linux-platform/">Linux下通过端口杀死进程</a>
       </li>
     
@@ -370,14 +485,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     
       <li class="post">
         <a href="/blog/2014/05/19/my-understanding-about-kmp/">我对KMP算法的理解</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/30/generative-method/">Generative Method</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/30/discriminative-model-vs-generative-model/">Discriminative Model vs. Generative Model</a>
       </li>
     
   </ul>
