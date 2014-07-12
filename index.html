@@ -9,7 +9,7 @@
   <meta name="author" content="Aluen King Lee">
 
   
-  <meta name="description" content="在解决约束最优化的额问题中，常常利用拉格朗日对偶性将原始问题转化为对偶问题，通过解对偶问题得到原始问题的解。该方法主要应用的SVM和最大熵模型中。 先抛开上面的二次规划问题，先来看看存在等式约束的极值问题求法，比如下面的最优化问题： \min _{ w }{ f\left( w \right &hellip;">
+  <meta name="description" content="这里提到的伪匹配的概念是指在网上搜索某些特征词，比如人名公司手机QQ号等内容时，网页反馈的结果：重要关键词在人看来是逻辑没有关联的时候就是伪匹配。 比如说，某XX，公司名，地点很明显的构成一个记录的时候，在人看来是个写在一起的，那么结果就是匹配的。相反，要是搜索词相距很远，那么就是伪匹配。 那么好 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -103,6 +103,238 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/07/09/wei-pi-pei/">伪匹配</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-09T17:13:00+08:00" pubdate data-updated="true">Jul 9<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/07/09/wei-pi-pei/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>这里提到的伪匹配的概念是指在网上搜索某些特征词，比如人名公司手机QQ号等内容时，网页反馈的结果：重要关键词在人看来是逻辑没有关联的时候就是伪匹配。</p>
+
+<p>比如说，某XX，公司名，地点很明显的构成一个记录的时候，在人看来是个写在一起的，那么结果就是匹配的。相反，要是搜索词相距很远，那么就是伪匹配。</p>
+
+<p>那么好，人工审核此类内容是否匹配时，是个无聊枯燥的工作内容，那么只好找机器帮忙，思路也很简单，分析样本伪匹配的原因是什么？和网页文档有什么不同？</p>
+
+<p>对目标网页的分析可以发现，搜索词在目标网页中有时是结构化存在的，就是搜索词处在不同的节点中，节点关系为树中的关系，或者是兄弟关系，或者是父子关系。
+同时还有非结构化的内容，比如搜索词是在同一个节点中，此时就不存在上述判断关系，只能由另外一种关系来处理。</p>
+
+<p>接着说，当是结构化的关系的时候，从我们人的观点来看，他们应该是兄弟节点，相邻很近，或者用另外一个距离：节点到最近祖先再到另外一个节点的距离。此距离也是很近的。</p>
+
+<p>当时非结构话的关系时，他们是在用一语意范围内，所以字符距离很近。</p>
+
+<p>OK，有了上面的思路，我们所做的就是分析统计目标网页的结构，然后查看具体指标的范围。</p>
+
+<p>首先看如何区分是否结构化，这个可以依靠text的长度来判断（这是分析后发现的）。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="octave"><span class="line"><span class="n">x1</span><span class="p">=[</span>54<span class="p">,</span>161<span class="p">,</span>70<span class="p">,</span>65<span class="p">,</span>66<span class="p">,</span>3369<span class="p">,</span>101<span class="p">,</span>50<span class="p">,</span>167<span class="p">];</span>
+</span><span class="line"><span class="n">y1</span><span class="p">=[</span>1<span class="p">,</span>1<span class="p">,</span>1<span class="p">,</span>1<span class="p">,</span>1<span class="p">,</span>1<span class="p">,</span>1<span class="p">,</span>1<span class="p">,</span>1<span class="p">];</span>
+</span><span class="line"><span class="n">x2</span><span class="p">=[</span>114265<span class="p">,</span>89406<span class="p">,</span>137824<span class="p">,</span>11300<span class="p">,</span>14001<span class="p">,</span>54575<span class="p">,</span>108596<span class="p">,</span>78197<span class="p">,</span>67810<span class="p">,</span>11948<span class="p">,</span>8660<span class="p">,</span>2677<span class="p">,</span>103724<span class="p">,</span>8686<span class="p">];</span>
+</span><span class="line"><span class="n">y2</span><span class="p">=[</span>0 0 0 0 0 0 0 0 0 0 0 0 0 0<span class="p">];</span>
+</span><span class="line"><span class="nb">figure</span> <span class="p">;</span>
+</span><span class="line"><span class="nb">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">y1</span><span class="p">,</span><span class="s">&#39;rx&#39;</span><span class="p">,</span><span class="s">&#39;MarkerSize&#39;</span><span class="p">,</span>10<span class="p">);</span>
+</span><span class="line"><span class="nb">hold</span> <span class="n">on</span><span class="p">;</span>
+</span><span class="line"><span class="nb">plot</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span><span class="n">y2</span><span class="p">,</span><span class="s">&#39;bo&#39;</span><span class="p">,</span><span class="s">&#39;MarkerSize&#39;</span><span class="p">,</span>10<span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>数据是分析后得到的。</p>
+
+<p>分布图如下：</p>
+
+<p><img src="https://raw.githubusercontent.com/aluenkinglee/aluenkinglee.github.io/source/source/images/2014-07-09-wei-pi-pei/false%20match1.png" alt="是否结构化与最长文本长度分布图" title="是否结构化与最长文本长度分布图" /></p>
+
+<p>从图形分界出来看，max(x1)=3369,min(x2)=2677,这个cutoff可以选取2677～3369之间的长度即可。</p>
+
+<p>代码如下,摘选了函数的一部分，url是函数的形参。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line">    <span class="k">try</span> <span class="o">{</span>
+</span><span class="line">        <span class="n">Document</span> <span class="n">doc</span> <span class="o">=</span> <span class="n">Jsoup</span><span class="o">.</span><span class="na">connect</span><span class="o">(</span><span class="n">url</span><span class="o">).</span><span class="na">get</span><span class="o">();</span>
+</span><span class="line">        <span class="n">Vector</span><span class="o">&lt;</span><span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Vector</span><span class="o">&lt;</span><span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;&gt;();</span>
+</span><span class="line">        <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;</span> <span class="n">tagCount</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;();</span>
+</span><span class="line">        <span class="n">Map</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;</span> <span class="n">lenCount</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;();</span>
+</span><span class="line">        <span class="n">Elements</span> <span class="n">content</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="na">getAllElements</span><span class="o">();</span>
+</span><span class="line">        <span class="kt">int</span> <span class="n">max</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class="line">        <span class="n">String</span> <span class="n">tag</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span><span class="line">        <span class="k">for</span> <span class="o">(</span><span class="n">Element</span> <span class="n">e</span> <span class="o">:</span> <span class="n">content</span><span class="o">)</span> <span class="o">{</span><span class="c1">// 此处就是遍历了</span>
+</span><span class="line">            <span class="k">if</span> <span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">ownText</span><span class="o">().</span><span class="na">length</span><span class="o">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">                <span class="n">String</span> <span class="n">key</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">nodeName</span><span class="o">();</span>
+</span><span class="line">                <span class="kt">int</span> <span class="n">len</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">ownText</span><span class="o">().</span><span class="na">length</span><span class="o">();</span>
+</span><span class="line">                <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;</span> <span class="n">ins</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
+</span><span class="line">                <span class="n">ins</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">len</span><span class="o">);</span>
+</span><span class="line">                <span class="n">map</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">ins</span><span class="o">);</span>
+</span><span class="line">                <span class="k">if</span> <span class="o">(</span><span class="n">len</span> <span class="o">&gt;</span> <span class="n">max</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">                    <span class="n">max</span> <span class="o">=</span> <span class="n">len</span><span class="o">;</span>
+</span><span class="line">                    <span class="n">tag</span> <span class="o">=</span> <span class="n">key</span><span class="o">;</span>
+</span><span class="line">                <span class="o">}</span>
+</span><span class="line">                <span class="k">if</span> <span class="o">(</span><span class="n">lenCount</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="n">len</span><span class="o">))</span> <span class="o">{</span>
+</span><span class="line">                    <span class="n">lenCount</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">len</span><span class="o">,</span> <span class="n">lenCount</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">len</span><span class="o">)</span> <span class="o">+</span> <span class="mi">1</span><span class="o">);</span>
+</span><span class="line">                <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class="line">                    <span class="n">lenCount</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">len</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
+</span><span class="line">                <span class="o">}</span>
+</span><span class="line">                <span class="k">if</span> <span class="o">(</span><span class="n">tagCount</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="n">key</span><span class="o">))</span> <span class="o">{</span>
+</span><span class="line">                    <span class="n">tagCount</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">tagCount</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">key</span><span class="o">)</span> <span class="o">+</span> <span class="mi">1</span><span class="o">);</span>
+</span><span class="line">                <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class="line">                    <span class="n">tagCount</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
+</span><span class="line">                <span class="o">}</span>
+</span><span class="line">            <span class="o">}</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">map</span><span class="o">);</span>
+</span><span class="line">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">tagCount</span><span class="o">);</span>
+</span><span class="line">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">lenCount</span><span class="o">);</span>
+</span><span class="line">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">tag</span> <span class="o">+</span> <span class="s">&quot;:&quot;</span> <span class="o">+</span> <span class="n">max</span><span class="o">);</span>
+</span><span class="line">
+</span><span class="line">    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="c1">// TODO Auto-generated catch block</span>
+</span><span class="line">        <span class="c1">// e.printStackTrace();</span>
+</span><span class="line">    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>接着在做搜索节点的距离值的分布，一个搜索词可以会出现在不同的位置，既然搜索词之间有关联效应，那么，即使出现位置很多，也会有不同的搜索词因为语意关联的缘故，他们的节点距离是很近的，照这个思路，有了以下的分布图。</p>
+
+<p>图示如下：</p>
+
+<p>而在无结构中，搜索词的语意判断就是文本距离，搜索词的下标靠的很近。</p>
+
+<p>图示如下：</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/">朴素贝叶斯文本分类</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-27T13:11:00+08:00" pubdate data-updated="true">Jun 27<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>回顾朴素贝叶斯(NB)分类器:</p>
+
+<script type="math/tex; mode=display">
+p(y_k|x)=\frac{p(y_k)p(x|y_k)}{p(x)}\propto p(y_k)p(x|y_k)=p(y_k)\prod_{i=1}^{d}{p(x_i|y_k)}
+</script>
+
+<p>对于文本分类任务,即对一篇文章进行分类,是 NLP 中最常见的机器学习任务。一般情
+况下,类别从几个到几十不等,或者更多。使用朴素贝叶斯文分类器进行文本分类,我们需要首先考
+虑特征是什么,即x如何表示;<script type="math/tex">p(x_i|y_k )</script>的物理意义是什么,如何计算。
+对于特征方面,文本分类常规都是使用 bag-of-words 的特征,即以文章中出现的词作为
+特征,而不考虑词语出现的顺序。朴素贝叶斯文分类器也一般使用这种形式。那么特征空间的大小,
+就取决于词表(vocabulary)的大小,即语料集合中不重复词的个数。对于汉语来说,一般
+几万到百万不等。</p>
+
+<p>在 bag-of-words 的特征体系下,特征空间是确定了的,但是具体<script type="math/tex">x_i</script>的取值以及对应的
+<script type="math/tex">p(x_i |y_k )</script>的物理意义却可以有不同的考虑,对应着不同的参数计算公式及分类器训练和预测
+的实现。这取决于我们是否考虑词语在文章中出现的频次。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -871,95 +1103,6 @@ x|y=1\sim N(\mu_1,\Sigma)
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/28/some-commen-list-problems-in-the-interview/">Some Commen List Problems in the Interview</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-04-28T21:54:00+08:00" pubdate data-updated="true">Apr 28<span>th</span>, 2014</time>
-        
-        
-          | <a href="/blog/2014/04/28/some-commen-list-problems-in-the-interview/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>链表是最基本的数据结构，面试官也常常用链表来考察面试者的基本能力，而且链表相关的操作相对而言比较简单，也适合考察写代码的能力。链表的操作也离不开指针，指针又很容易导致出错。综合多方面的原因，链表题目在面试中占据着很重要的地位。本文对链表相关的面试题做了较为全面的整理，希望能对找工作的同学有所帮助。
-链表结点声明如下：</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/28/some-commen-list-problems-in-the-interview/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/21/feature-selection--infomation-gain/">特征选择-信息增益算法</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-04-21T15:41:00+08:00" pubdate data-updated="true">Apr 21<span>st</span>, 2014</time>
-        
-        
-          | <a href="/blog/2014/04/21/feature-selection--infomation-gain/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><strong>信息增益</strong>：特征 $A$ 对于训练数据集$D$的信息增益 $g\left( D,A \right)$,定义为集合 $D$ 的经验熵 $H\left( D \right)$ 与特征 $A$ 在给定条件下 $D$ 
-的经验条件熵c之差。
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/21/feature-selection--infomation-gain/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -975,6 +1118,14 @@ x|y=1\sim N(\mu_1,\Sigma)
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/07/09/wei-pi-pei/">伪匹配</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/">朴素贝叶斯文本分类</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/06/03/lagrange-duality/">拉格朗日对偶</a>
       </li>
     
@@ -984,14 +1135,6 @@ x|y=1\sim N(\mu_1,\Sigma)
     
       <li class="post">
         <a href="/blog/2014/05/20/kill-process-on-some-port-under-linux-platform/">Linux下通过端口杀死进程</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/05/19/threading-why-import-it-into-os/">Threading:why Import It Into Os</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/05/19/my-understanding-about-kmp/">我对KMP算法的理解</a>
       </li>
     
   </ul>
