@@ -6,7 +6,7 @@ comments: true
 categories: 数据挖掘，网页分析， jsoup
 ---
 
-这里提到的伪匹配的概念是指在网上搜索某些特征次，比如人名公司手机QQ号等内容时，网页反馈的结果：重要关键词在人看来是逻辑没有关联的时候就是伪匹配。
+这里提到的伪匹配的概念是指在网上搜索某些特征词，比如人名公司手机QQ号等内容时，网页反馈的结果：重要关键词在人看来是逻辑没有关联的时候就是伪匹配。
 
 比如说，某XX，公司名，地点很明显的构成一个记录的时候，在人看来是个写在一起的，那么结果就是匹配的。相反，要是搜索词相距很远，那么就是伪匹配。
 
@@ -38,5 +38,60 @@ plot(x2,y2,'bo','MarkerSize',10);
 
 分布图如下：
 
-代码如下：
+![是否结构化与最长文本长度分布图](https://raw.githubusercontent.com/aluenkinglee/aluenkinglee.github.io/source/source/images/2014-07-09-wei-pi-pei/false%20match1.png "是否结构化与最长文本长度分布图")
 
+从图形分界出来看，max(x1)=3369,min(x2)=2677,这个cutoff可以选取2677～3369之间的长度即可。
+
+代码如下,摘选了函数的一部分，url是函数的形参。
+
+```java
+        try {
+            Document doc = Jsoup.connect(url).get();
+            Vector<HashMap<String, Integer>> map = new Vector<HashMap<String, Integer>>();
+            Map<String, Integer> tagCount = new HashMap<String, Integer>();
+            Map<Integer, Integer> lenCount = new HashMap<Integer, Integer>();
+            Elements content = doc.getAllElements();
+            int max = 0;
+            String tag = null;
+            for (Element e : content) {// 此处就是遍历了
+                if (e.ownText().length() > 0) {
+                    String key = e.nodeName();
+                    int len = e.ownText().length();
+                    HashMap<String, Integer> ins = new HashMap<>();
+                    ins.put(key, len);
+                    map.add(ins);
+                    if (len > max) {
+                        max = len;
+                        tag = key;
+                    }
+                    if (lenCount.containsKey(len)) {
+                        lenCount.put(len, lenCount.get(len) + 1);
+                    } else {
+                        lenCount.put(len, 1);
+                    }
+                    if (tagCount.containsKey(key)) {
+                        tagCount.put(key, tagCount.get(key) + 1);
+                    } else {
+                        tagCount.put(key, 1);
+                    }
+                }
+            }
+            System.out.println(map);
+            System.out.println(tagCount);
+            System.out.println(lenCount);
+            System.out.println(tag + ":" + max);
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            // e.printStackTrace();
+        }
+```
+
+接着在做搜索节点的距离值的分布，一个搜索词可以会出现在不同的位置，既然搜索词之间有关联效应，那么，即使出现位置很多，也会有不同的搜索词因为语意关联的缘故，他们的节点距离是很近的，照这个思路，有了以下的分布图。
+
+图示如下：
+
+
+而在无结构中，搜索词的语意判断就是文本距离，搜索词的下标靠的很近。
+
+图示如下：
