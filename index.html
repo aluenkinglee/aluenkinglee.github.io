@@ -9,7 +9,8 @@
   <meta name="author" content="Aluen King Lee">
 
   
-  <meta name="description" content="这里提到的伪匹配的概念是指在网上搜索某些特征词，比如人名公司手机QQ号等内容时，网页反馈的结果：重要关键词在人看来是逻辑没有关联的时候就是伪匹配。 比如说，某XX，公司名，地点很明显的构成一个记录的时候，在人看来是个写在一起的，那么结果就是匹配的。相反，要是搜索词相距很远，那么就是伪匹配。 那么好 &hellip;">
+  <meta name="description" content="首先说明这只是一个思路方向性的大概说明介绍，更多关于业务方面的内容不方便介绍。 如何评价一个人的金融信用，这个可以搜集用户的一些基本数据，比如职业，大学，社交数据来进行评分判断，至于为什么选取这些特征，一个很显然的理由就是
+一个人越倾向使用社交应用，那么这个人就越可能是真实的，可信的。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -103,6 +104,58 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/">Use Svm to Classify Whether a Person Is Good or Bad on Credit Using Sns Data</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-12T17:21:00+08:00" pubdate data-updated="true">Jul 12<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>首先说明这只是一个思路方向性的大概说明介绍，更多关于业务方面的内容不方便介绍。</p>
+
+<p>如何评价一个人的金融信用，这个可以搜集用户的一些基本数据，比如职业，大学，社交数据来进行评分判断，至于为什么选取这些特征，一个很显然的理由就是
+一个人越倾向使用社交应用，那么这个人就越可能是真实的，可信的。职业学校和人的信用也是成一定关系但不是绝对就是向我们想当然的那样。</p>
+
+<p>之前的文章也断断续续的聊过伪匹配，分类的内容，是和此有一定关联。</p>
+
+<p>对于模型的构建，方式有很多，贝叶斯网络，逻辑回归模型，svm模型，甚至是神经网络模型都可以对此进行建模使用，但是哪个性能更好呢？不知道，只有分别做出之后
+比较才可以说明问题。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -1058,51 +1111,6 @@ x|y=1\sim N(\mu_1,\Sigma)
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/29/dynamic-programming/">Dynamic Programming</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-04-29T19:34:00+08:00" pubdate data-updated="true">Apr 29<span>th</span>, 2014</time>
-        
-        
-          | <a href="/blog/2014/04/29/dynamic-programming/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>好几年了，没有特意去做与ACM相关的算法题了，时至今日，也确实忘得差不多了，不过，现在也到了该拾起来的时候了。</p>
-
-<h5 id="section">动态规划</h5>
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/29/dynamic-programming/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1118,6 +1126,10 @@ x|y=1\sim N(\mu_1,\Sigma)
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/">Use Svm to Classify Whether a Person Is Good or Bad on Credit Using Sns Data</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/07/09/wei-pi-pei/">伪匹配</a>
       </li>
     
@@ -1131,10 +1143,6 @@ x|y=1\sim N(\mu_1,\Sigma)
     
       <li class="post">
         <a href="/blog/2014/06/03/my-understanding-about-svm/">从逻辑回归分类到SVM分类</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/05/20/kill-process-on-some-port-under-linux-platform/">Linux下通过端口杀死进程</a>
       </li>
     
   </ul>

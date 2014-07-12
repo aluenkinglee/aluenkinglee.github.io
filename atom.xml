@@ -4,7 +4,7 @@
   <title><![CDATA[曾经渐行远，未免心戚戚]]></title>
   <link href="http://aluenkinglee.com/atom.xml" rel="self"/>
   <link href="http://aluenkinglee.com/"/>
-  <updated>2014-07-12T15:16:13+08:00</updated>
+  <updated>2014-07-12T20:03:16+08:00</updated>
   <id>http://aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
@@ -12,6 +12,237 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[use svm to classify whether a person is good or bad on credit using sns data]]></title>
+    <link href="http://aluenkinglee.com/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/"/>
+    <updated>2014-07-12T17:21:00+08:00</updated>
+    <id>http://aluenkinglee.com/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data</id>
+    <content type="html"><![CDATA[<p>首先说明这只是一个思路方向性的大概说明介绍，更多关于业务方面的内容不方便介绍。</p>
+
+<p>如何评价一个人的金融信用，这个可以搜集用户的一些基本数据，比如职业，大学，社交数据来进行评分判断，至于为什么选取这些特征，一个很显然的理由就是
+一个人越倾向使用社交应用，那么这个人就越可能是真实的，可信的。职业学校和人的信用也是成一定关系但不是绝对就是向我们想当然的那样。</p>
+
+<p>之前的文章也断断续续的聊过伪匹配，分类的内容，是和此有一定关联。</p>
+
+<p>对于模型的构建，方式有很多，贝叶斯网络，逻辑回归模型，svm模型，甚至是神经网络模型都可以对此进行建模使用，但是哪个性能更好呢？不知道，只有分别做出之后
+比较才可以说明问题。</p>
+
+<!-- more -->
+
+<h4 id="svm">非线性SVM</h4>
+
+<p>前面的blog有讲到线性svm，对于非线性分类器就要把x映射到特征空间,同时考虑误差ε的存在（即有些样本点会越过分类边界），上述优化问题变为：、</p>
+
+<script type="math/tex; mode=display">
+\min { \quad \frac { 1 }{ 2 } \left\| w \right\| ^{ 2 }+c\sum _{ i=1 }^{ l }{ { \xi  }_{ i } }  } \\ st.\quad y_{ i }(\omega ^{ T }\phi (x_i)-b)\ge 1-\xi _{ i },\left( \xi _{ i }>0 \right) 
+</script>
+
+<p>从输入空间是映射到特征空间的函数称为核函数，LibSVM中使用的默认核函数是RBF（径向基函数radial basis function），即</p>
+
+<script type="math/tex; mode=display">
+K(x,y)=exp{ \left( \frac { -\left\| x-y \right\| ^{ 2 } }{ 2\sigma ^{ 2 } }  \right)  }
+</script>
+
+<p>这样一来就有两个参数需要用户指定：c和gamma。实际上在LibSVM中用户需要给出一个c和gamma的区间，
+LibSVM采用交叉验证cross-validation accuracy的方法确定分类效果最好的c和gamma。</p>
+
+<p>举个例子说明什么是交叉验证，假如把训练样本集拆成三组，然后先拿 1 跟 2 来 train model 并 predict 3 以得到正确率；
+再来拿 2 跟 3 train 并 predict 1 ，最后 1,3 train 并 predict 2 ，最后取预测精度最高的那组c和gamma。</p>
+
+<h4 id="libsvm">libsvm</h4>
+
+<p>点击<a href="http://www.csie.ntu.edu.tw/~cjlin/cgi-bin/libsvm.cgi?+http://www.csie.ntu.edu.tw/~cjlin/libsvm+tar.gz">here</a>下载libsvm.</p>
+
+<p>看readme即可使用了。</p>
+
+<p>LibSVM要求处理的文件数据都满足如下格式：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">rlabel1 index1:value1   index2:value2   …...
+</span><span class="line">rlabel2 index1:value1   index2:value2   …...
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>rlabel表示分类，为一个数字。Index从1开始递增，表示输入向量的序号，value是输入向量相应维度上的值，如果value为0,该项可以不写。下面是一个示例文件：</p>
+
+<p>目前简单的分类所使用的属性有：年龄WOE   类型WOE   信用卡邮箱授权WOE  搜多引擎返回数WOE  贴吧搜索返回数WOE  微博数WOE  活跃度WOE  淘友朋友WOE 人人看过的人数WOE  好友数WOE  微博注册时间WOE
+预测值为还款情况（还款1，逾期0）</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">0 1:0.010003 2:-0.10524 3:0.131117521 4:0.061095504 5:0.029130009 6:-0.178635093 7:-0.149465309 8:-0.03275873 9:-0.047039163 10:-0.047039163 11:-0.158328769
+</span><span class="line">0 1:0.010003 2:-0.10524 3:0.131117521 4:-0.025995297 5:-0.051360537 6:-0.090148625 7:-0.149465309 8:-0.005168969 9:0.000132475 10:-0.050262447 11:-0.158328769
+</span><span class="line">0 1:-0.08606 2:-0.10524 3:0.131117521 4:-0.163782716 5:-0.051360537 6:-0.178635093 7:-0.149465309 8:-0.03275873 9:-0.047039163 10:-0.047039163 11:-0.158328769
+</span><span class="line">0 1:-0.21088 2:0.009167 3:0.131117521 4:0.061095504 5:0.029130009 6:-0.090148625 7:-0.129577755 8:-0.03275873 9:0.000132475 10:-0.050262447 11:-0.226676962
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>svm_scale用于把输入向量按列进行规范化（或曰缩放）。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">Usage: svm-scale <span class="o">[</span>options<span class="o">]</span> data_filename
+</span><span class="line">options:
+</span><span class="line">-l lower : x scaling lower limit <span class="o">(</span>default -1<span class="o">)</span>
+</span><span class="line">-u upper : x scaling upper limit <span class="o">(</span>default +1<span class="o">)</span>
+</span><span class="line">-y y_lower y_upper : y scaling limits <span class="o">(</span>default: no y scaling<span class="o">)</span>
+</span><span class="line">-s save_filename : save scaling parameters to save_filename
+</span><span class="line">-r restore_filename : restore scaling parameters from restore_filename
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>例如： <code>svm_scale -l 0 -u 1 -s range trainSet &gt; trainSet.scale</code>则输入文件是trainSet，输出文件是trainSet.scale，把输入向量的各列都缩放到[0，1]的范围内，range文件中保存了相关的缩放信息。</p>
+
+<p>这个时候我们应该把训练集分为两部分，训练集和测试集，在训练集上通过交叉验证学到最佳的参数，然后在测试集上验证。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nv">$python</span> subset.py
+</span><span class="line">Usage: subset.py <span class="o">[</span>options<span class="o">]</span> dataset number <span class="o">[</span>output1<span class="o">]</span> <span class="o">[</span>output2<span class="o">]</span>
+</span><span class="line">This script selects a subset of the given data set.
+</span><span class="line">options:
+</span><span class="line">-s method : method of selection <span class="o">(</span>default 0<span class="o">)</span>
+</span><span class="line">
+</span><span class="line">     0 -- stratified selection <span class="o">(</span>classification only<span class="o">)</span>
+</span><span class="line">
+</span><span class="line">     1 -- random selection
+</span><span class="line">
+</span><span class="line">output1 : the subset <span class="o">(</span>optional<span class="o">)</span>
+</span><span class="line">
+</span><span class="line">output2 : the rest of data <span class="o">(</span>optional<span class="o">)</span>
+</span><span class="line">
+</span><span class="line">If output1 is omitted, the subset will be printed on the screen.
+</span><span class="line">
+</span><span class="line"><span class="nv">$python</span> subset.py trainSet 0.3*m<span class="o">(</span>实例个数<span class="o">)</span> trainSet.data testSet.data
+</span><span class="line"><span class="nv">$ </span>./tools/subset.py ./trainningset.txt 280 testSet trainSet
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>grid.py是一种用于RBF核函数的C-SVM分类的参数选择程序。用户只需给定参数的一个范围，grid.py采用交叉验证的方法计算每种参数组合的准确度来找到最好的参数。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">python</span> <span class="n">grid</span><span class="o">.</span><span class="n">py</span>
+</span><span class="line"><span class="n">Usage</span><span class="p">:</span> <span class="n">grid</span><span class="o">.</span><span class="n">py</span> <span class="p">[</span><span class="o">-</span><span class="n">log2c</span> <span class="n">begin</span><span class="p">,</span><span class="n">end</span><span class="p">,</span><span class="n">step</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">log2g</span> <span class="n">begin</span><span class="p">,</span><span class="n">end</span><span class="p">,</span><span class="n">step</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span> <span class="n">fold</span><span class="p">]</span>
+</span><span class="line">       <span class="p">[</span><span class="o">-</span><span class="n">svmtrain</span> <span class="n">pathname</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">gnuplot</span> <span class="n">pathname</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">out</span> <span class="n">pathname</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">png</span> <span class="n">pathname</span><span class="p">]</span>
+</span><span class="line">       <span class="p">[</span><span class="n">additional</span> <span class="n">parameters</span> <span class="k">for</span> <span class="n">svm</span><span class="o">-</span><span class="n">train</span><span class="p">]</span> <span class="n">dataset</span>
+</span><span class="line"><span class="n">The</span> <span class="n">program</span> <span class="n">conducts</span> <span class="n">v</span><span class="o">-</span><span class="n">fold</span> <span class="n">cross</span> <span class="n">validation</span> <span class="n">using</span> <span class="n">parameter</span> <span class="n">C</span> <span class="p">(</span><span class="ow">and</span> <span class="n">gamma</span><span class="p">)</span><span class="o">=</span> <span class="mi">2</span><span class="o">^</span><span class="n">begin</span><span class="p">,</span> <span class="mi">2</span><span class="o">^</span><span class="p">(</span><span class="n">begin</span><span class="o">+</span><span class="n">step</span><span class="p">),</span> <span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="o">^</span><span class="n">end</span><span class="o">.</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>首先<code>sudo apt-get install gnuplot</code></p>
+
+<p>然后编译C++版本的LibSVM，生成svm-train二进制可执行文件。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">python grid.py -log2c -5,5,1 -log2g -4,0,1 -v 5 -svmtrain /path/to/your/svm-train -m 500 trainSet.data <span class="o">(</span>svm-train 的路径自个找好<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>-m 500是使用svm_train时可以使用的参数。
+最后输出两个文件：dataset.png绘出了交叉验证精度的轮廓图，dataset.out对于每一组log2(c)和log2(gamma)对应的CV精度值。</p>
+
+<p>得到c=16，g=1</p>
+
+<p>这个是我实验的截图</p>
+
+<p><img src="https://raw.githubusercontent.com/aluenkinglee/mlclass/master/libsvm-3.18/trainSet.png" alt="实验截图" /></p>
+
+<p>最后来训练我们的模型</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nv">$ </span>./svm_train
+</span><span class="line">
+</span><span class="line">-s svm_type : <span class="nb">set type </span>of SVM <span class="o">(</span>default 0<span class="o">)</span>
+</span><span class="line">0 -- C-SVC
+</span><span class="line">-t kernel_type : <span class="nb">set type </span>of kernel <span class="k">function</span> <span class="o">(</span>default 2<span class="o">)</span>
+</span><span class="line">0 -- linear: u<span class="err">&#39;</span>*v
+</span><span class="line">2 -- radial basis <span class="k">function</span>: exp<span class="o">(</span>-gamma*|u-v|^2<span class="o">)</span>
+</span><span class="line">-g gamma : <span class="nb">set </span>gamma in kernel <span class="k">function</span> <span class="o">(</span>default 1/num_features<span class="o">)</span> num_features是输入向量的个数
+</span><span class="line">-c cost : <span class="nb">set </span>the parameter C of C-SVC, epsilon-SVR, and nu-SVR <span class="o">(</span>default 1<span class="o">)</span>
+</span><span class="line">-m cachesize : <span class="nb">set </span>cache memory size in MB <span class="o">(</span>default 100<span class="o">)</span> 使用多少内存
+</span><span class="line">-e epsilon : <span class="nb">set </span>tolerance of termination criterion <span class="o">(</span>default 0.001<span class="o">)</span>
+</span><span class="line">-h shrinking : whether to use the shrinking heuristics, 0 or 1 <span class="o">(</span>default 1<span class="o">)</span>
+</span><span class="line">-wi weight : <span class="nb">set </span>the parameter C of class i to weight*C, <span class="k">for </span>C-SVC <span class="o">(</span>default 1<span class="o">)</span> 当各类数量不均衡时为每个类分别指定C
+</span><span class="line">-v n: n-fold cross validation mode交叉验证时分为多少组
+</span><span class="line">-q : quiet mode <span class="o">(</span>no outputs<span class="o">)</span>
+</span><span class="line">
+</span><span class="line"><span class="nv">$ </span>svm_train -s 0 -c 16 -t 2 -g 1 -e 0.01 trainSet.scale
+</span><span class="line"><span class="nv">$ </span>./svm-train -s 2 -c 16 -g 1 -v 5 ./trainSet
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>会得到训练结果，然后使用这个模型来预测测试集的数据准确性</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">./svm-predict testSet result
+</span><span class="line">./svm-predict -b 0 testSet trainSet.model  result
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="section">实验结果</h3>
+
+<p>对数据进行格式转换后，首先对数据集进行分割得到训练集和测试集，选择常规比例为6：4</p>
+
+<p>1.一开始未设置最有参数时即C和simga的值时，由训练集得到的模型分类性能在测试集上达到了Accuracy = 79.64285714285714% (223/280)的精度。</p>
+
+<p>2.选择合适的参数。</p>
+
+<p>通过交叉验证方法对模型进行选择得到针对训练集上最优的参数为c=16 g=1</p>
+
+<p>由此得到的训练模型在测试集上的准确率达到了Accuracy = 81.4286% (228/280) (classification)，将近2%的精度提升，也算不错了。</p>
+
+<p>目前由这些属性判断用户的还款情况，准确率在80%左右。但是预测结果全部预测为1.不合理。</p>
+
+<p>实验结果准确率，在指定one-vs-class 之后，准确率为40%。比起逻辑回归模型仍然好点。</p>
+
+<blockquote>
+  <blockquote>
+    <p>Ref</p>
+  </blockquote>
+</blockquote>
+
+<p>数据可以到<a href="https://github.com/aluenkinglee/mlclass/tree/master/libsvm-3.18">这里</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[伪匹配]]></title>
@@ -4042,110 +4273,6 @@ mlclass-ex1/gradientDescent.m">详见</a></p>
   </li>
   <li>
     <p><a href="http://lists.noxrepo.org/pipermail/nox-dev-noxrepo.org/2013-February/000668.html">nox-dev Nox build fails</a></p>
-  </li>
-</ol>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[在不同PC上协同写作同一个Octopress博客]]></title>
-    <link href="http://aluenkinglee.com/blog/2013/11/13/co-write-same-octopress-blog-on-different-pc/"/>
-    <updated>2013-11-13T15:20:00+08:00</updated>
-    <id>http://aluenkinglee.com/blog/2013/11/13/co-write-same-octopress-blog-on-different-pc</id>
-    <content type="html"><![CDATA[<p>因为需要在不同的地方写博客，在加上之前错误的操作，所以有了这篇文章。</p>
-
-<p>假设已经学会了然后安装Octopress博客。</p>
-
-<h2 id="octopress-">Octopress 分支说明</h2>
-
-<p>Octopress的git仓库(repository)有两个分支，分别是<code>master</code>和<code>source</code>，其中：</p>
-
-<ol>
-  <li>
-    <p><code>master</code>存储的是博客网站本身，github基于此对页面渲染。该分支根目录处在<code>_deploy</code>文件夹，由<code>rake deploy</code>命令推送到服务器，一般而言，我们不需要对<code>master</code>做任何操作。</p>
-  </li>
-  <li>
-    <p><code>source</code>存储的是生成博客的源文件（各种markdown文件）,写作博客是在这个分支。每次写完之后，记得推送到服务器。这样就不用担心我们的备份了。</p>
-  </li>
-</ol>
-
-<!--more-->
-
-<h2 id="git">克隆服务器上的git到新机器</h2>
-
-<p>将博客的源文件clone到本地的（假设就叫做）octopress文件夹内。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">$ git clone -b source git@github.com:username/username.github.com.git octopress</span></code></pre></td></tr></table></div></figure></notextile></div>
-<p>接下来这步骤是最重要的，当初栽在这儿了。(会出现<code>No such file or directory - _deploy</code>)</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">$ cd octopress
-</span><span class="line">$ git clone -b master git@github.com:username/username.github.com.git _deploy </span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>还是要安装博客的。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">$ gem install bundler
-</span><span class="line">$ rbenv rehash    		# If you use rbenv, rehash to be able to run the bundle command
-</span><span class="line">$ bundle install
-</span><span class="line">$ rake setup_github_pages	#执行初始化</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>然后会提示输入仓库的ssh url。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">Enter the read/write url for your repository
-</span><span class="line">(For example, 'git@github.com:your_username/your_username.github.com)</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h2 id="co-write-">Co-write 协同写作博客</h2>
-
-<p>如果你是和别人合作博客，或者自己同时在好几个电脑上写博客，每次开始之前，git pull origin source获得最新的文件,rake generate生成新的页面.更新master并不是必须的，因为你更改源文件之后还是需要rake generate的.</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">$ cd octopress
-</span><span class="line">$ git pull origin source  	# update the local source branch
-</span><span class="line">$ cd ./_deploy
-</span><span class="line">$ git pull origin master  	# update the local master branch</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>在source分支做了博客的发布，或者改变了博客的设置之后</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">$ rake generate		 	#生成新的页面
-</span><span class="line">
-</span><span class="line">$ git add .
-</span><span class="line">$ git commit -am "Some comment here." 
-</span><span class="line">$ git push origin source  	# 上面三行是更新远端source分支
-</span><span class="line">
-</span><span class="line">$ rake deploy             	# 更新远端master分支，文章就发布到了博客中</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h2 id="reference">Reference</h2>
-
-<ol>
-  <li>
-    <p><a href="http://williamherry.com/blog/2012/07/20/octopress-setup/">Octopress - 像黑客一样写博客</a></p>
-  </li>
-  <li>
-    <p><a href="http://code.dblock.org/octopress-setting-up-a-blog-and-contributing-to-an-existing-one">Setting up a Blog and Contributing to an Existing One</a></p>
-  </li>
-  <li>
-    <p><a href="http://boboshone.com/blog/2013/06/05/write-octopress-blog-on-multiple-machines/">在多台电脑上写Octopress博客</a></p>
-  </li>
-  <li>
-    <p><a href="http://www.whispering.co/blog/2011/12/03/octopress-for-freshman/">Octopress: 新手教程</a></p>
   </li>
 </ol>
 ]]></content>

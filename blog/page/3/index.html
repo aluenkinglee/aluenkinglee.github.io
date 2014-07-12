@@ -9,7 +9,7 @@
   <meta name="author" content="Aluen King Lee">
 
   
-  <meta name="description" content="首先看下$\LaTeX$的例子 块状的$\LaTeX$ 数学公式 (1) % <![CDATA[ \begin{align*} & \phi(x,y) = \phi \left(\sum_{i=1}^n x_ie_i, \sum_{j=1}^n y_je_j \right) = \sum_{i=1 &hellip;">
+  <meta name="description" content="因为需要在不同的地方写博客，在加上之前错误的操作，所以有了这篇文章。 假设已经学会了然后安装Octopress博客。 Octopress 分支说明 Octopress的git仓库(repository)有两个分支，分别是master和source，其中： master存储的是博客网站本身， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -103,6 +103,65 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/11/13/co-write-same-octopress-blog-on-different-pc/">在不同PC上协同写作同一个Octopress博客</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-13T15:20:00+08:00" pubdate data-updated="true">Nov 13<span>th</span>, 2013</time>
+        
+        
+          | <a href="/blog/2013/11/13/co-write-same-octopress-blog-on-different-pc/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>因为需要在不同的地方写博客，在加上之前错误的操作，所以有了这篇文章。</p>
+
+<p>假设已经学会了然后安装Octopress博客。</p>
+
+<h2 id="octopress-">Octopress 分支说明</h2>
+
+<p>Octopress的git仓库(repository)有两个分支，分别是<code>master</code>和<code>source</code>，其中：</p>
+
+<ol>
+  <li>
+    <p><code>master</code>存储的是博客网站本身，github基于此对页面渲染。该分支根目录处在<code>_deploy</code>文件夹，由<code>rake deploy</code>命令推送到服务器，一般而言，我们不需要对<code>master</code>做任何操作。</p>
+  </li>
+  <li>
+    <p><code>source</code>存储的是生成博客的源文件（各种markdown文件）,写作博客是在这个分支。每次写完之后，记得推送到服务器。这样就不用担心我们的备份了。</p>
+  </li>
+</ol>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/11/13/co-write-same-octopress-blog-on-different-pc/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -584,6 +643,10 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/">Use Svm to Classify Whether a Person Is Good or Bad on Credit Using Sns Data</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/07/09/wei-pi-pei/">伪匹配</a>
       </li>
     
@@ -597,10 +660,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     
       <li class="post">
         <a href="/blog/2014/06/03/my-understanding-about-svm/">从逻辑回归分类到SVM分类</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/05/20/kill-process-on-some-port-under-linux-platform/">Linux下通过端口杀死进程</a>
       </li>
     
   </ul>
