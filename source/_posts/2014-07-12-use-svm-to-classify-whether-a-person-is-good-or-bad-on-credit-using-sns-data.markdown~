@@ -111,7 +111,7 @@ Usage: grid.py [-log2c begin,end,step] [-log2g begin,end,step] [-v fold]
 The program conducts v-fold cross validation using parameter C (and gamma)= 2^begin, 2^(begin+step), ..., 2^end.
 ```
 
-首先sudo apt-get install gnuplot
+首先`sudo apt-get install gnuplot`
 
 然后编译C++版本的LibSVM，生成svm-train二进制可执行文件。
 
@@ -126,7 +126,7 @@ python grid.py -log2c -5,5,1 -log2g -4,0,1 -v 5 -svmtrain /path/to/your/svm-trai
 
 这个是我实验的截图
 
-![tu](file:///home/kinglee/Downloads/libsvm-3.18/trainSet.png)
+![实验截图](https://raw.githubusercontent.com/aluenkinglee/mlclass/master/libsvm-3.18/trainSet.png)
 
 
 最后来训练我们的模型
@@ -179,4 +179,4 @@ $ ./svm-train -s 2 -c 16 -g 1 -v 5 ./trainSet
 
 >> Ref
 
-数据可以到[这里]()
+数据可以到[这里](https://github.com/aluenkinglee/mlclass/tree/master/libsvm-3.18)

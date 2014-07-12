@@ -23,7 +23,7 @@ categories: 机器学习 svm 金融信用 libsvm
 前面的blog有讲到线性svm，对于非线性分类器就要把x映射到特征空间,同时考虑误差ε的存在（即有些样本点会越过分类边界），上述优化问题变为：、
 
 $$
-\min { \quad \frac { 1 }{ 2 } \left\| w \right\| ^{ 2 }+c\sum _{ i=1 }^{ l }{ { \xi  }_{ i } }  } \\ st.\quad y_{ i }(\omega ^{ T }\phi (x\_ i)-b)\ge 1-\xi _{ i },\left( \xi _{ i }>0 \right) 
+\min { \quad \frac { 1 }{ 2 } \left\| w \right\| ^{ 2 }+c\sum _{ i=1 }^{ l }{ { \xi  }_{ i } }  } \\ st.\quad y_{ i }(\omega ^{ T }\phi (x_i)-b)\ge 1-\xi _{ i },\left( \xi _{ i }>0 \right) 
 $$
 
 从输入空间是映射到特征空间的函数称为核函数，LibSVM中使用的默认核函数是RBF（径向基函数radial basis function），即
@@ -126,7 +126,7 @@ python grid.py -log2c -5,5,1 -log2g -4,0,1 -v 5 -svmtrain /path/to/your/svm-trai
 
 这个是我实验的截图
 
-![tu](file:///home/kinglee/Downloads/libsvm-3.18/trainSet.png)
+![实验截图](https://raw.githubusercontent.com/aluenkinglee/mlclass/master/libsvm-3.18/trainSet.png)
 
 
 最后来训练我们的模型
@@ -179,4 +179,4 @@ $ ./svm-train -s 2 -c 16 -g 1 -v 5 ./trainSet
 
 >> Ref
 
-数据可以到[这里]()
+数据可以到[这里](https://github.com/aluenkinglee/mlclass/tree/master/libsvm-3.18)
