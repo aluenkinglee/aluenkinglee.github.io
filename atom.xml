@@ -4,7 +4,7 @@
   <title><![CDATA[曾经渐行远，未免心戚戚]]></title>
   <link href="http://aluenkinglee.com/atom.xml" rel="self"/>
   <link href="http://aluenkinglee.com/"/>
-  <updated>2014-07-12T20:08:53+08:00</updated>
+  <updated>2014-07-14T14:08:43+08:00</updated>
   <id>http://aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
@@ -1526,6 +1526,159 @@ next\left[ q \right] =\begin{Bmatrix} 0 & \quad if\quad { E }_{ q }\quad =\quad 
 <p>相对于朴素的匹配算法，这里并不是在匹配失败后直接无脑的外后移一位就可以了，而是利用了模式串本身的信息，<strong>位移的距离=已经匹配的长度-该位置next值</strong>。</p>
 
 <p>希望对你有用。当然要是觉得有问题直接留言好了，一起学吧。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[链表排序]]></title>
+    <link href="http://aluenkinglee.com/blog/2014/05/14/sort-list/"/>
+    <updated>2014-05-14T13:51:00+08:00</updated>
+    <id>http://aluenkinglee.com/blog/2014/05/14/sort-list</id>
+    <content type="html"><![CDATA[<p>链表不想数组那样是连续的即像数组那样随机访问，只能从前往后遍历。所以排序的方法只能是像插入排序，选择排序，和归并排序。</p>
+
+<p>下面就先说归并排序。</p>
+
+<!-- more -->
+
+<p>简单的数据结构</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="kd">public</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">ListNode</span> <span class="o">{</span>
+</span><span class="line">    <span class="kt">int</span> <span class="n">val</span><span class="o">;</span>
+</span><span class="line">    <span class="n">ListNode</span> <span class="n">next</span><span class="o">;</span>
+</span><span class="line">    <span class="n">ListNode</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="n">val</span> <span class="o">=</span> <span class="n">x</span><span class="o">;</span>
+</span><span class="line">        <span class="n">next</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>思想很简单，就是找到链表的中点，然后左右递归排序，最后合并。
+详情还是看代码：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+<span class="line-number">53</span>
+<span class="line-number">54</span>
+<span class="line-number">55</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line">    <span class="cm">/**</span>
+</span><span class="line"><span class="cm">     * @param head</span>
+</span><span class="line"><span class="cm">     * @return 链表中点</span>
+</span><span class="line"><span class="cm">     */</span>
+</span><span class="line">    <span class="kd">public</span> <span class="n">ListNode</span> <span class="nf">middle</span><span class="o">(</span><span class="n">ListNode</span> <span class="n">head</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">if</span> <span class="o">(</span><span class="n">head</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">head</span><span class="o">.</span><span class="na">next</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span>
+</span><span class="line">            <span class="k">return</span> <span class="n">head</span><span class="o">;</span>
+</span><span class="line">        <span class="n">ListNode</span> <span class="n">pre</span> <span class="o">=</span> <span class="n">head</span><span class="o">;</span>
+</span><span class="line">        <span class="n">ListNode</span> <span class="n">cur</span> <span class="o">=</span> <span class="n">head</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+</span><span class="line">        <span class="k">while</span> <span class="o">(</span><span class="n">cur</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">cur</span><span class="o">.</span><span class="na">next</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">            <span class="n">pre</span> <span class="o">=</span> <span class="n">pre</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+</span><span class="line">            <span class="n">cur</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+</span><span class="line">            <span class="k">if</span> <span class="o">(</span><span class="n">cur</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">                <span class="n">cur</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+</span><span class="line">            <span class="o">}</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">pre</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="n">ListNode</span> <span class="nf">merge</span><span class="o">(</span><span class="n">ListNode</span> <span class="n">leftHead</span><span class="o">,</span> <span class="n">ListNode</span> <span class="n">rightHead</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="c1">// 头部节点，本身没有用处，只是为了让代码更简便</span>
+</span><span class="line">        <span class="n">ListNode</span> <span class="n">head</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ListNode</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+</span><span class="line">        <span class="n">ListNode</span> <span class="n">cur</span> <span class="o">=</span> <span class="n">head</span><span class="o">;</span>
+</span><span class="line">        <span class="k">while</span> <span class="o">(</span><span class="n">leftHead</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">rightHead</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">            <span class="k">if</span> <span class="o">(</span><span class="n">leftHead</span><span class="o">.</span><span class="na">val</span> <span class="o">&lt;</span> <span class="n">rightHead</span><span class="o">.</span><span class="na">val</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">                <span class="n">cur</span><span class="o">.</span><span class="na">next</span> <span class="o">=</span> <span class="n">leftHead</span><span class="o">;</span>
+</span><span class="line">                <span class="n">leftHead</span> <span class="o">=</span> <span class="n">leftHead</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+</span><span class="line">            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class="line">                <span class="n">cur</span><span class="o">.</span><span class="na">next</span> <span class="o">=</span> <span class="n">rightHead</span><span class="o">;</span>
+</span><span class="line">                <span class="n">rightHead</span> <span class="o">=</span> <span class="n">rightHead</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+</span><span class="line">            <span class="o">}</span>
+</span><span class="line">            <span class="n">cur</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">if</span> <span class="o">(</span><span class="n">leftHead</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">            <span class="n">cur</span><span class="o">.</span><span class="na">next</span> <span class="o">=</span> <span class="n">leftHead</span><span class="o">;</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">        <span class="k">if</span> <span class="o">(</span><span class="n">rightHead</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">            <span class="n">cur</span><span class="o">.</span><span class="na">next</span> <span class="o">=</span> <span class="n">rightHead</span><span class="o">;</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">head</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="n">ListNode</span> <span class="nf">sortList</span><span class="o">(</span><span class="n">ListNode</span> <span class="n">head</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="c1">//单个节点直接返回</span>
+</span><span class="line">        <span class="k">if</span> <span class="o">(</span><span class="n">head</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">head</span><span class="o">.</span><span class="na">next</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">            <span class="n">ListNode</span> <span class="n">mid</span> <span class="o">=</span> <span class="n">middle</span><span class="o">(</span><span class="n">head</span><span class="o">);</span>
+</span><span class="line">            <span class="n">ListNode</span> <span class="n">after</span> <span class="o">=</span> <span class="n">mid</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+</span><span class="line">            <span class="n">mid</span><span class="o">.</span><span class="na">next</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span><span class="line">            <span class="n">head</span> <span class="o">=</span> <span class="n">sortList</span><span class="o">(</span><span class="n">head</span><span class="o">);</span>
+</span><span class="line">            <span class="n">after</span> <span class="o">=</span> <span class="n">sortList</span><span class="o">(</span><span class="n">after</span><span class="o">);</span>
+</span><span class="line">            <span class="n">head</span> <span class="o">=</span> <span class="n">merge</span><span class="o">(</span><span class="n">head</span><span class="o">,</span> <span class="n">after</span><span class="o">);</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">head</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>测试样例：边界值
+2 1
+1 
+2 -1 1</p>
 ]]></content>
   </entry>
   
@@ -4143,138 +4296,6 @@ mlclass-ex1/gradientDescent.m">详见</a></p>
 <p>至于怎么安装，还是请看Readme吧各位。希望这个帖子能帮助有类似问题的人。（在debain系列的linux上有可能会有这样的问题。）</p>
 
 <p>接下来，应该就会把之前看过的视频和资料的东西在整理一下，并借用这个库实现应该实现的部分。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[install nox on debian-bug fixed]]></title>
-    <link href="http://aluenkinglee.com/blog/2013/11/13/install-nox-on-debian-bug-fixed/"/>
-    <updated>2013-11-13T22:44:00+08:00</updated>
-    <id>http://aluenkinglee.com/blog/2013/11/13/install-nox-on-debian-bug-fixed</id>
-    <content type="html"><![CDATA[<p>首先需要声明的一点是，到目前（2013/11）Nox在所有SDN控制器中不是最火的（相比Pox，floodlight），但是作为最先开发的一个SDN而言，还是有研究意义的。</p>
-
-<!--more-->
-
-<h5 id="section">安装提示</h5>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">cd /etc/apt/sources.list.d/
-</span><span class="line">sudo wget http://openflowswitch.org/downloads/debian/nox.list
-</span><span class="line">sudo apt-get update
-</span><span class="line">sudo apt-get install nox-dependencies
-</span><span class="line">sudo apt-get install libtbb-dev
-</span><span class="line">sudo apt-get install libboost-serialization-dev libboost-all-dev</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>然后在你想放置Nox源码的地方做如下操作：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">git clone git://github.com/noxrepo/nox
-</span><span class="line">cd nox
-</span><span class="line">./boot.sh
-</span><span class="line">mkdir build
-</span><span class="line">cd build
-</span><span class="line">../configure
-</span><span class="line">make -j 5
-</span><span class="line">make install</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>很不幸，遇到了如下的错误：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">../../src/builtin/component.cc:414:1: required from here
-</span><span class="line">/usr/include/boost/property_tree/detail/json_parser_read.hpp:105:17: error:
-</span><span class="line">no matching function for call to ‘boost::property_tree::basic_ptree
-</span><span class="line">std::basic_string&lt;char, std::basic_string &gt;::push_back(std::pair
-</span><span class="line">std::basic_string&lt;char, std::basic_string &gt;)’
-</span><span class="line">/usr/include/boost/property_tree/detail/json_parser_read.hpp:105:17: note:
-</span><span class="line">candidate is:
-</span><span class="line">In file included from /usr/include/boost/property_tree/ptree.hpp:516:0,
-</span><span class="line">from ../../src/include/component.hh:35,
-</span><span class="line">from ../../src/builtin/component.cc:18:
-</span><span class="line">/usr/include/boost/property_tree/detail/ptree_implementation.hpp:362:9:
-</span><span class="line">note: boost::property_tree::basic_ptree::iterator
-</span><span class="line">boost::property_tree::basic_ptree::push_back(const value_type&amp;) [with Key =
-</span><span class="line">std::basic_string; Data = std::basic_string; KeyCompare = std::less
-</span><span class="line">std::basic_string&lt;char &gt;; boost::property_tree::basic_ptree::value_type =
-</span><span class="line">std::pair, boost::property_tree::basic_ptreestd::basic_string&lt;char,
-</span><span class="line">std::basic_string &gt; &gt;]
-</span><span class="line">/usr/include/boost/property_tree/detail/ptree_implementation.hpp:362:9:
-</span><span class="line">note: no known conversion for argument 1 from ‘std::pair
-</span><span class="line">std::basic_string&lt;char, std::basic_string &gt;’ to ‘const value_type&amp; {aka
-</span><span class="line">const std::pair, boost::property_tree::basic_ptreestd::basic_string&lt;char,
-</span><span class="line">std::basic_string &gt; &gt;&amp;}’
-</span><span class="line">make[4]: *** [nox_core-component.o] Error 1</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>这个错误来源于nox依赖的boost库版本（1.49）的错误.注意错误原因是：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">/usr/include/boost/property_tree/detail/json_parser_read.hpp:105
-</span><span class="line">error:
-</span><span class="line">no matching function for call to ‘boost::property_tree::basic_ptree
-</span><span class="line">std::basic_string&lt;char, std::basic_string &gt;::push_back(std::pair
-</span><span class="line">std::basic_string&lt;char, std::basic_string &gt;)’</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>同样的问题点击<a href="http://lists.noxrepo.org/pipermail/nox-dev-noxrepo.org/2013-February/000668.html" title="[nox-dev] Nox build fails">这里</a></p>
-
-<p>解决方法：<code>/usr/include/boost/property_tree/detail/json_parser_read.hpp</code>找到这个文件。定位到<code>105行，</code></p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">c.stack.back()-&gt;push_back(std::make_pair(c.name, Str(b, e)));</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>换成</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">c.stack.back()-&gt;push_back(std::make_pair(c.name, Ptree(Str(b, e))));</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>重新make&amp;&amp; make install 即可。</p>
-
-<h5 id="reference">Reference</h5>
-
-<ol>
-  <li>
-    <p><a href="https://svn.boost.org/trac/boost/ticket/6785">read_json does not compile on GCC 4.7.0 with std=c++11</a></p>
-  </li>
-  <li>
-    <p><a href="http://lists.noxrepo.org/pipermail/nox-dev-noxrepo.org/2013-February/000668.html">nox-dev Nox build fails</a></p>
-  </li>
-</ol>
 ]]></content>
   </entry>
   
