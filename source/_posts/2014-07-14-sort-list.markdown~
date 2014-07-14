@@ -1,0 +1,93 @@
+---
+layout: post
+title: "链表排序"
+date: 2014-07-14 13:51
+comments: true
+categories: list java sort  algorithm
+---
+
+链表不想数组那样是连续的即像数组那样随机访问，只能从前往后遍历。所以排序的方法只能是像插入排序，选择排序，和归并排序。
+
+下面就先说归并排序。
+
+<!-- more -->
+
+简单的数据结构
+
+```java
+public static class ListNode {
+    int val;
+    ListNode next;
+    ListNode(int x) {
+        val = x;
+        next = null;
+        }
+}
+```
+
+思想很简单，就是找到链表的中点，然后左右递归排序，最后合并。
+详情还是看代码：
+
+```java
+
+    /**
+     * @param head
+     * @return 链表中点
+     */
+    public ListNode middle(ListNode head) {
+        if (head == null || head.next == null)
+            return head;
+        ListNode pre = head;
+        ListNode cur = head.next;
+        while (cur != null && cur.next != null) {
+            pre = pre.next;
+            cur = cur.next;
+            if (cur != null) {
+                cur = cur.next;
+            }
+        }
+        return pre;
+    }
+
+    public ListNode merge(ListNode leftHead, ListNode rightHead) {
+        // 头部节点，本身没有用处，只是为了让代码更简便
+        ListNode head = new ListNode(0);
+        ListNode cur = head;
+        while (leftHead != null && rightHead != null) {
+            if (leftHead.val < rightHead.val) {
+                cur.next = leftHead;
+                leftHead = leftHead.next;
+            } else {
+                cur.next = rightHead;
+                rightHead = rightHead.next;
+            }
+            cur = cur.next;
+        }
+
+        if (leftHead != null) {
+            cur.next = leftHead;
+        }
+        if (rightHead != null) {
+            cur.next = rightHead;
+        }
+        return head.next;
+    }
+
+    public ListNode sortList(ListNode head) {
+        //单个节点直接返回
+        if (head != null && head.next != null) {
+            ListNode mid = middle(head);
+            ListNode after = mid.next;
+            mid.next = null;
+            head = sortList(head);
+            after = sortList(after);
+            head = merge(head, after);
+        }
+        return head;
+    }
+```
+
+测试样例：边界值
+2 1
+1 
+2 -1 1
