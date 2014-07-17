@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 数据挖掘，网页分析， | 曾经渐行远，未免心戚戚]]></title>
   <link href="http://aluenkinglee.com/blog/categories/shu-ju-wa-jue-,wang-ye-fen-xi-,/atom.xml" rel="self"/>
   <link href="http://aluenkinglee.com/"/>
-  <updated>2014-07-14T14:08:43+08:00</updated>
+  <updated>2014-07-17T19:49:48+08:00</updated>
   <id>http://aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
@@ -99,13 +99,38 @@ plot(x2,y2,'bo','MarkerSize',10);
     } ```
 </code></pre>
 
-<p>接着在做搜索节点的距离值的分布，一个搜索词可以会出现在不同的位置，既然搜索词之间有关联效应，那么，即使出现位置很多，也会有不同的搜索词因为语意关联的缘故，他们的节点距离是很近的，照这个思路，有了以下的分布图。</p>
+<p>接着在做搜索节点的距离值的分布，一个搜索词可以会出现在不同的位置，既然搜索词之间有关联效应，那么，即使出现位置很多，
+也会有不同的搜索词因为语意关联的缘故，他们的节点距离是很近的，照这个思路，有了以下的分布图。</p>
 
-<p>图示如下：</p>
+<p>网页结构化中伪匹配,节点距离兄弟距离的分布图图示如下：</p>
 
-<p>而在无结构中，搜索词的语意判断就是文本距离，搜索词的下标靠的很近。</p>
+<p><img src="https://raw.githubusercontent.com/aluenkinglee/aluenkinglee.github.io/source/source/images/2014-07-09-wei-pi-pei/false%20match3.png" alt="网页结构化中伪匹配节点距离兄弟距离的分布图" title="网页结构化中伪匹配节点距离兄弟距离的分布图" /></p>
 
-<p>图示如下：</p>
+<p>这个尾部节点兄弟距离太大了，一定是伪匹配的的，看数据较小的距离分布。</p>
+
+<p><img src="https://raw.githubusercontent.com/aluenkinglee/aluenkinglee.github.io/source/source/images/2014-07-09-wei-pi-pei/false%20match4.png" alt="网页结构化中伪匹配节点距离兄弟距离的分布图" title="网页结构化中伪匹配节点距离兄弟距离的分布图" /></p>
+
+<p>从图可以看出，节点距离和伪匹配的关系不大，主要是兄弟距离起作用。</p>
+
+<p>而兄弟距离于未匹配的分布图：</p>
+
+<p><img src="https://raw.githubusercontent.com/aluenkinglee/aluenkinglee.github.io/source/source/images/2014-07-09-wei-pi-pei/false%20match5.png" alt="兄弟距离于未匹配的分布图" title="兄弟距离于未匹配的分布图" /></p>
+
+<p>各个距离的直方图如下：</p>
+
+<p><img src="https://raw.githubusercontent.com/aluenkinglee/aluenkinglee.github.io/source/source/images/2014-07-09-wei-pi-pei/false%20match6.png" alt="兄弟距离于未匹配的直方图" title="兄弟距离于未匹配的直方图" /></p>
+
+<p>其中X轴是兄弟距离长度，y是个数。范围值可以选在3-28之间。</p>
+
+<p>而在无结构中，搜索词的语意判断就是文本距离，搜索词的下标靠的很近。图示如下：</p>
+
+<p><img src="https://raw.githubusercontent.com/aluenkinglee/aluenkinglee.github.io/source/source/images/2014-07-09-wei-pi-pei/false%20match2.png" alt="间隔分布图" title="间隔分布图" /></p>
+
+<p>文本长度的数据（取一个网页中搜索词之间距离的最小值）为<code>4 13 25 58 89 102 249 893 1356 2000 2445 3023 4243 12533 13234
+</code>
+,从这个可以看出，距离很大的肯定就是伪匹配了，最小值的这个不确定。</p>
+
+<p>完整代码请看<a href="https://github.com/aluenkinglee/stuff/tree/master/java/match">这里</a></p>
 ]]></content>
   </entry>
   
