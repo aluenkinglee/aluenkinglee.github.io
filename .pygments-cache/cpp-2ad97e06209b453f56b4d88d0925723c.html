@@ -1,0 +1,47 @@
+<div class="highlight"><pre><span class="c1">/// 已知两个单链表pHead1 和pHead2 各自有序，把它们合并成一个链表依然有序</span>
+<span class="c1">/// 会改变原有链表结构，妥妥的</span>
+<span class="n">ListNode</span> <span class="o">*</span> <span class="n">MergeSortedList</span><span class="p">(</span><span class="n">ListNode</span> <span class="o">*</span> <span class="n">head1</span><span class="p">,</span> <span class="n">ListNode</span> <span class="o">*</span> <span class="n">head2</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">head1</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">head2</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">head2</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">head1</span><span class="p">;</span>
+    <span class="n">ListNode</span><span class="o">*</span> <span class="n">mergeHead</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="n">ListNode</span><span class="o">*</span> <span class="n">temp</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">head1</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">&gt;</span> <span class="n">head2</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">mergeHead</span> <span class="o">=</span> <span class="n">head1</span><span class="p">;</span>
+        <span class="n">head1</span> <span class="o">=</span> <span class="n">head1</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+        <span class="n">mergeHead</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span> <span class="c1">/// 注意语句顺序，防止head1变成悬空节点</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+        <span class="n">mergeHead</span> <span class="o">=</span> <span class="n">head2</span><span class="p">;</span>
+        <span class="n">head2</span> <span class="o">=</span> <span class="n">head2</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+        <span class="n">mergeHead</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span> <span class="c1">/// 注意语句顺序，防止head2变成悬空节点</span>
+    <span class="p">}</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">mergeHead</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">head1</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span> <span class="n">head2</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">head1</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">&gt;</span><span class="n">head2</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">head1</span><span class="p">;</span>
+            <span class="n">head1</span> <span class="o">=</span> <span class="n">head1</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+            <span class="n">temp</span><span class="o">=</span><span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+            <span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">else</span>
+        <span class="p">{</span>
+            <span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">head2</span><span class="p">;</span>
+            <span class="n">head2</span> <span class="o">=</span> <span class="n">head2</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+            <span class="n">temp</span><span class="o">=</span><span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+            <span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">head1</span><span class="o">!=</span><span class="nb">NULL</span><span class="p">)</span>
+        <span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">head1</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">head2</span><span class="o">!=</span><span class="nb">NULL</span><span class="p">)</span>
+        <span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">head2</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">mergeHead</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>

@@ -1,0 +1,1031 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>曾经渐行远，未免心戚戚</title>
+  <meta name="author" content="Aluen King Lee">
+
+  
+  <meta name="description" content="标注问题在机器学习中是一个监督学习的问题，当然在这里我们所要面对是微博中用户给自己添加标签的
+问题，并不是研究如何给用户添加标签。
+浏览微博中用户的个人资料时，你会发现大部分用户都给自己添加了自认为所属类别的标签，这个很正确，
+属于人工标注的典例。但是，细细浏览下每个人的标签我们会发现， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://aluenkinglee.com">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="曾经渐行远，未免心戚戚" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+<!-- mathjax config similar to math.stackexchange -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
+          MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
+                  data.math = data.math.replace(/^\s*<!\[CDATA\[\s*((?:\n|.)*)\s*\]\]>\s*$/m,"$1");
+                    });
+          });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">曾经渐行远，未免心戚戚</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:aluenkinglee.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he/">浅谈微博标签聚合</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-09-02T00:47:00+08:00" pubdate data-updated="true">Sep 2<span>nd</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>标注问题在机器学习中是一个监督学习的问题，当然在这里我们所要面对是微博中用户给自己添加标签的
+问题，并不是研究如何给用户添加标签。
+浏览微博中用户的个人资料时，你会发现大部分用户都给自己添加了自认为所属类别的标签，这个很正确，
+属于人工标注的典例。但是，细细浏览下每个人的标签我们会发现，其实好多标签的意思是一样的，比如
+<code>苹果</code>，<code>iphone</code>，<code>iphone5</code>，的意思是类似的，还有<code>安卓</code>,<code>Android</code>,<code>智能手机</code>，<code>安卓手机</code>,
+很明显，他们又是类，有没有办法把类似的标签聚集在一起呢？</p>
+
+<p>直到现在，从我们的需求出发可以看到这是一个聚类问题，将相似的标签聚集到一起，并找出可以代表这
+类相似标签的标签。</p>
+
+<p>整体思路是根据用户的标签数据集得到“标签-用户”矩阵，考录到这个矩阵大部分为0值，所以使用稀疏矩阵
+来降低内存无用消耗。然后使用一个相似度来代表距离，可以使用cosine相似度，pearson相似度，等等，
+在这里使用的是余弦相似度，使用这里的算法进行聚类之后，得到聚类模型，如图所示。</p>
+
+<p>接下来就是找到相似的标签，这个我们可以想象，从根节点开始，离根节点越远的拥有共同祖先的叶节点相似
+越大，每个内节点都有一个代表它孩子的相似度，我们需要做的是，找到一个cutoff，然后，只要某个节点
+小于该cutoff，那么认为他们之前没有相似关系，若大于改值，则意味这以改节点为祖先的叶节点是一个
+簇，简单实用，而且效果不错。</p>
+
+<p>到现在为止，我们找到了相似的标签集合，那么如何从集合中找到代表性的标签呢？一个显而易见的就是，计算
+该标签被用户引用的次数，简单的总是最好的！</p>
+
+<p>如图所示，这是按照上述思路完成的结果的一部分显示结果，数据太多，不方便显示。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/">Use Svm to Classify Whether a Person Is Good or Bad on Credit Using Sns Data</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-12T17:21:00+08:00" pubdate data-updated="true">Jul 12<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>首先说明这只是一个思路方向性的大概说明介绍，更多关于业务方面的内容不方便介绍。</p>
+
+<p>如何评价一个人的金融信用，这个可以搜集用户的一些基本数据，比如职业，大学，社交数据来进行评分判断，至于为什么选取这些特征，一个很显然的理由就是
+一个人越倾向使用社交应用，那么这个人就越可能是真实的，可信的。职业学校和人的信用也是成一定关系但不是绝对就是向我们想当然的那样。</p>
+
+<p>之前的文章也断断续续的聊过伪匹配，分类的内容，是和此有一定关联。</p>
+
+<p>对于模型的构建，方式有很多，贝叶斯网络，逻辑回归模型，svm模型，甚至是神经网络模型都可以对此进行建模使用，但是哪个性能更好呢？不知道，只有分别做出之后
+比较才可以说明问题。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/07/09/wei-pi-pei/">伪匹配</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-09T17:13:00+08:00" pubdate data-updated="true">Jul 9<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/07/09/wei-pi-pei/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>这里提到的伪匹配的概念是指在网上搜索某些特征词，比如人名公司手机QQ号等内容时，网页反馈的结果：重要关键词在人看来是逻辑没有关联的时候就是伪匹配。</p>
+
+<p>比如说，某XX，公司名，地点很明显的构成一个记录的时候，在人看来是个写在一起的，那么结果就是匹配的。相反，要是搜索词相距很远，那么就是伪匹配。</p>
+
+<p>那么好，人工审核此类内容是否匹配时，是个无聊枯燥的工作内容，那么只好找机器帮忙，思路也很简单，分析样本伪匹配的原因是什么？和网页文档有什么不同？</p>
+
+<p>对目标网页的分析可以发现，搜索词在目标网页中有时是结构化存在的，就是搜索词处在不同的节点中，节点关系为树中的关系，或者是兄弟关系，或者是父子关系。
+同时还有非结构化的内容，比如搜索词是在同一个节点中，此时就不存在上述判断关系，只能由另外一种关系来处理。
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/07/09/wei-pi-pei/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/">朴素贝叶斯文本分类</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-27T13:11:00+08:00" pubdate data-updated="true">Jun 27<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>回顾朴素贝叶斯(NB)分类器:</p>
+
+<script type="math/tex; mode=display">
+p(y_k|x)=\frac{p(y_k)p(x|y_k)}{p(x)}\propto p(y_k)p(x|y_k)=p(y_k)\prod_{i=1}^{d}{p(x_i|y_k)}
+</script>
+
+<p>对于文本分类任务,即对一篇文章进行分类,是 NLP 中最常见的机器学习任务。一般情
+况下,类别从几个到几十不等,或者更多。使用朴素贝叶斯文分类器进行文本分类,我们需要首先考
+虑特征是什么,即x如何表示;<script type="math/tex">p(x_i|y_k )</script>的物理意义是什么,如何计算。
+对于特征方面,文本分类常规都是使用 bag-of-words 的特征,即以文章中出现的词作为
+特征,而不考虑词语出现的顺序。朴素贝叶斯文分类器也一般使用这种形式。那么特征空间的大小,
+就取决于词表(vocabulary)的大小,即语料集合中不重复词的个数。对于汉语来说,一般
+几万到百万不等。</p>
+
+<p>在 bag-of-words 的特征体系下,特征空间是确定了的,但是具体<script type="math/tex">x_i</script>的取值以及对应的
+<script type="math/tex">p(x_i |y_k )</script>的物理意义却可以有不同的考虑,对应着不同的参数计算公式及分类器训练和预测
+的实现。这取决于我们是否考虑词语在文章中出现的频次。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/06/03/lagrange-duality/">拉格朗日对偶</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-03T21:41:00+08:00" pubdate data-updated="true">Jun 3<span>rd</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/06/03/lagrange-duality/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>在解决约束最优化的额问题中，常常利用拉格朗日对偶性将原始问题转化为对偶问题，通过解对偶问题得到原始问题的解。该方法主要应用的SVM和最大熵模型中。</p>
+
+<p>先抛开上面的二次规划问题，先来看看存在等式约束的极值问题求法，比如下面的最优化问题：</p>
+
+<script type="math/tex; mode=display">
+\min _{ w }{ f\left( w \right)  } \\ s.t\quad h_{ i }\left( w \right) =0,\quad i=1,\cdots ,l
+</script>
+
+<p>目标函数是f(w)，下面是等式约束。通常解法是引入拉格朗日算子，这里使用<script type="math/tex">\beta</script>来表示算子，得到拉格朗日公式为</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/06/03/lagrange-duality/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/06/03/my-understanding-about-svm/">从逻辑回归分类到SVM分类</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-03T20:53:00+08:00" pubdate data-updated="true">Jun 3<span>rd</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/06/03/my-understanding-about-svm/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>上一章讲到了线性回归的一个典型算法，核心思想就是利用最小二乘法最为损失函数，不断使用梯度下降法（或者使用随机梯度下降法（stochastic gradient descent））来更新theta值。</p>
+
+<p>后来降到了分类，逻辑回归只不过有个很好的性质就是值分布在0到1之间，正好可以利用到分类上。logistic回归就是要学习得到θ，使得正例的特征远大于 0，负例的特征远
+小于 0，强调在全部训练实例上达到这个目标。为什么说逻辑回归是个线性模型？这是因为该模型是将特性的线性组合作为自变量，然后使用logistic函数（或者说是sigmoid函数）将自变量映射到（0-1）上，将值和概率结合之后从而应用到分类上。
+函数表示形式：</p>
+
+<script type="math/tex; mode=display">
+h_{ \theta  }\left( x \right) =g\left( \theta ^{ T }x \right) =\frac { 1 }{ 1+{e  }^{ -\theta^{T}x } }
+</script>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/06/03/my-understanding-about-svm/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/05/20/kill-process-on-some-port-under-linux-platform/">Linux下通过端口杀死进程</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-20T10:41:00+08:00" pubdate data-updated="true">May 20<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/05/20/kill-process-on-some-port-under-linux-platform/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>就是把一些常用命令记录下来拉。一直在用，可就是容易忘记命令。</p>
+
+<p>floodlight 控制器启动之后，因为不正常的关闭程序（ctrl+c）造成6633端口还在被占用。</p>
+
+<p>流程如下：</p>
+
+<ol>
+  <li>
+    <p>netstat -nlp 查看占用端口号的服务</p>
+  </li>
+  <li>
+    <p>找到该端口号的进程，可以使用grep</p>
+  </li>
+  <li>
+    <p>找到该进程id</p>
+  </li>
+  <li>
+    <p>kill pid</p>
+  </li>
+</ol>
+
+<h5 id="section">查看占用端口号的服务</h5>
+
+<p>可以使用netstat命令</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">Active Internet connections (only servers)
+</span><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+</span><span class="line">Active Internet connections (only servers)
+</span><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+</span><span class="line">tcp        0      0 0.0.0.0:6633            0.0.0.0:*               LISTEN      6267/java
+</span><span class="line">tcp        0      0 0.0.0.0:3307            0.0.0.0:*               LISTEN      12711/
+</span><span class="line">tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      3936/httpd
+</span><span class="line">tcp        0      0 0.0.0.0:21              0.0.0.0:*               LISTEN      3910/
+</span><span class="line">tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      3753/sshd
+</span><span class="line">tcp        0      0 0.0.0.0:25              0.0.0.0:*               LISTEN      3786/
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>######用管道符给grep处理</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"> netstat -nlp | grep 6633
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>既然取出一行了，那就容易了，再筛选一下，用awk分割取出其中一个</p>
+
+<h6 id="section-1">读取出端口号</h6>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">netstat -nlp | grep 6633 | awk <span class="s1">&#39;{print $7}&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>6267/java</p>
+
+<p>意思是取第七个字段，这里默认应该是用tab字符分割的，已经读取出来了，但是还得拿到/前面的数字</p>
+
+<h6 id="awk">取/前面的数字就可以了，这里还是可以用awk处理</h6>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">netstat -nlp | grep 6633 | awk <span class="s1">&#39;{print $7}&#39;</span> | awk -F<span class="s2">&quot;/&quot;</span> <span class="s1">&#39;{ print $1 }&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>6267</p>
+
+<h6 id="kill">把这个数字传给kill就可以</h6>
+
+<p>kill命令不能跟在管道符后面继续处理了，会出错的.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nb">kill</span> <span class="o">[</span><span class="s1">&#39;] netstat -nlp | grep 6633 | awk &#39;</span><span class="o">{</span>print <span class="nv">$7</span><span class="o">}</span><span class="s1">&#39; | awk -F&quot;/&quot; &#39;</span><span class="o">{</span> print <span class="nv">$1</span> <span class="o">}</span><span class="s1">&#39; [&#39;</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<blockquote>
+  <blockquote>
+    <p>其它类似的命令</p>
+  </blockquote>
+</blockquote>
+
+<ol>
+  <li>查看端口属于哪个程序？端口被哪个进程占用</li>
+</ol>
+
+<p>也可以使用lsof命令。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nv">$ </span>lsof -i :6633
+</span><span class="line">
+</span><span class="line">COMMAND   PID   USER      FD   TYPE    DEVICE  SIZE/OFF NODE NAME
+</span><span class="line">java    7838   kinglee   50r   IPv6  35452317       0t0  TCP *:6633 <span class="o">(</span>LISTEN<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="reference">reference</h4>
+
+<ol>
+  <li>
+    <p><a href="http://baike.baidu.com/link?url=idG3yCyykQj00QVBW_jreekVZWjIGU5urL553dG9o4ZYgwpbnjd7jJ2DVjxrm5EZ">netstat</a></p>
+  </li>
+  <li>
+    <p><a href="http://www.cnblogs.com/peter9/archive/2011/07/28/2362156.html">Linux下通过端口杀死进程</a></p>
+  </li>
+  <li>
+    <p><a href="http://blog.csdn.net/andy572633/article/details/7211546">linux下杀死进程（kill）的N种方法</a></p>
+  </li>
+</ol>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/05/19/threading-why-import-it-into-os/">Threading:why Import It Into Os</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-19T23:14:00+08:00" pubdate data-updated="true">May 19<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/05/19/threading-why-import-it-into-os/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>线程的引入是为了提高CPU利用率。线程给操作系统带来的创建维护和管理负担要轻。因为与线程相关的信息比较少，交情的负担意味着线程的代价或开销比较少。当处理器除一个进程并激活另一个进程时，就要发生上下文切换。为了发生上下文切换，操作系统必须启动和重新启动每个进程所需的信息。这就意味着必须保存描述进程存在状态的有关信息，在进程再次激活时，就可以从离开的地点继续执行。</p>
+
+<h6 id="section">那么系统在进程切换时需要保存那些信息呢？</h6>
+
+<ol>
+  <li>
+    <p>所需信息包括可执行程序、堆栈、以及静态与动态分配变量内存的指针。</p>
+  </li>
+  <li>
+    <p>寄存器组中包含执行下一条指令的指针这样的信息 。</p>
+  </li>
+  <li>
+    <p>重新任命进程时需要进程的状态（进程是被挂起还是被阻塞）和优先权。同时程序的I/O状态也被保存。</p>
+  </li>
+  <li>
+    <p>保存进程的规划信息，内存管理信息以及计数信息。</p>
+  </li>
+  <li>
+    <p>进程需要文件描述器和读写指针来继续使用资源。</p>
+  </li>
+</ol>
+
+<h6 id="section-1">而线程同样需要上下文。当线程被抢先时同样也会发生上下文切换。</h6>
+
+<h6 id="section-2">与进程相比线程的优势如下：</h6>
+
+<ol>
+  <li>
+    <p>线程不需要地址空间。线程包含在进程的地址空间中。（所以在重新任命进程时所需的线程都不需要）</p>
+  </li>
+  <li>
+    <p>线程的上下文只包含一个堆栈、一个寄存器组和一个优先权。</p>
+  </li>
+  <li>
+    <p>寄存器组包含程序或指令指针以及堆栈指针。</p>
+  </li>
+  <li>
+    <p>线程的文本包含在他的进程的文本中。</p>
+  </li>
+  <li>
+    <p>进程拥有的所有资源都属于线程。所以与资源相关的所有信息不是线程上下文的部分。</p>
+  </li>
+  <li>
+    <p>其他信息如规划、计数等都是由进程所定义。无需包含在线程的上下文中。</p>
+  </li>
+</ol>
+
+<p>线程与进程的相同之处是：都有ID，寄存器组、状态、以及优先权。线程与子进程共享父进程的资源。</p>
+
+<h6 id="section-3">他们的不同之处是：</h6>
+
+<ol>
+  <li>
+    <p>线程没有自己的地址空间，如果进程创建了多个所有的线程都将包含在他的地址空间中。</p>
+  </li>
+  <li>
+    <p>父进程和子进程之间必须通过进程间通信机制来进行通信。而进程中的多个线程之间是通过读取和写入数据到进程变量来通信。</p>
+  </li>
+  <li>
+    <p>子进程对其他子进程不施加控制，而进程的线程被看做同位体（peer）并对进程的其他的线程施加控制。</p>
+  </li>
+</ol>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/05/19/my-understanding-about-kmp/">我对KMP算法的理解</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-19T22:56:00+08:00" pubdate data-updated="true">May 19<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/05/19/my-understanding-about-kmp/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>和朴素的字符串匹配算法相比，KMP加快匹配的关键在于当某个位置不匹配了，不在模版不再是向右滑动一个位置，而是跟匹配处相关的一个值。这样，在字符串的匹配时间就是和搜索串长度相关的一个值<script type="math/tex">O(n)</script>。</p>
+
+<p>至于相关的资料，参阅了<a href="http://blog.csdn.net/v_july_v/article/details/7041827">六之再续：KMP算法之总结篇（12.09修订，必懂KMP</a>，只是这个个人感觉有点凌乱。</p>
+
+<p>定义要搜索的字符串模式是<script type="math/tex">P</script>,搜索的源是文本<script type="math/tex">T</script>.那让我们看看next数组怎么诞生的。</p>
+
+<h4 id="section">局部匹配表</h4>
+
+<p>理解KMP算法的关键就是<strong>局部匹配表</strong>,或者形象的称作为<strong>next数组</strong>，
+<a href="http://book.douban.com/subject/1885170/">算法导论</a>p571页详细的描述了推导的过程，并给出了证明。但是仍然还是晦涩难懂的。</p>
+
+<p>对于这个推论：设<script type="math/tex">P</script>是长度为<script type="math/tex">m</script>的模式，next是P的前缀函数，对于<script type="math/tex">q=2,3,...,m</script></p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+
+next\left[ q \right] =\begin{Bmatrix} 0 & \quad if\quad { E }_{ q }\quad =\quad \phi  \\ 1+max\{ k\in { E }_{ q-1 }\}  & \quad if\quad { E }_{ q-1 }\quad =\phi  \end{Bmatrix}
+ %]]></script>
+
+<p>直观来说就是才用动规的方法，求<script type="math/tex">next\left[ q \right]</script>的最长前缀的长度。</p>
+
+<p>那么好吧，再来个直观点的手写算法吧╮(╯▽╰)╭。</p>
+
+<p>就以书上的例子为准，见下图。</p>
+
+<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-05-19-my-understanding-about-kmp/1.png?raw=true" alt="a)" title="a)" /></p>
+
+<p>前q=5个字符匹配，标记为绿色。</p>
+
+<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-05-19-my-understanding-about-kmp/2.png?raw=true" alt="b)" title="b)" /></p>
+
+<p>很明显，s+1的位置是无效的，但是s+2的位置很有可能是有效的，所以，可以直接向右移动2个位置。</p>
+
+<p>推导中的使用的有用信息可以通过模式自身的比较来预处理计算得到。在这里，可以发现P的最长前缀同时也是<script type="math/tex">P_5</script>的一个真后缀<script type="math/tex">P_3</script>.这些信息可以预先急死俺，用数组next来表示，next[5]=3. 一般化的公式为，在位移s处有q个字符成功匹配，囊而下个有可能有效的位移是<script type="math/tex">s=s-(q-next[q])</script>.</p>
+
+<p>上面提到了<strong>真后缀</strong>,让我们给出定义来。</p>
+
+<p><strong>真前缀</strong>： 字符串中去除1个至多个尾部字符的字符串集合。比如aabac的真前缀为a,aa,aab,aaba.</p>
+
+<p><strong>真后缀</strong>： 字符串中去除1个至多个头部字符的字符串集合。比如aabac的真后缀为c,ac,bac,abac.</p>
+
+<p>好了 ，有了上面的定义，我们就可以简单，最重要的是明白计算next值了：<code>某个位置的next值为，到此位置的字符串产生的真前缀和真后缀</code><strong>并集</strong><code>中的最长元素的长度</code>。</p>
+
+<p>就比如上面的那个例子，模式串为”ababaca”</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">&quot;a&quot;的真前缀和真后缀都为空集，next[0]=0;
+</span><span class="line">
+</span><span class="line">&quot;ab&quot;的真前缀为[b],真后缀为[a], next[1]=0;
+</span><span class="line">
+</span><span class="line">&quot;aba&quot;的真前缀为[a,ab],真后缀为[a,ba],next[2]=1;
+</span><span class="line">
+</span><span class="line">&quot;abab&quot;的真前缀为[a,ab,aba],真后缀为[b,ab,bab],next[3]=2;
+</span><span class="line">
+</span><span class="line">&quot;ababa&quot;的真前缀为[a,ab,aba,abab],真后缀为[baba,aba,ba,a],next[4]=3;
+</span><span class="line">
+</span><span class="line">&quot;ababac&quot;的真前缀为[a,ab,aba,abab,ababa],真后缀为[babac,abac,bac,ac,c],next[5]=0;
+</span><span class="line">
+</span><span class="line">&quot;ababaca&quot;的真前缀为[a,ab,aba,abab,ababa,ababac],真后缀为[babaca,abaca,baca,aca,ca,a],next[5]=1;
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="section-1">如何使用</h4>
+
+<p>见上面的例子吧，很好理解不是。</p>
+
+<p>对了一下是代码。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="kt">void</span> <span class="n">compute_prefix</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">p</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">next</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="n">next</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+</span><span class="line">    <span class="kt">int</span> <span class="n">len</span> <span class="o">=</span> <span class="n">strlen</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+</span><span class="line">    <span class="kt">int</span> <span class="n">k</span> <span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">q</span><span class="p">;</span>
+</span><span class="line">    <span class="k">for</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span> <span class="n">q</span> <span class="o">&lt;</span> <span class="n">len</span><span class="p">;</span> <span class="n">q</span><span class="o">++</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="c1">///前q个字符中，前缀字符串集和后缀字符串集中最长的交集元素的长度</span>
+</span><span class="line">        <span class="k">while</span><span class="p">(</span> <span class="p">(</span><span class="n">k</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">!=</span> <span class="n">p</span><span class="p">[</span><span class="n">q</span><span class="p">])</span> <span class="p">)</span>
+</span><span class="line">            <span class="n">k</span> <span class="o">=</span> <span class="n">next</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
+</span><span class="line">        <span class="c1">/// 请看前面的那个状态转移函数的公式</span>
+</span><span class="line">        <span class="k">if</span><span class="p">(</span> <span class="n">p</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">==</span> <span class="n">p</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="p">)</span>
+</span><span class="line">            <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+</span><span class="line">        <span class="n">next</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="o">=</span> <span class="n">k</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="kt">void</span> <span class="n">kmp_match</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">T</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">P</span><span class="p">)</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="kt">bool</span> <span class="n">flag</span><span class="o">=</span><span class="kc">false</span><span class="p">;</span>
+</span><span class="line">    <span class="kt">int</span> <span class="n">n</span><span class="o">=</span><span class="n">strlen</span><span class="p">(</span><span class="n">T</span><span class="p">);</span>
+</span><span class="line">    <span class="kt">int</span> <span class="n">m</span><span class="o">=</span><span class="n">strlen</span><span class="p">(</span><span class="n">P</span><span class="p">);</span>
+</span><span class="line">    <span class="kt">int</span> <span class="o">*</span><span class="n">next</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="n">m</span><span class="p">];</span>
+</span><span class="line">    <span class="n">compute_prefix</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">next</span><span class="p">);</span>
+</span><span class="line">    <span class="kt">int</span> <span class="n">q</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+</span><span class="line">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">while</span><span class="p">(</span><span class="n">q</span><span class="o">&gt;</span><span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">P</span><span class="p">[</span><span class="n">q</span><span class="p">]</span><span class="o">!=</span><span class="n">T</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</span><span class="line">            <span class="n">q</span><span class="o">=</span><span class="n">next</span><span class="p">[</span><span class="n">q</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
+</span><span class="line">        <span class="k">if</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">q</span><span class="p">]</span><span class="o">==</span><span class="n">T</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</span><span class="line">            <span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+</span><span class="line">        <span class="k">if</span><span class="p">(</span><span class="n">q</span><span class="o">==</span><span class="n">m</span><span class="p">)</span>
+</span><span class="line">        <span class="p">{</span>
+</span><span class="line">            <span class="n">flag</span><span class="o">=</span><span class="kc">true</span><span class="p">;</span>
+</span><span class="line">            <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;math occurs with &quot;</span><span class="o">&lt;&lt;</span><span class="n">i</span><span class="o">-</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+</span><span class="line">            <span class="n">q</span><span class="o">=</span><span class="n">next</span><span class="p">[</span><span class="n">q</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="n">flag</span><span class="o">==</span><span class="kc">false</span><span class="p">)</span>
+</span><span class="line">        <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;there is no math!&quot;</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="section-2">总结</h4>
+
+<p>相对于朴素的匹配算法，这里并不是在匹配失败后直接无脑的外后移一位就可以了，而是利用了模式串本身的信息，<strong>位移的距离=已经匹配的长度-该位置next值</strong>。</p>
+
+<p>希望对你有用。当然要是觉得有问题直接留言好了，一起学吧。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/05/14/sort-list/">链表排序</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-14T13:51:00+08:00" pubdate data-updated="true">May 14<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/05/14/sort-list/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>链表不想数组那样是连续的即像数组那样随机访问，只能从前往后遍历。所以排序的方法只能是像插入排序，选择排序，和归并排序。</p>
+
+<p>下面就先说归并排序。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/05/14/sort-list/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/blog/page/2/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he/">浅谈微博标签聚合</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/">Use Svm to Classify Whether a Person Is Good or Bad on Credit Using Sns Data</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/09/wei-pi-pei/">伪匹配</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/">朴素贝叶斯文本分类</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/03/lagrange-duality/">拉格朗日对偶</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+<section>
+  <h1>My Douban</h1>
+  <div>
+  <!--添加到这-->
+  <script type="text/javascript" src="http://www.douban.com/service/badge/aluenkinglee/?selection=random&amp;picsize=small&amp;show=dolist&amp;n=8&amp;cat=book&amp;columns=3"></script>
+  </div>
+</section> 
+<section>
+<h1>Recent Comments</h1>
+<ul class="ds-recent-comments" data-num-items="10" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="18"></ul>
+
+<!--多说js加载开始，一个页面只需要加载一次 -->
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"aluenkinglee"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+<!--多说js加载结束，一个页面只需要加载一次 -->
+
+</section> 
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Aluen King Lee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

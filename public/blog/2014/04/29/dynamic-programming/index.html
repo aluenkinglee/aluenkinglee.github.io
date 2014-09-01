@@ -1,0 +1,403 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>dynamic programming - 曾经渐行远，未免心戚戚</title>
+  <meta name="author" content="Aluen King Lee">
+
+  
+  <meta name="description" content="好几年了，没有特意去做与ACM相关的算法题了，时至今日，也确实忘得差不多了，不过，现在也到了该拾起来的时候了。 动态规划 动态规划（Dynamic Programming）是用来解决最优化问题的最常用手段,说起定义，网上浩瀚如烟，有很多类型，比如： 背包问题：0-1背包，完全背包，硬币问题， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://aluenkinglee.com/blog/2014/04/29/dynamic-programming">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="曾经渐行远，未免心戚戚" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+<!-- mathjax config similar to math.stackexchange -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
+          MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
+                  data.math = data.math.replace(/^\s*<!\[CDATA\[\s*((?:\n|.)*)\s*\]\]>\s*$/m,"$1");
+                    });
+          });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">曾经渐行远，未免心戚戚</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:aluenkinglee.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Dynamic Programming</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-29T19:34:00+08:00" pubdate data-updated="true">Apr 29<span>th</span>, 2014</time>
+        
+        
+          | <a href="#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>好几年了，没有特意去做与ACM相关的算法题了，时至今日，也确实忘得差不多了，不过，现在也到了该拾起来的时候了。</p>
+
+<h5 id="section">动态规划</h5>
+<!--more -->
+
+<p>动态规划（Dynamic Programming）是用来解决最优化问题的最常用手段,说起定义，网上浩瀚如烟，有很多类型，比如：</p>
+
+<ul>
+  <li>
+    <p>背包问题：0-1背包，完全背包，硬币问题，装箱子问题等。</p>
+  </li>
+  <li>
+    <p>最短路径问题：网络流等。</p>
+  </li>
+  <li>
+    <p>树形动规：最优查找树。</p>
+  </li>
+</ul>
+
+<p>等等等等，严格的划分问题类型没有意义，关键是分析问题的本质：阶段，状态，状态转移，全局最优。</p>
+
+<h5 id="section-1">一些术语</h5>
+
+<p>首先，先介绍下相关的概念，在结合具体的，例子加深感性和理性上的认识。</p>
+
+<p>动态规划问题的一个通用特点是具备<code>最优子结构</code>和<code>重叠子问题</code>。当前子问题的解将由上一次子问题的解推出。每一个问题对应一个它的<strong>状态</strong>。<code>重叠子问题</code>的意思，某些问题的计算是有重叠的，若该计算结果记录下来，之后其他子问题遇到重叠的直接查表就可以了，避免重复计算。最优子结构则是我们的全局问题可以分解，按照<strong>阶段</strong>来分解。从而规约到最简的问题。说到这，是不是想到了分治法？，其基本思想也是将待求解问题分解成若干个子问题，先求解子问题，然后从这些子问题的解得到原问题的解。与分治法不同的是，适合于用动态规划求解的问题，经分解得到子问题往往不是互相独立的。若用分治法来解这类问题，则分解得到的子问题数目太多，有些子问题被重复计算了很多次（把它们记录下来嘛！）。而且另外一个思想是，动规有明显的阶段的概念，而分治只是把问题分成不重复的规模较小的没有阶段概念的小问题。</p>
+
+<p><strong>基本结构</strong></p>
+
+<p>多阶段决策问题中，各个阶段采取的决策，一般来说是与时间有关的，决策依赖于当前状态，又随即引起状态的转移，一个决策序列就是在变化的状态中产生出来的，故有“动态”的含义，称这种解决多阶段决策最优化问题的方法为动态规划方法。</p>
+
+<p><strong>什么是动态规划，我们要如何描述它?</strong></p>
+
+<p>先来看下形式化的描述的吧，在结合例子描述它。</p>
+
+<script type="math/tex; mode=display">
+f\left( S \right) =\underset { d\in D\left( S \right)  }{ opt } \left\{ cos\left( d\vert S \right) \quad \circ \quad f\left( T\left( d|S \right)  \right)  \right\} 
+</script>
+
+<p>其中，<code>S</code>是代指<code>state</code>，就是状态空间的一个state，动态规划解决的问题是按照状态和该状态可以选择的决策来解决问题的。确切的来说，<code>S</code>代表的就是从开始到当前决策的问题状态；</p>
+
+<p><code>d</code>代指<code>decision</code>，是一个从<code>S</code>状态所决定的决策空间中<script type="math/tex">D\left( S \right) </script>做出的决策，不同状态决定的决策空间有可能不同。举例说明，对于硬币问题来讲，假设每个硬币的个数都是无限的，那么对于任何一个状态（目前手里有多少钱），接下来做的决策个数都是一样的，都是从固定的那几枚硬币中挑选；对于不可重复选择的问题，比如拿球，有红黑黄3个球，每个球的权值不同，求一个选球次序使之最优，这下好了，每个阶段的决策空间都是不同的，对于状态1，有红，黑，黄三种状态，接下来，就只能选剩下的球里面的了。所以决策空间会因问题而变化的。还有TSP旅行者问题，在每个节点所对应的状态时从起点到当前状态的最短距离，接下来的选择，得看该节点（状态）的出度是谁了。<strong>所以说，决策依赖当前的状态</strong>。</p>
+
+<p><script type="math/tex">D\left( S \right) </script>是决策空间(decision space)，代表从当前状态转到另一个状态时，或者从另一个状态转到当前状态可以选择的决策<code>d</code>的结合。（之所以使用或者是说了两种考虑的方式）</p>
+
+<p><code>f</code>是指目标函数(target function)，一个关于状态的函数，往往代表从初始状态到达状态<code>S</code>所做的所有决策中的最优利益（不是最大就是最小）。</p>
+
+<p><script type="math/tex">cos\left( d\vert S \right) </script>可以叫做成本函数(cost function)，很好理解，就是在状态<code>S</code>下，做出选择<code>d</code>的成本，成本函数和目标函数不同，因为它不需要依赖上下文条件，只需一步计算就可以搞定。</p>
+
+<p><script type="math/tex">cos\left( d\vert S \right) </script>代表的是转移函数(transfer function)，就是指从S做一个决策到达另外一个状态<script type="math/tex">S'</script>.</p>
+
+<p><script type="math/tex">\circ</script>是一个二元操作符，多数是加法或者乘法或者是最大值要不就是最小值。</p>
+
+<p>除此之外，还需要边界条件。</p>
+
+<p>最后来看个最简单的例子。</p>
+
+<h5 id="section-2">例子</h5>
+
+<p>如果我们有面值为1元、3元和5元的硬币若干枚，如何用最少的硬币凑够11元？有多少种兑换方法？</p>
+
+<p>思路：这个比较简单，状态就是硬币的价值，有多少钱，决策空间是固定的<script type="math/tex">D(S)={1,3,5}</script></p>
+
+<p>用<script type="math/tex">f(i)</script>代表凑够i元，得用最少多少硬币。成本函数也是固定的，为1。</p>
+
+<script type="math/tex; mode=display">
+f(i)=\underset { d\in D\left( {1,3,5} \right)  }{min}{1+f(i-d)},i!=0
+</script>
+
+<p>当然了<script type="math/tex">i==0</script>时，f(0)=0.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">f(11)=min{1+f(11-1),1+f(11-3),1+f(11-5)};
+</span><span class="line">f(10)=min{1+f(10-1),1+f(10-3),1+f(10-5)};
+</span><span class="line">f(9)=min{1+f(9-1),1+f(9-3),1+f(9-5)};
+</span><span class="line">f(8)=min{1+f(8-1),1+f(8-3),1+f(8-5)};
+</span><span class="line">f(7)=min{1+f(7-1),1+f(7-3),1+f(7-5)};
+</span><span class="line">f(6)=min{1+f(6-1),1+f(6-3),1+f(6-5)};
+</span><span class="line">f(5)=min{1+f(5-1),1+f(5-3),1+f(5-5)};
+</span><span class="line">f(4)=min{1+f(4-1),1+f(4-3) )};
+</span><span class="line">f(3)=min{1+f(3-1),1+f(3-3) )};
+</span><span class="line">f(2)=min{1+f(2-1)};
+</span><span class="line">f(1)=min{1+f(1-1)};
+</span><span class="line">f(0)已知=0；
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>所以：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">f(1)=min{1+f(1-1)}=1；
+</span><span class="line">f(2)=min{1+f(2-1)}=2；
+</span><span class="line">f(3)=min{1+f(3-1),1+f(3-3) )}=min{3,1}=1;
+</span><span class="line">f(4)=min{1+f(4-1),1+f(4-3) )}=min{2,2}=2;
+</span><span class="line">f(5)=min{1+f(5-1),1+f(5-3),1+f(5-5)}=min{3,3,1}=1;
+</span><span class="line">f(6)=min{1+f(6-1),1+f(6-3),1+f(6-5)}=min{2,2,2}=2;
+</span><span class="line">f(7)=min{1+f(7-1),1+f(7-3),1+f(7-5)}=min{3,3,3}=3;
+</span><span class="line">f(8)=min{1+f(8-1),1+f(8-3),1+f(8-5)}=min{4,2,2}=2;
+</span><span class="line">f(9)=min{1+f(9-1),1+f(9-3),1+f(9-5)}=min{3,3,3}=3;
+</span><span class="line">f(10)=min{1+f(10-1),1+f(10-3),1+f(10-5)}=min{4,4,2}=2;
+</span><span class="line">f(11)=min{1+f(11-1),1+f(11-3),1+f(11-5)}=min{3,3,3}=3;
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>从我们的计算过程来看，求解既可以从前往后也可以从后往前。</p>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Aluen King Lee</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-29T19:34:00+08:00" pubdate data-updated="true">Apr 29<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/dong-tai-gui-hua/'>动态规划</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/04/28/some-commen-list-problems-in-the-interview/" title="Previous Post: some commen list problems in the interview">&laquo; some commen list problems in the interview</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/04/30/discriminative-model-vs-generative-model/" title="Next Post: Discriminative Model Vs. Generative Model">Discriminative Model Vs. Generative Model &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+
+  <section>
+    <h1>Comments</h1>
+    <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"aluenkinglee"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END --></div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he/">浅谈微博标签聚合</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/">Use Svm to Classify Whether a Person Is Good or Bad on Credit Using Sns Data</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/09/wei-pi-pei/">伪匹配</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/">朴素贝叶斯文本分类</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/03/lagrange-duality/">拉格朗日对偶</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+<section>
+  <h1>My Douban</h1>
+  <div>
+  <!--添加到这-->
+  <script type="text/javascript" src="http://www.douban.com/service/badge/aluenkinglee/?selection=random&amp;picsize=small&amp;show=dolist&amp;n=8&amp;cat=book&amp;columns=3"></script>
+  </div>
+</section> 
+<section>
+<h1>Recent Comments</h1>
+<ul class="ds-recent-comments" data-num-items="10" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="18"></ul>
+
+</section> 
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Aluen King Lee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">test_global_vars</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; 测试使用global&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">v</span>
+    <span class="n">v</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">print</span> <span class="n">v</span><span class="p">,</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+ 
+<span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;测试实参是怎么回事，by value，value总是个函数引用，不是那个</span>
+<span class="sd">    对象的值,实参也是跟函数内的变量一样被放入到了本地符号表&quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">print</span> <span class="n">n</span><span class="p">,</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+ 
+<span class="n">v</span><span class="o">=</span> <span class="mi">1</span>
+<span class="k">print</span> <span class="n">v</span><span class="p">,</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+<span class="n">test_global_vars</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">v</span><span class="p">,</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+<span class="n">foo</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">v</span><span class="p">,</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+<span class="n">v</span><span class="o">+=</span><span class="mi">1</span>
+<span class="k">print</span> <span class="n">v</span><span class="p">,</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+</pre></div>

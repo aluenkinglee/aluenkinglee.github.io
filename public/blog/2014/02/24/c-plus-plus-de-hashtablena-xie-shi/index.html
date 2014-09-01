@@ -1,0 +1,853 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>C++的hashtable那些事 - 曾经渐行远，未免心戚戚</title>
+  <meta name="author" content="Aluen King Lee">
+
+  
+  <meta name="description" content="对于想知道hashtable原理的的人来说，多少对基本的数据结构和算法都有些了解，所以不再细说。 平常我们所说的一些容器来说，比如vector，list，stack之类，他们中的元素都是可以排序的，可以归为序列式容器，基于连续内存的vector可以实现随机存储，但是搜索的复杂度是O（n）， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://aluenkinglee.com/blog/2014/02/24/c-plus-plus-de-hashtablena-xie-shi">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="曾经渐行远，未免心戚戚" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+<!-- mathjax config similar to math.stackexchange -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
+          MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
+                  data.math = data.math.replace(/^\s*<!\[CDATA\[\s*((?:\n|.)*)\s*\]\]>\s*$/m,"$1");
+                    });
+          });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">曾经渐行远，未免心戚戚</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:aluenkinglee.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">C++的hashtable那些事</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-24T05:29:00+08:00" pubdate data-updated="true">Feb 24<span>th</span>, 2014</time>
+        
+        
+          | <a href="#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>对于想知道hashtable原理的的人来说，多少对基本的数据结构和算法都有些了解，所以不再细说。</p>
+
+<p>平常我们所说的一些容器来说，比如vector，list，stack之类，他们中的元素都是可以排序的，可以归为序列式容器，基于连续内存的vector可以实现随机存储，但是搜索的复杂度是O（n），list也是如此。
+在关联式容器中，每个数据有一个键值和一个实值。元素插入到关联式容器中，容器内部结构根据其键值依据某个特定的规则将这个元素放置于适当的位置，从而实现插入和搜索是对数平均时间（基于红黑树），甚至是尽可能的是常数级别（就是这里说的散列表），其效率依赖于数据的特性和规则的设计。关联式的容器没有所谓的头尾，不会有begin(),end(),push_back()等这样的行为。</p>
+
+<p>数组是个很好的内建数据结构，你甚至可以把数组看成一个最简单的hash表，index是种键值，而内容则是value。是不是很好，常数级寻址。但是也有问题，通常我们面对的键值不仅仅是简单的无符号的整数之流，还有很多的string啊，复杂的类对象啊，而这些问题就是hash函数所要处理的问题。hash函数把这个对象映射到[0-表的长度-1]之间。但是，不能够保证每个元素的键值与函数值是一一对应的，因此极有可能出现对于不同的元素，却计算出了相同的函数值，这样就产生了“冲突”，换句话说，就是把不同的元素分在了相同的“类”之中。 总的来说，“直接定址”与“解决冲突”是哈希表的两大特点。首先，为什么会出现冲突？基于这种想法设计出来的结构无疑是一种空间换时间的典范，尽管现在硬件越来越牛逼，但并不意味着可以随便挥霍，矛盾就出现在空间的数据往往小于我们要处理的数据规模，所以我们不可能设计出一种一一对应的函数来。而解决冲突就是hash第二个要解决的问题。</p>
+
+<p>对于冲突的解决，往往有线性探测和二测探测以及开链法（类似list），前两种往往在数据规模小的情况下，即空间浪费的时候效率较高，这也意味着空间利用率不是很理想，而开链法，器负载系数大于1，就是索引的数组被极大利用了。
+<!--more--></p>
+
+<p>所以在hashtable中，把一个元素（对象）插入到其中，分为以下的过程：</p>
+
+<p>1.得到元素的键值Key。</p>
+
+<p>2.调用处理该键型KeyType的hash函数(有时候需要用户自己编写)得到hash值（即下标）。</p>
+
+<p>3.把该元素存放到对应该下标的桶内。</p>
+
+<p>查找，取值的过程:</p>
+
+<p>1.得到元素的键值Key。</p>
+
+<p>2.调用处理该键型KeyType的hash函数得到hash值（即下标）。</p>
+
+<p>3.比较桶的内部元素是否与key相等（编写equal_to函数，基本类型意外用户根据需求编写），若都不相等，则没有找到。</p>
+
+<p>4.取出相等的记录的value。</p>
+
+<p>综上所述，实现一个hashtable必须注意hash函数 和 比较函数的接口提供。</p>
+
+<h5 id="hashtable">hashtable迭代器的设计</h5>
+
+<p>首先明确我们的需求，定位有hash函数搞定，而找到该桶之后，只是需要顺着桶往下找就够了，所以迭代器是个前向迭代器，对应的接口有实值，键值，hash仿函数，提取仿函数，等于仿函数，还有空间配置器等。其他编写仿照一般的迭代器设计即可。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">Value</span><span class="p">,</span> <span class="k">class</span> <span class="nc">Key</span><span class="p">,</span>
+</span><span class="line">         <span class="k">class</span> <span class="nc">HashFcn</span><span class="p">,</span> <span class="k">class</span> <span class="nc">ExtractKey</span><span class="p">,</span>
+</span><span class="line">         <span class="k">class</span> <span class="nc">EqualKey</span><span class="p">,</span> <span class="k">class</span> <span class="nc">Alloc</span><span class="o">&gt;</span>
+</span><span class="line"><span class="k">struct</span> <span class="n">__hashtable_iterator</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="k">typedef</span> <span class="n">hashtable</span><span class="o">&lt;</span><span class="n">Value</span><span class="p">,</span> <span class="n">Key</span><span class="p">,</span> <span class="n">HashFcn</span><span class="p">,</span> <span class="n">ExtractKey</span><span class="p">,</span> <span class="n">EqualKey</span><span class="p">,</span> <span class="n">Alloc</span><span class="o">&gt;</span> <span class="n">HashTable</span><span class="p">;</span>
+</span><span class="line">    <span class="k">typedef</span> <span class="n">__hashtable_iterator</span><span class="o">&lt;</span><span class="n">Value</span><span class="p">,</span> <span class="n">Key</span><span class="p">,</span>
+</span><span class="line">            <span class="n">HashFcn</span><span class="p">,</span> <span class="n">ExtractKey</span><span class="p">,</span>
+</span><span class="line">            <span class="n">EqualKey</span><span class="p">,</span> <span class="n">Alloc</span><span class="o">&gt;</span>
+</span><span class="line">            <span class="n">iterator</span><span class="p">;</span>
+</span><span class="line">    <span class="k">typedef</span> <span class="n">__hashtable_iterator</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">Value</span><span class="p">,</span> <span class="n">Key</span><span class="p">,</span>
+</span><span class="line">            <span class="n">HashFcn</span><span class="p">,</span> <span class="n">ExtractKey</span><span class="p">,</span>
+</span><span class="line">            <span class="n">EqualKey</span><span class="p">,</span> <span class="n">Alloc</span><span class="o">&gt;</span>
+</span><span class="line">            <span class="n">const_iterator</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">typedef</span> <span class="n">__hashtable_nodes</span><span class="o">&lt;</span><span class="n">Value</span><span class="o">&gt;</span> <span class="n">node</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">//因为是前向移动，没有后退操作--</span>
+</span><span class="line">    <span class="k">typedef</span> <span class="n">forward_iterator_tag</span>    <span class="n">iterator_categor</span><span class="p">;</span>
+</span><span class="line">    <span class="k">typedef</span> <span class="n">Value</span>                   <span class="n">value_type</span><span class="p">;</span>
+</span><span class="line">    <span class="k">typedef</span> <span class="n">ptrdiff_t</span>               <span class="n">difference_type</span><span class="p">;</span>
+</span><span class="line">    <span class="k">typedef</span> <span class="n">size_t</span>                  <span class="n">size_type</span><span class="p">;</span>
+</span><span class="line">    <span class="k">typedef</span> <span class="n">Value</span><span class="o">*</span>                  <span class="n">pointer</span><span class="p">;</span>
+</span><span class="line">    <span class="k">typedef</span> <span class="n">Value</span><span class="o">&amp;</span>                  <span class="n">reference</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="n">node</span><span class="o">*</span> <span class="n">cur</span><span class="p">;</span>
+</span><span class="line">    <span class="n">HashTable</span><span class="o">*</span> <span class="n">ht</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">//constructor</span>
+</span><span class="line">    <span class="n">__hashtable_iterator</span><span class="p">(</span><span class="n">node</span><span class="o">*</span> <span class="n">n</span><span class="p">,</span> <span class="n">HashTable</span><span class="o">*</span> <span class="n">tab</span><span class="p">)</span> <span class="o">:</span> <span class="n">cur</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">ht</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span> <span class="p">{}</span>
+</span><span class="line">    <span class="n">__hashtable_iterator</span><span class="p">()</span> <span class="p">{}</span>
+</span><span class="line">
+</span><span class="line">    <span class="n">reference</span> <span class="k">operator</span><span class="o">*</span><span class="p">()</span>  <span class="k">const</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">cur</span><span class="o">-&gt;</span><span class="n">val</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="n">pointer</span>   <span class="k">operator</span><span class="o">-&gt;</span><span class="p">()</span> <span class="k">const</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="o">&amp;</span><span class="p">(</span><span class="k">operator</span><span class="o">*</span><span class="p">());</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="n">iterator</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">++</span><span class="p">();</span>
+</span><span class="line">    <span class="n">iterator</span>  <span class="k">operator</span><span class="o">++</span><span class="p">(</span><span class="kt">int</span><span class="p">);</span>
+</span><span class="line">    <span class="kt">bool</span> <span class="k">operator</span><span class="o">==</span><span class="p">(</span><span class="k">const</span> <span class="n">iterator</span><span class="o">&amp;</span> <span class="n">it</span><span class="p">)</span> <span class="k">const</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">cur</span> <span class="o">==</span> <span class="n">it</span><span class="p">.</span><span class="n">cur</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="kt">bool</span> <span class="k">operator</span><span class="o">!=</span><span class="p">(</span><span class="k">const</span> <span class="n">iterator</span><span class="o">&amp;</span> <span class="n">it</span><span class="p">)</span> <span class="k">const</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">cur</span> <span class="o">!=</span> <span class="n">it</span><span class="p">.</span><span class="n">cur</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>详情请看<a href="https://github.com/aluenkinglee/stuff/blob/master/cplusplus/stl/hashtable#L127" title="__hashtable_iterator">__hashtable_iterator</a></p>
+
+<h5 id="hashtable-1">hashtable的数据结构</h5>
+
+<p>由于采用开链的冲突解决方法，由此看来只需要一个vector代替桶，链表来装载桶内的元素即可。</p>
+
+<p>需要注意的是hash函数，提取函数，等于函数的成员。另外需要buckets，还有元素数目的成员，有了这些基本就够了。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+<span class="line-number">53</span>
+<span class="line-number">54</span>
+<span class="line-number">55</span>
+<span class="line-number">56</span>
+<span class="line-number">57</span>
+<span class="line-number">58</span>
+<span class="line-number">59</span>
+<span class="line-number">60</span>
+<span class="line-number">61</span>
+<span class="line-number">62</span>
+<span class="line-number">63</span>
+<span class="line-number">64</span>
+<span class="line-number">65</span>
+<span class="line-number">66</span>
+<span class="line-number">67</span>
+<span class="line-number">68</span>
+<span class="line-number">69</span>
+<span class="line-number">70</span>
+<span class="line-number">71</span>
+<span class="line-number">72</span>
+<span class="line-number">73</span>
+<span class="line-number">74</span>
+<span class="line-number">75</span>
+<span class="line-number">76</span>
+<span class="line-number">77</span>
+<span class="line-number">78</span>
+<span class="line-number">79</span>
+<span class="line-number">80</span>
+<span class="line-number">81</span>
+<span class="line-number">82</span>
+<span class="line-number">83</span>
+<span class="line-number">84</span>
+<span class="line-number">85</span>
+<span class="line-number">86</span>
+<span class="line-number">87</span>
+<span class="line-number">88</span>
+<span class="line-number">89</span>
+<span class="line-number">90</span>
+<span class="line-number">91</span>
+<span class="line-number">92</span>
+<span class="line-number">93</span>
+<span class="line-number">94</span>
+<span class="line-number">95</span>
+<span class="line-number">96</span>
+<span class="line-number">97</span>
+<span class="line-number">98</span>
+<span class="line-number">99</span>
+<span class="line-number">100</span>
+<span class="line-number">101</span>
+<span class="line-number">102</span>
+<span class="line-number">103</span>
+<span class="line-number">104</span>
+<span class="line-number">105</span>
+<span class="line-number">106</span>
+<span class="line-number">107</span>
+<span class="line-number">108</span>
+<span class="line-number">109</span>
+<span class="line-number">110</span>
+<span class="line-number">111</span>
+<span class="line-number">112</span>
+<span class="line-number">113</span>
+<span class="line-number">114</span>
+<span class="line-number">115</span>
+<span class="line-number">116</span>
+<span class="line-number">117</span>
+<span class="line-number">118</span>
+<span class="line-number">119</span>
+<span class="line-number">120</span>
+<span class="line-number">121</span>
+<span class="line-number">122</span>
+<span class="line-number">123</span>
+<span class="line-number">124</span>
+<span class="line-number">125</span>
+<span class="line-number">126</span>
+<span class="line-number">127</span>
+<span class="line-number">128</span>
+<span class="line-number">129</span>
+<span class="line-number">130</span>
+<span class="line-number">131</span>
+<span class="line-number">132</span>
+<span class="line-number">133</span>
+<span class="line-number">134</span>
+<span class="line-number">135</span>
+<span class="line-number">136</span>
+<span class="line-number">137</span>
+<span class="line-number">138</span>
+<span class="line-number">139</span>
+<span class="line-number">140</span>
+<span class="line-number">141</span>
+<span class="line-number">142</span>
+<span class="line-number">143</span>
+<span class="line-number">144</span>
+<span class="line-number">145</span>
+<span class="line-number">146</span>
+<span class="line-number">147</span>
+<span class="line-number">148</span>
+<span class="line-number">149</span>
+<span class="line-number">150</span>
+<span class="line-number">151</span>
+<span class="line-number">152</span>
+<span class="line-number">153</span>
+<span class="line-number">154</span>
+<span class="line-number">155</span>
+<span class="line-number">156</span>
+<span class="line-number">157</span>
+<span class="line-number">158</span>
+<span class="line-number">159</span>
+<span class="line-number">160</span>
+<span class="line-number">161</span>
+<span class="line-number">162</span>
+<span class="line-number">163</span>
+<span class="line-number">164</span>
+<span class="line-number">165</span>
+<span class="line-number">166</span>
+<span class="line-number">167</span>
+<span class="line-number">168</span>
+<span class="line-number">169</span>
+<span class="line-number">170</span>
+<span class="line-number">171</span>
+<span class="line-number">172</span>
+<span class="line-number">173</span>
+<span class="line-number">174</span>
+<span class="line-number">175</span>
+<span class="line-number">176</span>
+<span class="line-number">177</span>
+<span class="line-number">178</span>
+<span class="line-number">179</span>
+<span class="line-number">180</span>
+<span class="line-number">181</span>
+<span class="line-number">182</span>
+<span class="line-number">183</span>
+<span class="line-number">184</span>
+<span class="line-number">185</span>
+<span class="line-number">186</span>
+<span class="line-number">187</span>
+<span class="line-number">188</span>
+<span class="line-number">189</span>
+<span class="line-number">190</span>
+<span class="line-number">191</span>
+<span class="line-number">192</span>
+<span class="line-number">193</span>
+<span class="line-number">194</span>
+<span class="line-number">195</span>
+<span class="line-number">196</span>
+<span class="line-number">197</span>
+<span class="line-number">198</span>
+<span class="line-number">199</span>
+<span class="line-number">200</span>
+<span class="line-number">201</span>
+<span class="line-number">202</span>
+<span class="line-number">203</span>
+<span class="line-number">204</span>
+<span class="line-number">205</span>
+<span class="line-number">206</span>
+<span class="line-number">207</span>
+<span class="line-number">208</span>
+<span class="line-number">209</span>
+<span class="line-number">210</span>
+<span class="line-number">211</span>
+<span class="line-number">212</span>
+<span class="line-number">213</span>
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="c1">//hashtable的数据结构</span>
+</span><span class="line"><span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">Value</span><span class="p">,</span> <span class="k">class</span> <span class="nc">Key</span><span class="p">,</span>
+</span><span class="line">         <span class="k">class</span> <span class="nc">HashFcn</span><span class="p">,</span> <span class="k">class</span> <span class="nc">ExtractKey</span><span class="p">,</span>
+</span><span class="line">         <span class="k">class</span> <span class="nc">EqualKey</span><span class="p">,</span> <span class="k">class</span> <span class="nc">Alloc</span><span class="o">&gt;</span>
+</span><span class="line"><span class="k">class</span> <span class="nc">hashtable</span>
+</span><span class="line"><span class="p">{</span>
+</span><span class="line"><span class="k">public</span><span class="o">:</span>
+</span><span class="line">    <span class="k">typedef</span> <span class="n">Value</span> <span class="n">value_type</span><span class="p">;</span>
+</span><span class="line">    <span class="k">typedef</span> <span class="n">value_type</span><span class="o">*</span> <span class="n">pointer</span><span class="p">;</span>
+</span><span class="line">    <span class="k">typedef</span> <span class="k">const</span> <span class="n">pointer</span> <span class="n">const_pointer</span><span class="p">;</span>
+</span><span class="line">    <span class="k">typedef</span> <span class="n">value_type</span><span class="o">&amp;</span> <span class="n">reference</span><span class="p">;</span>
+</span><span class="line">    <span class="k">typedef</span> <span class="k">const</span> <span class="n">reference</span> <span class="n">const_reference</span><span class="p">;</span>
+</span><span class="line">    <span class="k">typedef</span> <span class="n">Key</span> <span class="n">key_type</span><span class="p">;</span>
+</span><span class="line">    <span class="k">typedef</span> <span class="n">HashFcn</span> <span class="n">hasher</span><span class="p">;</span>
+</span><span class="line">    <span class="k">typedef</span> <span class="n">EqualKey</span> <span class="n">key_equal</span><span class="p">;</span>
+</span><span class="line">    <span class="k">typedef</span> <span class="n">size_t</span> <span class="n">size_type</span><span class="p">;</span>
+</span><span class="line">    <span class="k">typedef</span> <span class="n">__hashtable_iterator</span><span class="o">&lt;</span><span class="n">Value</span><span class="p">,</span> <span class="n">Key</span><span class="p">,</span> <span class="n">HashFcn</span><span class="p">,</span> <span class="n">ExtractKey</span><span class="p">,</span> <span class="n">EqualKey</span><span class="p">,</span> <span class="n">Alloc</span><span class="o">&gt;</span> <span class="n">iterator</span><span class="p">;</span>
+</span><span class="line">    <span class="k">typedef</span> <span class="k">typename</span> <span class="n">__hashtable_iterator</span><span class="o">&lt;</span><span class="n">Value</span><span class="p">,</span> <span class="n">Key</span><span class="p">,</span> <span class="n">HashFcn</span><span class="p">,</span> <span class="n">ExtractKey</span><span class="p">,</span> <span class="n">EqualKey</span><span class="p">,</span> <span class="n">Alloc</span><span class="o">&gt;::</span><span class="n">const_iterator</span> <span class="n">const_iterator</span><span class="p">;</span>
+</span><span class="line"><span class="c1">//constructor</span>
+</span><span class="line"><span class="k">public</span><span class="o">:</span>
+</span><span class="line">    <span class="n">hashtable</span><span class="p">(</span><span class="n">size_type</span> <span class="n">n</span><span class="p">,</span>
+</span><span class="line">              <span class="k">const</span> <span class="n">HashFcn</span> <span class="o">&amp;</span><span class="n">hf</span><span class="p">,</span>
+</span><span class="line">              <span class="k">const</span> <span class="n">EqualKey</span> <span class="o">&amp;</span><span class="n">eql</span><span class="p">,</span>
+</span><span class="line">              <span class="k">const</span> <span class="n">ExtractKey</span> <span class="o">&amp;</span><span class="n">ext</span><span class="p">)</span>
+</span><span class="line">        <span class="o">:</span><span class="n">hash</span><span class="p">(</span><span class="n">hf</span><span class="p">),</span><span class="n">equals</span><span class="p">(</span><span class="n">eql</span><span class="p">),</span><span class="n">get_key</span><span class="p">(</span><span class="n">ext</span><span class="p">),</span><span class="n">num_elements</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">initialize_buckets</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="n">hashtable</span><span class="p">(</span><span class="n">size_type</span> <span class="n">n</span><span class="p">,</span>
+</span><span class="line">              <span class="k">const</span> <span class="n">HashFcn</span> <span class="o">&amp;</span><span class="n">hf</span><span class="p">,</span>
+</span><span class="line">              <span class="k">const</span> <span class="n">EqualKey</span> <span class="o">&amp;</span><span class="n">eql</span><span class="p">)</span>
+</span><span class="line">        <span class="o">:</span><span class="n">hash</span><span class="p">(</span><span class="n">hf</span><span class="p">),</span><span class="n">equals</span><span class="p">(</span><span class="n">eql</span><span class="p">),</span><span class="n">get_key</span><span class="p">(</span><span class="n">ExtractKey</span><span class="p">()),</span><span class="n">num_elements</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">initialize_buckets</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="n">hashtable</span><span class="p">(</span><span class="k">const</span> <span class="n">hashtable</span> <span class="o">&amp;</span><span class="n">ht</span><span class="p">)</span>
+</span><span class="line">        <span class="o">:</span><span class="n">hash</span><span class="p">(</span><span class="n">ht</span><span class="p">.</span><span class="n">hash</span><span class="p">),</span><span class="n">equals</span><span class="p">(</span><span class="n">ht</span><span class="p">.</span><span class="n">equals</span><span class="p">),</span><span class="n">get_key</span><span class="p">(</span><span class="n">ht</span><span class="p">.</span><span class="n">get_key</span><span class="p">),</span><span class="n">num_elements</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">copy_from</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ht</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="o">~</span><span class="n">hashtable</span><span class="p">()</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">clear</span><span class="p">();</span>
+</span><span class="line">    <span class="p">};</span>
+</span><span class="line">
+</span><span class="line">    <span class="n">hashtable</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="n">hashtable</span> <span class="o">&amp;</span><span class="n">ht</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">ht</span> <span class="o">!=</span> <span class="k">this</span><span class="p">)</span>
+</span><span class="line">        <span class="p">{</span>
+</span><span class="line">            <span class="n">clear</span><span class="p">();</span>
+</span><span class="line">            <span class="n">hash</span> <span class="o">=</span> <span class="n">ht</span><span class="p">.</span><span class="n">hash</span><span class="p">;</span>
+</span><span class="line">            <span class="n">equals</span> <span class="o">=</span> <span class="n">ht</span><span class="p">.</span><span class="n">equals</span><span class="p">;</span>
+</span><span class="line">            <span class="n">get_key</span> <span class="o">=</span> <span class="n">ht</span><span class="p">.</span><span class="n">get_key</span><span class="p">;</span>
+</span><span class="line">            <span class="n">copy_from</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ht</span><span class="p">);</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="k">private</span><span class="o">:</span>
+</span><span class="line">    <span class="n">hasher</span> <span class="n">hash</span><span class="p">;</span>
+</span><span class="line">    <span class="n">key_equal</span> <span class="n">equals</span><span class="p">;</span>
+</span><span class="line">    <span class="n">ExtractKey</span> <span class="n">get_key</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">typedef</span> <span class="n">__hashtable_nodes</span><span class="o">&lt;</span><span class="n">Value</span><span class="o">&gt;</span> <span class="n">node</span><span class="p">;</span>
+</span><span class="line">    <span class="k">typedef</span> <span class="n">simple_alloc</span><span class="o">&lt;</span><span class="n">node</span><span class="p">,</span> <span class="n">Alloc</span><span class="o">&gt;</span> <span class="n">node_allocator</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">//std::vector&lt;node*, Alloc&gt; buckets;</span>
+</span><span class="line">    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">node</span><span class="o">*&gt;</span> <span class="n">buckets</span><span class="p">;</span>
+</span><span class="line">    <span class="n">size_type</span> <span class="n">num_elements</span><span class="p">;</span>
+</span><span class="line"><span class="k">public</span><span class="o">:</span>
+</span><span class="line">    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">node</span><span class="o">*&gt;</span> <span class="n">getBuckets</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">buckets</span><span class="p">;}</span>
+</span><span class="line">    <span class="c1">//返回bucket vector大小</span>
+</span><span class="line">    <span class="n">size_type</span> <span class="n">bucket_count</span><span class="p">()</span> <span class="k">const</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">buckets</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="c1">//返回bucket vector可能的最大值</span>
+</span><span class="line">    <span class="n">size_type</span> <span class="n">max_bucket_count</span><span class="p">()</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">__stl_prime_list</span><span class="p">[</span><span class="n">__stl_num_primes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="c1">//返回元素个数</span>
+</span><span class="line">    <span class="n">size_type</span> <span class="n">size</span><span class="p">()</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">num_elements</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="c1">//找到起始节点</span>
+</span><span class="line">    <span class="n">iterator</span> <span class="n">begin</span><span class="p">()</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">size_type</span> <span class="n">bucketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line">        <span class="n">node</span><span class="o">*</span> <span class="n">first</span><span class="p">;</span>
+</span><span class="line">        <span class="k">for</span> <span class="p">(</span><span class="n">first</span> <span class="o">=</span> <span class="n">buckets</span><span class="p">[</span><span class="n">bucketIndex</span><span class="p">];</span>
+</span><span class="line">                <span class="o">!</span><span class="n">first</span> <span class="o">&amp;&amp;</span> <span class="o">++</span><span class="n">bucketIndex</span> <span class="o">&lt;</span> <span class="n">buckets</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+</span><span class="line">                <span class="n">first</span> <span class="o">=</span> <span class="n">buckets</span><span class="p">[</span><span class="n">bucketIndex</span><span class="p">])</span> <span class="p">{}</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">iterator</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="c1">//插入元素，不允许重复</span>
+</span><span class="line">    <span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">iterator</span><span class="p">,</span> <span class="kt">bool</span><span class="o">&gt;</span> <span class="n">insert_unique</span><span class="p">(</span><span class="k">const</span> <span class="n">Value</span><span class="o">&amp;</span> <span class="n">obj</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">resize</span><span class="p">(</span><span class="n">num_elements</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">insert_unique_noresize</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="c1">//插入元素，允许重复</span>
+</span><span class="line">    <span class="n">iterator</span> <span class="n">insert_equal</span><span class="p">(</span><span class="k">const</span> <span class="n">Value</span><span class="o">&amp;</span> <span class="n">obj</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">resize</span><span class="p">(</span><span class="n">num_elements</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">insert_equal_noresize</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="c1">//查找某一键值的节点</span>
+</span><span class="line">    <span class="n">iterator</span> <span class="n">find</span><span class="p">(</span><span class="k">const</span> <span class="n">Key</span><span class="o">&amp;</span> <span class="n">key</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">size_type</span> <span class="n">bucketIndex</span> <span class="o">=</span> <span class="n">bkt_num_key</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
+</span><span class="line">        <span class="n">node</span><span class="o">*</span> <span class="n">first</span><span class="p">;</span>
+</span><span class="line">        <span class="k">for</span> <span class="p">(</span> <span class="n">first</span> <span class="o">=</span> <span class="n">buckets</span><span class="p">[</span><span class="n">bucketIndex</span><span class="p">];</span>
+</span><span class="line">                <span class="n">first</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">equals</span><span class="p">(</span><span class="n">get_key</span><span class="p">(</span><span class="n">first</span><span class="o">-&gt;</span><span class="n">val</span><span class="p">),</span> <span class="n">key</span><span class="p">);</span>
+</span><span class="line">                <span class="n">first</span> <span class="o">=</span> <span class="n">first</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">)</span> <span class="p">{}</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">iterator</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="c1">//判断某一值出现的次数</span>
+</span><span class="line">    <span class="n">size_type</span> <span class="n">count</span><span class="p">(</span><span class="k">const</span> <span class="n">Key</span><span class="o">&amp;</span> <span class="n">key</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">const</span> <span class="n">size_type</span> <span class="n">bucketIndex</span> <span class="o">=</span> <span class="n">bkt_num_key</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
+</span><span class="line">        <span class="n">size_type</span> <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line">        <span class="k">for</span> <span class="p">(</span><span class="k">const</span> <span class="n">node</span><span class="o">*</span> <span class="n">cur</span> <span class="o">=</span> <span class="n">buckets</span><span class="p">[</span><span class="n">bucketIndex</span><span class="p">];</span>
+</span><span class="line">                <span class="n">cur</span><span class="p">;</span>
+</span><span class="line">                <span class="n">cur</span> <span class="o">=</span> <span class="n">cur</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">)</span>
+</span><span class="line">            <span class="k">if</span> <span class="p">(</span><span class="n">equals</span><span class="p">(</span><span class="n">get_key</span><span class="p">(</span><span class="n">cur</span><span class="o">-&gt;</span><span class="n">val</span><span class="p">),</span> <span class="n">key</span><span class="p">))</span>
+</span><span class="line">                <span class="o">++</span><span class="n">result</span><span class="p">;</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="c1">//判断元素落在哪个bucket</span>
+</span><span class="line">    <span class="c1">//提供两个版本</span>
+</span><span class="line">    <span class="c1">//版本一：只接受实值</span>
+</span><span class="line">    <span class="n">size_type</span> <span class="n">bkt_num</span><span class="p">(</span><span class="k">const</span> <span class="n">Value</span><span class="o">&amp;</span> <span class="n">obj</span><span class="p">)</span> <span class="k">const</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">bkt_num_key</span><span class="p">(</span><span class="n">get_key</span><span class="p">(</span><span class="n">obj</span><span class="p">));</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="c1">//版本二：接受实值和buckets个数</span>
+</span><span class="line">    <span class="n">size_type</span> <span class="n">bkt_num</span><span class="p">(</span><span class="k">const</span> <span class="n">Value</span><span class="o">&amp;</span> <span class="n">obj</span><span class="p">,</span><span class="n">size_type</span> <span class="n">n</span><span class="p">)</span> <span class="k">const</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">bkt_num_key</span><span class="p">(</span><span class="n">get_key</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span><span class="n">n</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="c1">//返回在index处的节点个数</span>
+</span><span class="line">    <span class="n">size_type</span> <span class="n">elems_in_bucket</span><span class="p">(</span><span class="n">size_type</span> <span class="n">bucketIndex</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">size_type</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line">        <span class="n">node</span><span class="o">*</span> <span class="n">tempNode</span> <span class="o">=</span> <span class="n">buckets</span><span class="p">[</span><span class="n">bucketIndex</span><span class="p">];</span>
+</span><span class="line">        <span class="k">while</span><span class="p">(</span><span class="n">tempNode</span> <span class="o">&amp;&amp;</span> <span class="o">++</span><span class="n">n</span><span class="p">)</span> <span class="n">tempNode</span> <span class="o">=</span> <span class="n">tempNode</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">n</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="c1">//整体删除</span>
+</span><span class="line">    <span class="kt">void</span> <span class="n">clear</span><span class="p">();</span>
+</span><span class="line">    <span class="c1">//复制hash表</span>
+</span><span class="line">    <span class="kt">void</span> <span class="n">copy_from</span><span class="p">(</span><span class="k">const</span> <span class="n">hashtable</span><span class="o">&amp;</span> <span class="n">ht</span><span class="p">);</span>
+</span><span class="line"><span class="k">private</span><span class="o">:</span>
+</span><span class="line">    <span class="c1">//初始化buckets vector</span>
+</span><span class="line">    <span class="kt">void</span> <span class="n">initialize_buckets</span><span class="p">(</span><span class="n">size_type</span> <span class="n">n</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">const</span> <span class="n">size_type</span> <span class="n">n_buckets</span> <span class="o">=</span> <span class="n">next_size</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+</span><span class="line">        <span class="n">buckets</span><span class="p">.</span><span class="n">reserve</span><span class="p">(</span><span class="n">n_buckets</span><span class="p">);</span>
+</span><span class="line">        <span class="n">buckets</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">buckets</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">n_buckets</span><span class="p">,</span> <span class="p">(</span><span class="n">node</span><span class="o">*</span><span class="p">)</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class="line">        <span class="n">num_elements</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="c1">//节点配置和释放函数</span>
+</span><span class="line">    <span class="n">node</span><span class="o">*</span> <span class="n">new_node</span><span class="p">(</span><span class="k">const</span> <span class="n">Value</span><span class="o">&amp;</span> <span class="n">obj</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="c1">//node *tempNode = node_allocator::allocate();</span>
+</span><span class="line">        <span class="n">node</span><span class="o">*</span> <span class="n">tempNode</span> <span class="o">=</span> <span class="k">new</span> <span class="n">node</span><span class="p">;</span>
+</span><span class="line">        <span class="n">tempNode</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class="line">        <span class="k">try</span>
+</span><span class="line">        <span class="p">{</span>
+</span><span class="line">            <span class="n">construct</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tempNode</span><span class="o">-&gt;</span><span class="n">val</span><span class="p">,</span><span class="n">obj</span><span class="p">);</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">        <span class="k">catch</span> <span class="p">(...)</span>
+</span><span class="line">        <span class="p">{</span>
+</span><span class="line">            <span class="c1">//node_allocator::deallocate(tempNode);</span>
+</span><span class="line">            <span class="k">delete</span> <span class="n">tempNode</span><span class="p">;</span>
+</span><span class="line">            <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">tempNode</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kt">void</span> <span class="n">delete_node</span><span class="p">(</span><span class="n">node</span> <span class="o">*</span><span class="n">n</span><span class="p">)</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="n">destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">n</span><span class="o">-&gt;</span><span class="n">val</span><span class="p">);</span>
+</span><span class="line">        <span class="k">delete</span> <span class="n">n</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">//返回最接近n并大于等于n的质数</span>
+</span><span class="line">    <span class="n">size_type</span> <span class="n">next_size</span><span class="p">(</span><span class="n">size_type</span> <span class="n">n</span><span class="p">)</span><span class="k">const</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">__get_next_prime</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">//版本一：只接受键值</span>
+</span><span class="line">    <span class="n">size_type</span> <span class="n">bkt_num_key</span><span class="p">(</span><span class="k">const</span> <span class="n">Key</span><span class="o">&amp;</span> <span class="n">key</span><span class="p">)</span> <span class="k">const</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">hash</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="n">buckets</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="c1">//版本二：接受键值和buckets个数</span>
+</span><span class="line">    <span class="n">size_type</span> <span class="n">bkt_num_key</span><span class="p">(</span><span class="k">const</span> <span class="n">Key</span><span class="o">&amp;</span> <span class="n">key</span><span class="p">,</span><span class="n">size_type</span> <span class="n">n</span><span class="p">)</span> <span class="k">const</span>
+</span><span class="line">    <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">hash</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">//判断是否需要扩充buckets vector，如有需要则进行扩充</span>
+</span><span class="line">    <span class="kt">void</span> <span class="n">resize</span><span class="p">(</span><span class="n">size_type</span> <span class="n">num_elements_hint</span><span class="p">);</span>
+</span><span class="line">    <span class="c1">//在不需要重新分配bucket vector的情况下插入元素，元素不允许重复</span>
+</span><span class="line">    <span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">iterator</span><span class="p">,</span> <span class="kt">bool</span><span class="o">&gt;</span> <span class="n">insert_unique_noresize</span><span class="p">(</span><span class="k">const</span> <span class="n">Value</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">);</span>
+</span><span class="line">    <span class="c1">//在不需要重新分配bucket vector的情况下插入元素，元素不允许重复</span>
+</span><span class="line">    <span class="n">iterator</span> <span class="n">insert_equal_noresize</span><span class="p">(</span><span class="k">const</span> <span class="n">Value</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">);</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>至于更多的请看代码（由于是简易实现的，配置器那块并没有使用stl的配置器，简单写了下）<a href="https://github.com/aluenkinglee/stuff/blob/master/cplusplus/stl/hashtable#L127" title="hashtable">hashtable</a></p>
+
+<p>基于hashtable可以实现hash_set,hash_map,hash_multiset,hash_multimap,是这些容器的底层实现，而map,set,multiset,multimap则是基于rb-tree实现的，这是区别之一。</p>
+
+<p>另外使用基于hashtable的时候需要提供hash仿函数，提取仿函数，等于仿函数这些参数。而基于rb-tree实现的需要比较函数即可。</p>
+
+<p>平常时间根据查找速度, 数据量, 内存使用三个因素权衡，是否适合使用hashtable。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Aluen King Lee</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-24T05:29:00+08:00" pubdate data-updated="true">Feb 24<span>th</span>, 2014</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/01/05/machine-learning-linear-regression/" title="Previous Post: Machine Learning :linear regression">&laquo; Machine Learning :linear regression</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/" title="Next Post: 理解TCP中的序列号和确认号">理解TCP中的序列号和确认号 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+
+  <section>
+    <h1>Comments</h1>
+    <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"aluenkinglee"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END --></div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he/">浅谈微博标签聚合</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/">Use Svm to Classify Whether a Person Is Good or Bad on Credit Using Sns Data</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/09/wei-pi-pei/">伪匹配</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/">朴素贝叶斯文本分类</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/03/lagrange-duality/">拉格朗日对偶</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+<section>
+  <h1>My Douban</h1>
+  <div>
+  <!--添加到这-->
+  <script type="text/javascript" src="http://www.douban.com/service/badge/aluenkinglee/?selection=random&amp;picsize=small&amp;show=dolist&amp;n=8&amp;cat=book&amp;columns=3"></script>
+  </div>
+</section> 
+<section>
+<h1>Recent Comments</h1>
+<ul class="ds-recent-comments" data-num-items="10" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="18"></ul>
+
+</section> 
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Aluen King Lee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

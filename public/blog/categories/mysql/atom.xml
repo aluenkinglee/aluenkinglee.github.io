@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: mysql | 曾经渐行远，未免心戚戚]]></title>
+  <link href="http://aluenkinglee.com/blog/categories/mysql/atom.xml" rel="self"/>
+  <link href="http://aluenkinglee.com/"/>
+  <updated>2014-09-02T03:23:52+08:00</updated>
+  <id>http://aluenkinglee.com/</id>
+  <author>
+    <name><![CDATA[Aluen King Lee]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[MySql交换两列]]></title>
+    <link href="http://aluenkinglee.com/blog/2013/06/14/mysqljiao-huan-liang-lie/"/>
+    <updated>2013-06-14T15:35:00+08:00</updated>
+    <id>http://aluenkinglee.com/blog/2013/06/14/mysqljiao-huan-liang-lie</id>
+    <content type="html"><![CDATA[<p>事情的起因是这个发现数据库中出现了某两列数据正好颠倒了，大部分数据都是正常的，
+这些错误的原因是数据源有问题，今天在进一步的做标签聚类的时候分析的时候发现这
+些占很小比例的误差，辛亏发现了，否则做出来的结果有可能会郁闷很久。</p>
+
+<p><code>
+select id,place_lat,place_lon from `nearbyinfo` where `nearbyinfo`.`place_lat`&gt;0;
+</code></p>
+
+<p>正常的数据都是&lt; <code>39.xxx</code>, <code>160.2xxx</code> &gt;之间，如图所示:
+<!--more--></p>
+
+<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/11.png?raw=true" alt="正常数据" title="正常数据" /></p>
+
+<p>但是幸好及时发现了存在这样的数据，</p>
+
+<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/12.png?raw=true" alt="异常数据" title="异常数据" /></p>
+
+<p>一开始想的是想写sql语句试着把这两栏的数据给交换过来，可是sql太渣…然后就想着找
+到这些ID和他们的坐标值（都已经出来了），然后用python读出来写成update的语句，
+然后在执行一下就可以了，这也太…</p>
+
+<p>辛亏最终还是找到了，在这还是完整的说明一下吧。首先创建一个表，在Mysql中</p>
+
+<p><code>
+CREATE DATABASE  IF NOT EXISTS `weibodata` 
+USE `weibodata`;
+DROP TABLE IF EXISTS `test`;
+CREATE TABLE `test` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `a` varchar(45) DEFAULT NULL,
+  `b` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+LOCK TABLES `test` WRITE;
+INSERT INTO `test` VALUES (1,'-1','4'),(2,'3','2');
+UNLOCK TABLES;
+</code></p>
+
+<p>所以看起来会是这个样子:</p>
+
+<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/12.png?raw=true" alt="交换之前" title="交换之前" /></p>
+
+<p>然后执行下面的语句，会发生第二行swap了</p>
+
+<p><code>
+UPDATE test t1,test t2 SET t1.a=t1.b,t2.b=t2.a where t1.id =t2.id and t1.a&gt;0;
+</code></p>
+
+<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/12.png?raw=true" alt="交换之后" title="交换之后" /></p>
+
+<p>在尝试一下就会变成原样。</p>
+
+<p>问题解决了。</p>
+
+<p><code>
+select id,place_lat,place_lon from nearbyinfo where place_lat &gt;100;
+UPDATE nearbyinfo t1,nearbyinfo t2 SET t1.place_lat=t1.place_lon,t2.place_lon=t2.place_lat where t1.id = t2.id and t1.place_lat&gt;100;
+select id,place_lat,place_lon from nearbyinfo where id in (1025,4974,4814,2685);
+</code></p>
+]]></content>
+  </entry>
+  
+</feed>

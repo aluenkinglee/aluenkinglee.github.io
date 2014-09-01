@@ -1,0 +1,25 @@
+<div class="highlight"><pre><span class="kt">void</span> <span class="n">kmp_match</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">T</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">P</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">bool</span> <span class="n">flag</span><span class="o">=</span><span class="kc">false</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">n</span><span class="o">=</span><span class="n">strlen</span><span class="p">(</span><span class="n">T</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="n">m</span><span class="o">=</span><span class="n">strlen</span><span class="p">(</span><span class="n">P</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="o">*</span><span class="n">next</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="n">m</span><span class="p">];</span>
+    <span class="n">compute_prefix</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">next</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="n">q</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">while</span><span class="p">(</span><span class="n">q</span><span class="o">&gt;</span><span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">P</span><span class="p">[</span><span class="n">q</span><span class="p">]</span><span class="o">!=</span><span class="n">T</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">q</span><span class="o">=</span><span class="n">next</span><span class="p">[</span><span class="n">q</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">q</span><span class="p">]</span><span class="o">==</span><span class="n">T</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">q</span><span class="o">==</span><span class="n">m</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">flag</span><span class="o">=</span><span class="kc">true</span><span class="p">;</span>
+            <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;math occurs with &quot;</span><span class="o">&lt;&lt;</span><span class="n">i</span><span class="o">-</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+            <span class="n">q</span><span class="o">=</span><span class="n">next</span><span class="p">[</span><span class="n">q</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">flag</span><span class="o">==</span><span class="kc">false</span><span class="p">)</span>
+        <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;there is no math!&quot;</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>

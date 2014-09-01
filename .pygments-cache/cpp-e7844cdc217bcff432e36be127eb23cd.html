@@ -1,0 +1,43 @@
+<div class="highlight"><pre><span class="cp">#include &lt;iostream&gt;</span>
+<span class="cp">#include &lt;set&gt;</span>
+
+<span class="cp">#ifndef __Message__</span>
+<span class="cp">#define __Message__</span>
+
+<span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">set</span><span class="p">;</span>
+
+<span class="cp">#include &quot;Folder.h&quot;</span>
+<span class="c1">//predeclaration of Folder</span>
+<span class="k">class</span> <span class="nc">Folder</span><span class="p">;</span>
+<span class="c1">// Folder is a incomplete type.It only can be used in limited ways.</span>
+<span class="c1">// 1.can not define object of this type.</span>
+<span class="c1">// 2.only used as a pointer or ref.</span>
+<span class="c1">// 3.declare it as the formal parameter of a function or return type of a function.</span>
+
+<span class="k">class</span> <span class="nc">Message</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+    <span class="n">Message</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span> <span class="n">str</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span><span class="o">:</span>
+        <span class="n">contents</span><span class="p">(</span><span class="n">str</span><span class="p">)</span> <span class="p">{}</span>
+    <span class="n">Message</span><span class="p">(</span><span class="k">const</span> <span class="n">Message</span><span class="o">&amp;</span><span class="p">);</span>
+    <span class="n">Message</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Message</span> <span class="o">&amp;</span><span class="p">);</span>
+    <span class="o">~</span><span class="n">Message</span><span class="p">();</span>
+
+    <span class="c1">// Folder is used as the formal parameter.</span>
+    <span class="kt">void</span> <span class="n">save</span><span class="p">(</span><span class="n">Folder</span><span class="o">&amp;</span><span class="p">);</span>
+    <span class="kt">void</span> <span class="n">remove</span><span class="p">(</span><span class="n">Folder</span><span class="o">&amp;</span><span class="p">);</span>
+    <span class="kt">void</span> <span class="n">addFldr</span><span class="p">(</span><span class="n">Folder</span><span class="o">*</span><span class="p">);</span>
+    <span class="kt">void</span> <span class="n">remFldr</span><span class="p">(</span><span class="n">Folder</span><span class="o">*</span><span class="p">);</span>
+
+<span class="k">private</span><span class="o">:</span>
+    <span class="n">string</span> <span class="n">contents</span><span class="p">;</span>
+    <span class="n">set</span><span class="o">&lt;</span><span class="n">Folder</span><span class="o">*&gt;</span> <span class="n">folders</span><span class="p">;</span>
+
+    <span class="c1">// Folder is used as the typename of the template.</span>
+    <span class="kt">void</span> <span class="n">put_Msg_in_Folders</span><span class="p">(</span><span class="k">const</span> <span class="n">set</span><span class="o">&lt;</span><span class="n">Folder</span><span class="o">*&gt;&amp;</span><span class="p">);</span>
+    <span class="kt">void</span> <span class="n">remove_Msg_from_Folders</span><span class="p">();</span>
+<span class="p">};</span>
+
+<span class="cp">#endif</span>
+</pre></div>

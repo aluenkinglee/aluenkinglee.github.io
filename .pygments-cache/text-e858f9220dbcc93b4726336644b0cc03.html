@@ -1,0 +1,14 @@
+<div class="highlight"><pre>&quot;a&quot;的真前缀和真后缀都为空集，next[0]=0;
+
+&quot;ab&quot;的真前缀为[b],真后缀为[a], next[1]=0;
+
+&quot;aba&quot;的真前缀为[a,ab],真后缀为[a,ba],next[2]=1;
+
+&quot;abab&quot;的真前缀为[a,ab,aba],真后缀为[b,ab,bab],next[3]=2;
+
+&quot;ababa&quot;的真前缀为[a,ab,aba,abab],真后缀为[baba,aba,ba,a],next[4]=3;
+
+&quot;ababac&quot;的真前缀为[a,ab,aba,abab,ababa],真后缀为[babac,abac,bac,ac,c],next[5]=0;
+
+&quot;ababaca&quot;的真前缀为[a,ab,aba,abab,ababa,ababac],真后缀为[babaca,abaca,baca,aca,ca,a],next[5]=1;
+</pre></div>

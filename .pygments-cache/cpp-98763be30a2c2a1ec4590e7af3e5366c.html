@@ -1,0 +1,52 @@
+<div class="highlight"><pre><span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">Value</span><span class="p">,</span> <span class="k">class</span> <span class="nc">Key</span><span class="p">,</span>
+         <span class="k">class</span> <span class="nc">HashFcn</span><span class="p">,</span> <span class="k">class</span> <span class="nc">ExtractKey</span><span class="p">,</span>
+         <span class="k">class</span> <span class="nc">EqualKey</span><span class="p">,</span> <span class="k">class</span> <span class="nc">Alloc</span><span class="o">&gt;</span>
+<span class="k">struct</span> <span class="n">__hashtable_iterator</span>
+<span class="p">{</span>
+    <span class="k">typedef</span> <span class="n">hashtable</span><span class="o">&lt;</span><span class="n">Value</span><span class="p">,</span> <span class="n">Key</span><span class="p">,</span> <span class="n">HashFcn</span><span class="p">,</span> <span class="n">ExtractKey</span><span class="p">,</span> <span class="n">EqualKey</span><span class="p">,</span> <span class="n">Alloc</span><span class="o">&gt;</span> <span class="n">HashTable</span><span class="p">;</span>
+    <span class="k">typedef</span> <span class="n">__hashtable_iterator</span><span class="o">&lt;</span><span class="n">Value</span><span class="p">,</span> <span class="n">Key</span><span class="p">,</span>
+            <span class="n">HashFcn</span><span class="p">,</span> <span class="n">ExtractKey</span><span class="p">,</span>
+            <span class="n">EqualKey</span><span class="p">,</span> <span class="n">Alloc</span><span class="o">&gt;</span>
+            <span class="n">iterator</span><span class="p">;</span>
+    <span class="k">typedef</span> <span class="n">__hashtable_iterator</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">Value</span><span class="p">,</span> <span class="n">Key</span><span class="p">,</span>
+            <span class="n">HashFcn</span><span class="p">,</span> <span class="n">ExtractKey</span><span class="p">,</span>
+            <span class="n">EqualKey</span><span class="p">,</span> <span class="n">Alloc</span><span class="o">&gt;</span>
+            <span class="n">const_iterator</span><span class="p">;</span>
+
+    <span class="k">typedef</span> <span class="n">__hashtable_nodes</span><span class="o">&lt;</span><span class="n">Value</span><span class="o">&gt;</span> <span class="n">node</span><span class="p">;</span>
+
+    <span class="c1">//因为是前向移动，没有后退操作--</span>
+    <span class="k">typedef</span> <span class="n">forward_iterator_tag</span>    <span class="n">iterator_categor</span><span class="p">;</span>
+    <span class="k">typedef</span> <span class="n">Value</span>                   <span class="n">value_type</span><span class="p">;</span>
+    <span class="k">typedef</span> <span class="n">ptrdiff_t</span>               <span class="n">difference_type</span><span class="p">;</span>
+    <span class="k">typedef</span> <span class="n">size_t</span>                  <span class="n">size_type</span><span class="p">;</span>
+    <span class="k">typedef</span> <span class="n">Value</span><span class="o">*</span>                  <span class="n">pointer</span><span class="p">;</span>
+    <span class="k">typedef</span> <span class="n">Value</span><span class="o">&amp;</span>                  <span class="n">reference</span><span class="p">;</span>
+
+    <span class="n">node</span><span class="o">*</span> <span class="n">cur</span><span class="p">;</span>
+    <span class="n">HashTable</span><span class="o">*</span> <span class="n">ht</span><span class="p">;</span>
+
+    <span class="c1">//constructor</span>
+    <span class="n">__hashtable_iterator</span><span class="p">(</span><span class="n">node</span><span class="o">*</span> <span class="n">n</span><span class="p">,</span> <span class="n">HashTable</span><span class="o">*</span> <span class="n">tab</span><span class="p">)</span> <span class="o">:</span> <span class="n">cur</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">ht</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span> <span class="p">{}</span>
+    <span class="n">__hashtable_iterator</span><span class="p">()</span> <span class="p">{}</span>
+
+    <span class="n">reference</span> <span class="k">operator</span><span class="o">*</span><span class="p">()</span>  <span class="k">const</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">cur</span><span class="o">-&gt;</span><span class="n">val</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">pointer</span>   <span class="k">operator</span><span class="o">-&gt;</span><span class="p">()</span> <span class="k">const</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="o">&amp;</span><span class="p">(</span><span class="k">operator</span><span class="o">*</span><span class="p">());</span>
+    <span class="p">}</span>
+    <span class="n">iterator</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">++</span><span class="p">();</span>
+    <span class="n">iterator</span>  <span class="k">operator</span><span class="o">++</span><span class="p">(</span><span class="kt">int</span><span class="p">);</span>
+    <span class="kt">bool</span> <span class="k">operator</span><span class="o">==</span><span class="p">(</span><span class="k">const</span> <span class="n">iterator</span><span class="o">&amp;</span> <span class="n">it</span><span class="p">)</span> <span class="k">const</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">cur</span> <span class="o">==</span> <span class="n">it</span><span class="p">.</span><span class="n">cur</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kt">bool</span> <span class="k">operator</span><span class="o">!=</span><span class="p">(</span><span class="k">const</span> <span class="n">iterator</span><span class="o">&amp;</span> <span class="n">it</span><span class="p">)</span> <span class="k">const</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">cur</span> <span class="o">!=</span> <span class="n">it</span><span class="p">.</span><span class="n">cur</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</pre></div>

@@ -1,0 +1,39 @@
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;docstring for A&quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c"># self.x = [] #这个是错误的语法，只能在__init__中定义</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+        <span class="c">#x和self.value有什么区别啊</span>
+        <span class="c">#x和self.x有什么区别啊</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arg</span> <span class="o">=</span> <span class="n">arg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">print</span> <span class="s">&quot;in __init__&quot;</span>
+        <span class="k">print</span> <span class="s">&quot;x address :</span><span class="se">\t\t\t\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">print</span> <span class="s">&quot;self.x address :</span><span class="se">\t\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">set_x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s">&quot;in get_x&quot;</span>
+        <span class="k">print</span> <span class="s">&quot;x address :</span><span class="se">\t\t\t\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">print</span> <span class="s">&quot;self.x address :</span><span class="se">\t\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
+    <span class="k">def</span> <span class="nf">get_xx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span><span class="c">#很诡异的存在啊，但这个只是定义的不同啊</span>
+        <span class="k">print</span> <span class="s">&quot;in get_xx&quot;</span>
+        <span class="k">print</span> <span class="s">&quot;x address :</span><span class="se">\t\t\t\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">print</span> <span class="s">&quot;self.x address :</span><span class="se">\t\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">x</span>   
+
+    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">A</span><span class="p">(</span><span class="s">&quot;oj&quot;</span><span class="p">)</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">set_x</span><span class="p">()</span>
+    <span class="c">#print A.__dict__</span>
+    <span class="k">print</span> <span class="n">a</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span>
+    <span class="k">print</span> <span class="n">a</span><span class="o">.</span><span class="n">get_xx</span><span class="p">()</span>
+    <span class="k">print</span> <span class="n">a</span><span class="o">.</span><span class="n">get_x</span><span class="p">()</span>
+</pre></div>

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: LaTex | 曾经渐行远，未免心戚戚]]></title>
+  <link href="http://aluenkinglee.com/blog/categories/latex/atom.xml" rel="self"/>
+  <link href="http://aluenkinglee.com/"/>
+  <updated>2014-09-02T03:23:52+08:00</updated>
+  <id>http://aluenkinglee.com/</id>
+  <author>
+    <name><![CDATA[Aluen King Lee]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Use MathJax in Octopress to Write beautiful LaTex]]></title>
+    <link href="http://aluenkinglee.com/blog/2013/11/13/use-mathjax-in-octopress-to-write-beautiful-latex/"/>
+    <updated>2013-11-13T12:37:00+08:00</updated>
+    <id>http://aluenkinglee.com/blog/2013/11/13/use-mathjax-in-octopress-to-write-beautiful-latex</id>
+    <content type="html"><![CDATA[<h4 id="latex">首先看下$\LaTeX$的例子</h4>
+
+<ul>
+  <li>块状的$\LaTeX$ 数学公式 (1)</li>
+</ul>
+
+<script type="math/tex; mode=display">% &lt;![CDATA[
+
+\begin{align*}
+  & \phi(x,y) = \phi \left(\sum_{i=1}^n x_ie_i, \sum_{j=1}^n y_je_j \right)
+  = \sum_{i=1}^n \sum_{j=1}^n x_i y_j \phi(e_i, e_j) = \\
+  & (x_1, \ldots, x_n) \left( \begin{array}{ccc}
+      \phi(e_1, e_1) & \cdots & \phi(e_1, e_n) \\
+      \vdots & \ddots & \vdots \\
+      \phi(e_n, e_1) & \cdots & \phi(e_n, e_n)
+    \end{array} \right)
+  \left( \begin{array}{c}
+      y_1 \\
+      \vdots \\
+      y_n
+    \end{array} \right)
+\end{align*}
+ %]]&gt;</script>
+
+<!--more-->
+
+<ul>
+  <li>块状的$\LaTeX$ 数学公式 (2)</li>
+</ul>
+
+<p>另外一个例子<a href="http://en.wikipedia.org/wiki/Multivariate_normal_distribution" title="Multivariate normal distribution">Multivariate normal distribution</a>:</p>
+
+<script type="math/tex; mode=display">
+f_x(x_1,...,x_k)=\frac{1}{(2\pi)^{k/2}|\Sigma|^{1/2}}exp(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu))
+</script>
+
+<ul>
+  <li>内联$\LaTeX$ 数学公式 (3)</li>
+</ul>
+
+<p>在段内插入LaTeX代码： $\exp(-\frac{x^2}{2})$ 。</p>
+
+<h4 id="latex-support">$\LaTeX$ support</h4>
+
+<p>为了能够使用MathJax对数学公式渲染，还是得使用几个步骤的。</p>
+
+<ul>
+  <li>添加ramdown组件</li>
+</ul>
+
+<p><code>
+gem install kramdown
+</code></p>
+
+<ul>
+  <li>找到<code>source/_includes/custom/head.html</code>这个文件，加入以下内容</li>
+</ul>
+
+<p>```
+<script type="text/x-mathjax-config">
+MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
+          MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
+                  data.math = data.math.replace(/^\s*&lt;!\[CDATA\[\s*((?:\n|.)*)\s*\]\]&gt;\s*$/m,"$1");
+                    });
+          });
+</script></p>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<p>```</p>
+
+<ul>
+  <li>
+    <p>修改_config.yml 文件 把markdown的渲染引擎从<code>rdiscount</code> 变为<code>kramdown</code></p>
+  </li>
+  <li>
+    <p>对于内联的$\LaTeX$ 数学公式，只需简单使用<code>$</code>…<code>$</code>即可。</p>
+  </li>
+</ul>
+
+<p>就像这样：</p>
+
+<p><code>
+在段内插入LaTeX代码： $\exp(-\frac{x^2}{2})$ 。
+</code></p>
+
+<ul>
+  <li>对于块状的$\LaTeX$ 数学公式，只需简单使用<code>$$</code>…<code>$$</code>即可。
+就像这样：</li>
+</ul>
+
+<p><code>
+$$
+f_x(x_1,...,x_k)=\frac{1}{(2\pi)^{k/2}|\Sigma|^{1/2}}exp(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu))
+$$
+</code></p>
+
+<h4 id="reference">Reference</h4>
+
+<p><a href="http://kkx.github.io/blog/2012/05/05/zai-octopresszhong-shi-yong-latex/" title="在octopress中使用latex">在octopress中使用latex</a></p>
+
+<p><a href="http://kqueue.org/blog/2012/01/05/hello-world/" title="Hello world">Hello world</a></p>
+
+<p><a href="http://hungmingwu-blog.logdown.com/posts/14279-latex-on-octopress" title="在Octopress中使用Latex">在Octopress中使用Latex</a></p>
+
+<p><a href="http://yanping.me/cn/blog/2012/03/10/octopress-with-latex/" title="在Octopress中使用Latex">在Octopress中使用Latex</a></p>
+
+<p><a href="http://wowubuntu.com/markdown/#p" title="Markdown 语法说明 (简体中文版)">Markdown 语法说明 (简体中文版)</a></p>
+
+<p><a href="http://kramdown.gettalong.org/syntax.html#math-blocks" title="kramdown Syntax">kramdown Syntax</a></p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,19 @@
+<div class="highlight"><pre><span class="nv">$python</span> subset.py
+Usage: subset.py <span class="o">[</span>options<span class="o">]</span> dataset number <span class="o">[</span>output1<span class="o">]</span> <span class="o">[</span>output2<span class="o">]</span>
+This script selects a subset of the given data set.
+options:
+-s method : method of selection <span class="o">(</span>default 0<span class="o">)</span>
+
+     0 -- stratified selection <span class="o">(</span>classification only<span class="o">)</span>
+
+     1 -- random selection
+
+output1 : the subset <span class="o">(</span>optional<span class="o">)</span>
+
+output2 : the rest of data <span class="o">(</span>optional<span class="o">)</span>
+
+If output1 is omitted, the subset will be printed on the screen.
+
+<span class="nv">$python</span> subset.py trainSet 0.3*m<span class="o">(</span>实例个数<span class="o">)</span> trainSet.data testSet.data
+<span class="nv">$ </span>./tools/subset.py ./trainningset.txt 280 testSet trainSet
+</pre></div>

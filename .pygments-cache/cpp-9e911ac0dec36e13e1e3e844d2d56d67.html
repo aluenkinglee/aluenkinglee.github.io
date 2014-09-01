@@ -1,0 +1,20 @@
+<div class="highlight"><pre><span class="c1">///  查找单链表中的倒数第K个结点（k &gt; 0）</span>
+<span class="n">ListNode</span> <span class="o">*</span> <span class="n">getRKthNode</span><span class="p">(</span><span class="n">ListNode</span> <span class="o">*</span> <span class="n">head</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">k</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">k</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">head</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="c1">/// 这里k的计数是从1开始的，若k为0或链表为空返回NULL</span>
+        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="n">ListNode</span><span class="o">*</span> <span class="n">ahead</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span>
+    <span class="n">ListNode</span><span class="o">*</span> <span class="n">behind</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span>
+
+    <span class="k">for</span><span class="p">(;</span> <span class="n">ahead</span><span class="o">!=</span><span class="nb">NULL</span> <span class="o">&amp;&amp;</span> <span class="n">k</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">;</span> <span class="o">--</span><span class="n">k</span><span class="p">)</span>   <span class="c1">/// 遍历完前k个节点</span>
+        <span class="n">ahead</span> <span class="o">=</span> <span class="n">ahead</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span> <span class="n">k</span> <span class="o">&gt;</span> <span class="mi">0</span>  <span class="p">)</span>            <span class="c1">/// 结点个数小于k，返回NULL</span>
+        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">ahead</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>    <span class="c1">/// 前后两个指针一起向前走，直到前面的指针指向NULL</span>
+    <span class="p">{</span>
+        <span class="n">ahead</span> <span class="o">=</span> <span class="n">ahead</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+        <span class="n">behind</span> <span class="o">=</span> <span class="n">behind</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">behind</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>

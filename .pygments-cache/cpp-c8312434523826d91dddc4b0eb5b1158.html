@@ -1,0 +1,23 @@
+<div class="highlight"><pre><span class="c1">///  查找单链表的中间结点</span>
+<span class="c1">///  获取单链表中间结点，若链表长度为n(n&gt;0)，则返回第n/2+1个结点</span>
+<span class="n">ListNode</span> <span class="o">*</span> <span class="n">getMidNode</span><span class="p">(</span><span class="n">ListNode</span> <span class="o">*</span> <span class="n">head</span> <span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">/// 边界值处理，空或者只有一个节点</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">head</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">||</span> <span class="n">head</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">head</span><span class="p">;</span>
+    <span class="n">ListNode</span><span class="o">*</span> <span class="n">ahead</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span>
+    <span class="n">ListNode</span><span class="o">*</span> <span class="n">behind</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span>
+
+    <span class="c1">/// 注意判断条件</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">ahead</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>    <span class="c1">/// 前面指针每次走两步，直到指向最后一个结点，后面指针每次走一步</span>
+    <span class="p">{</span>
+        <span class="n">ahead</span> <span class="o">=</span> <span class="n">ahead</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+        <span class="n">behind</span> <span class="o">=</span> <span class="n">behind</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+        <span class="c1">/// 注意判断条件</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">ahead</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+            <span class="n">ahead</span> <span class="o">=</span> <span class="n">ahead</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">behind</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>

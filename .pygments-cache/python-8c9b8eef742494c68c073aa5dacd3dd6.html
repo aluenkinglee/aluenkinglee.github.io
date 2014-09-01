@@ -1,0 +1,20 @@
+<div class="highlight"><pre><span class="c">#!/usr/bin/env python</span>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="k">class</span> <span class="nc">A</span><span class="p">:</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">o1</span> <span class="o">=</span> <span class="n">A</span><span class="p">()</span>
+<span class="n">o2</span> <span class="o">=</span> <span class="n">A</span><span class="p">()</span>
+
+<span class="k">print</span> <span class="n">A</span><span class="p">,</span><span class="n">o1</span><span class="p">,</span><span class="n">o2</span>
+<span class="k">print</span> <span class="n">A</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="n">o1</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="n">o2</span><span class="o">.</span><span class="n">value</span>
+
+<span class="n">o1</span><span class="o">.</span><span class="n">value</span> <span class="o">+=</span> <span class="mi">10</span>
+<span class="k">print</span> <span class="n">A</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="n">o1</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="n">o2</span><span class="o">.</span><span class="n">value</span>
+
+<span class="n">A</span><span class="o">.</span><span class="n">value</span> <span class="o">+=</span> <span class="mi">5</span>
+<span class="k">print</span> <span class="n">A</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="n">o1</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="n">o2</span><span class="o">.</span><span class="n">value</span>
+
+<span class="n">o2</span><span class="o">.</span><span class="n">value</span> <span class="o">+=</span> <span class="mi">5</span>
+<span class="k">print</span> <span class="n">A</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="n">o1</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="n">o2</span><span class="o">.</span><span class="n">value</span>
+</pre></div>

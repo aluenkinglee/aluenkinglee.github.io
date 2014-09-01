@@ -1,0 +1,5 @@
+<div class="highlight"><pre><span class="n">v</span> <span class="o">=</span> <span class="mi">1</span> 			<span class="c">#将名字 v 与内存中值为1的内存绑定在一起。</span>
+<span class="n">test_global_vars</span><span class="p">()</span> 	<span class="c">#这句话之后就是把v 和 内存中为2的地址绑定在一起。所以地址会变。</span>
+<span class="n">foo</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> 			<span class="c">#形参n 和 内存中为 3 的地址绑定在一起。实参v还是绑定在 2 的地址。</span>
+<span class="n">v</span> <span class="o">+=</span> <span class="mi">1</span> 			<span class="c">#v的值改变为3 所以地址就绑定到了 3 在内存中得地方。所以这个时候会发现和上一句的地址一样。</span>
+</pre></div>

@@ -1,0 +1,17 @@
+<div class="highlight"><pre><span class="kt">void</span> <span class="n">compute_prefix</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">p</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">next</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">next</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">len</span> <span class="o">=</span> <span class="n">strlen</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="n">k</span> <span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">q</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span> <span class="n">q</span> <span class="o">&lt;</span> <span class="n">len</span><span class="p">;</span> <span class="n">q</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">///前q个字符中，前缀字符串集和后缀字符串集中最长的交集元素的长度</span>
+        <span class="k">while</span><span class="p">(</span> <span class="p">(</span><span class="n">k</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">!=</span> <span class="n">p</span><span class="p">[</span><span class="n">q</span><span class="p">])</span> <span class="p">)</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">next</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
+        <span class="c1">/// 请看前面的那个状态转移函数的公式</span>
+        <span class="k">if</span><span class="p">(</span> <span class="n">p</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">==</span> <span class="n">p</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="p">)</span>
+            <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+        <span class="n">next</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="o">=</span> <span class="n">k</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>

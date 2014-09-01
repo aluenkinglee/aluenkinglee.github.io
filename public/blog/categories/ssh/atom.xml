@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: SSH | 曾经渐行远，未免心戚戚]]></title>
+  <link href="http://aluenkinglee.com/blog/categories/ssh/atom.xml" rel="self"/>
+  <link href="http://aluenkinglee.com/"/>
+  <updated>2014-09-02T03:23:52+08:00</updated>
+  <id>http://aluenkinglee.com/</id>
+  <author>
+    <name><![CDATA[Aluen King Lee]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[virtualbox网络环境和登录]]></title>
+    <link href="http://aluenkinglee.com/blog/2013/10/20/virtualbox-network-environment-and-login/"/>
+    <updated>2013-10-20T22:46:00+08:00</updated>
+    <id>http://aluenkinglee.com/blog/2013/10/20/virtualbox-network-environment-and-login</id>
+    <content type="html"><![CDATA[<p>最近由于实验室需要研究SDN的一些东西，再此先来搭配下环境。
+对于虚拟机的一些选择，可以看这里:
+<a href="http://mininet.org/vm-setup-notes/">vm-setup-notes</a> 
+我这里的环境是:</p>
+
+<p><code>os:            debian 7(wheezy) 64bit</code></p>
+
+<p><code>xwindows:      kde</code></p>
+
+<p><code>VM：           virtualbox</code></p>
+
+<p><code>controller:    pox</code></p>
+
+<!--more-->
+
+<p>按照上述的网址，可以比较容易的搭配出来需要的环境，下面就说以下之后遇到的问题。</p>
+
+<ul>
+  <li>virtualbox的鼠标独占问题，只是提示太不明明显了！对于那个right ctrl的提示我郁闷了好一会，我以为是鼠标右键+ctrl…其实是右边的ctrl键。对于这个键的设定，你可以从“管理”&gt;“全局设定”&gt;”热键”来设置你喜欢的按键..我就吐槽这么一句，之前vmware对此的说明很明了！</li>
+  <li>Using Host-only adapter to SSH guest from host.</li>
+</ul>
+
+<h3 id="nat">NAT模式</h3>
+<p>特点：
+1. 如果主机可以上网，虚拟机可以上网
+2. 虚拟机之间不能ping通
+3. 虚拟机可以ping通主机（此时ping虚拟机的网关，即是ping主机）
+4. 主机不能ping通虚拟机</p>
+
+<p>但是这个情况下是不能满足我的使用条件…我需要在host登录到guest中，so pass</p>
+
+<h3 id="section">桥接模式</h3>
+<p>特点：
+1. 如果主机可以上网，虚拟机可以上网
+2. 虚拟机之间可以ping通
+3. 虚拟机可以ping通主机
+4. 主机可以ping通虚拟机 (以上各点基于一个前提：主机可以上网)
+5. 如果主机不可以上网，所有1-4特点均无</p>
+
+<p>这个挺好，觉得可以满足我的要求但是，发现它的IP地址要求是自动非配的，我们实验室的IP是校园内网固定IP…</p>
+
+<h3 id="host-only-adapter">Host-only Adapter模式</h3>
+
+<p>特点：</p>
+
+<ol>
+  <li>虚拟机<code>不</code>可以上网</li>
+  <li>虚拟机之间可以ping通</li>
+  <li>虚拟机可以ping通主机（注意虚拟机与主机通信是通过主机的名为VirtualBox Host-Only Network的网卡，因此ip
+是该网卡ip <code>192.168.56.1</code>，而不是你现在正在上网所用的ip）</li>
+  <li>主机可以ping通虚拟机</li>
+</ol>
+
+<p>应用场景：
+需要搭建一个模拟局域网，所有机器可以互访。（颇不得以选这个的..）</p>
+
+<p>ip样式：<code>netstat -rn</code>查看路由表
+ip 与本机VirtualBox Host-Only Network的网卡ip在同一网段内（默认192.168.56.*）
+网关 本机VirtualBox Host-Only Network的网卡ip（默认192.168.56.1）</p>
+
+<h3 id="section-1">登录虚拟机</h3>
+<p>登录虚拟机，首先开开virtualbox的虚拟机</p>
+
+<p><code>
+mininet-vm login: mininet
+Password: mininet
+</code></p>
+
+<p>接下来查看我们的vm地址：（在guest里面操作）</p>
+
+<p><code>
+sudo ifconfig
+</code>
+例如我这里的ip地址是<code>192.168.56.101</code>,然后就使用我们可爱的SSH</p>
+
+<p><code>
+ssh -Y mininet@192.168.56.101
+</code>
+输入密码就可以了</p>
+
+<p>当然上面的不好看，做下别名好了。（在我们host里面操作）</p>
+
+<p><code>
+sudo nano /etc/hosts
+192.168.56.101 mininet-vm
+</code></p>
+
+<p>保存即可，这样子就可以使用</p>
+
+<p><code>
+ssh -Y mininet@mininet-vm
+</code></p>
+
+<p>接下来就可以去玩下面的实验了^^</p>
+
+<blockquote>
+  <p>参考文档:</p>
+</blockquote>
+
+<blockquote>
+  <p><a href="http://blog.csdn.net/yxc135/article/details/8458939">VirtualBox虚拟机网络环境解析</a></p>
+</blockquote>
+
+<blockquote>
+  <p><a href="http://www.live-in.org/archives/832.html">ssh命令用于远程登录上Linux主机</a></p>
+</blockquote>
+
+<blockquote>
+  <p><a href="http://mininet.org/vm-setup-notes/">SSH into VM</a></p>
+</blockquote>
+]]></content>
+  </entry>
+  
+</feed>

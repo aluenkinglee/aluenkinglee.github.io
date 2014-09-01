@@ -1,0 +1,14 @@
+<div class="highlight"><pre><span class="kt">bool</span> <span class="n">isIntersected</span><span class="p">(</span><span class="n">ListNode</span> <span class="o">*</span> <span class="n">head1</span><span class="p">,</span> <span class="n">ListNode</span> <span class="o">*</span> <span class="n">head2</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">head1</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">||</span> <span class="n">head2</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="n">ListNode</span><span class="o">*</span> <span class="n">tail1</span><span class="o">=</span><span class="n">head1</span><span class="p">;</span>
+    <span class="n">ListNode</span><span class="o">*</span> <span class="n">tail2</span><span class="o">=</span><span class="n">head2</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">tail1</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="n">tail1</span> <span class="o">=</span> <span class="n">tail1</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">tail2</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="n">tail2</span> <span class="o">=</span> <span class="n">tail2</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="c1">///若相交，尾节点可定相同</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">tail1</span> <span class="o">==</span> <span class="n">tail2</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>

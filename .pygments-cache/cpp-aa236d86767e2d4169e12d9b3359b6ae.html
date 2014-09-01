@@ -1,0 +1,48 @@
+<div class="highlight"><pre><span class="n">ListNode</span><span class="o">*</span> <span class="n">findFirstIntersectedNode</span><span class="p">(</span><span class="n">ListNode</span> <span class="o">*</span> <span class="n">head1</span><span class="p">,</span> <span class="n">ListNode</span> <span class="o">*</span> <span class="n">head2</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">/// 边界值检查</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">head1</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">||</span> <span class="n">head2</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="n">ListNode</span><span class="o">*</span> <span class="n">tail1</span><span class="o">=</span><span class="n">head1</span><span class="p">;</span>
+    <span class="n">ListNode</span><span class="o">*</span> <span class="n">tail2</span><span class="o">=</span><span class="n">head2</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">len1</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">len2</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">tail1</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">tail1</span> <span class="o">=</span> <span class="n">tail1</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+        <span class="n">len1</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">tail2</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">tail2</span> <span class="o">=</span> <span class="n">tail2</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+        <span class="n">len2</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">///若相交，尾节点肯定相同</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">tail1</span> <span class="o">!=</span> <span class="n">tail2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="n">ListNode</span><span class="o">*</span> <span class="n">node1</span><span class="o">=</span><span class="n">head1</span><span class="p">;</span>
+    <span class="n">ListNode</span><span class="o">*</span> <span class="n">node2</span><span class="o">=</span><span class="n">head2</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+    <span class="c1">/// 找到两个链表等长的位置。</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">len1</span><span class="o">&gt;</span><span class="n">len2</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">k</span><span class="o">=</span><span class="n">len1</span><span class="o">-</span><span class="n">len2</span><span class="p">;</span>
+        <span class="k">while</span><span class="p">(</span><span class="n">k</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">node1</span><span class="o">=</span><span class="n">node1</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+        <span class="n">k</span><span class="o">=</span><span class="n">len2</span><span class="o">-</span><span class="n">len1</span><span class="p">;</span>
+        <span class="k">while</span><span class="p">(</span><span class="n">k</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">node2</span><span class="o">=</span><span class="n">node2</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">/// 两个链表未相交之前，节点肯定不同</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">node1</span><span class="o">!=</span><span class="n">node2</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">node1</span><span class="o">=</span><span class="n">node1</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+        <span class="n">node2</span><span class="o">=</span><span class="n">node2</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">node1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>

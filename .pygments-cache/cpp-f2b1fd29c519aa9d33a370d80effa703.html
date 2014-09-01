@@ -1,0 +1,13 @@
+<div class="highlight"><pre><span class="c1">/// 求单链表中结点的个数</span>
+<span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">getListLenght</span><span class="p">(</span><span class="n">ListNode</span><span class="o">*</span> <span class="n">head</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">head</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">ListNode</span><span class="o">*</span> <span class="n">current</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(;</span> <span class="n">current</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">;</span> <span class="n">len</span><span class="o">++</span><span class="p">)</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="n">current</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">len</span><span class="p">;</span>
+
+<span class="p">}</span>
+</pre></div>

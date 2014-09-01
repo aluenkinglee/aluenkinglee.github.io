@@ -1,0 +1,55 @@
+<div class="highlight"><pre><span class="cp">#include &lt;string&gt;</span>
+<span class="cp">#include &lt;iostream&gt;</span>
+<span class="cp">#include &lt;algorithm&gt;</span>
+<span class="cp">#include &lt;vector&gt;</span>
+
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+<span class="k">typedef</span> <span class="k">class</span> <span class="nc">packet</span>
+<span class="p">{</span>
+    <span class="k">private</span><span class="o">:</span>
+    <span class="kt">int</span> <span class="n">len</span><span class="p">;</span>
+    <span class="kt">char</span><span class="o">*</span> <span class="n">data</span><span class="p">;</span>
+    <span class="k">public</span><span class="o">:</span>
+    <span class="n">packet</span><span class="p">(</span><span class="kt">int</span> <span class="n">l</span><span class="p">,</span><span class="kt">char</span> <span class="o">*</span> <span class="n">p</span><span class="p">)</span>
+    <span class="p">{</span>
+	<span class="c1">//注意这里，开始我写成了这样，一开始写顺了...</span>
+	<span class="c1">//我本意是想申请一个长度为l的连续内存区域。</span>
+	<span class="c1">//结果本意成为了申请了一个单位的内存，并给它赋值！！</span>
+        <span class="n">data</span><span class="o">=</span><span class="k">new</span> <span class="kt">char</span><span class="p">(</span><span class="n">l</span><span class="p">);</span>
+        <span class="c1">//应该写成这样</span>
+        <span class="c1">//data=new char[l];</span>
+        <span class="n">copy</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">p</span><span class="o">+</span><span class="n">l</span><span class="p">,</span><span class="n">data</span><span class="p">);</span>
+        <span class="n">len</span> <span class="o">=</span> <span class="n">l</span><span class="p">;</span>
+    <span class="p">}</span>
+ 
+    <span class="n">packet</span><span class="p">(</span><span class="k">const</span> <span class="n">packet</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">)</span>  
+    <span class="p">{</span>
+        <span class="k">this</span><span class="o">-&gt;</span><span class="n">len</span><span class="o">=</span><span class="n">p</span><span class="p">.</span><span class="n">len</span><span class="p">;</span>
+        <span class="n">data</span><span class="o">=</span><span class="k">new</span> <span class="kt">char</span><span class="p">[</span><span class="n">len</span><span class="p">];</span>
+        <span class="n">copy</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">data</span><span class="p">,</span> <span class="n">p</span><span class="p">.</span><span class="n">data</span><span class="o">+</span><span class="n">len</span><span class="p">,</span><span class="n">data</span><span class="p">);</span>
+    <span class="p">}</span>
+    
+    <span class="n">packet</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">packet</span><span class="o">&amp;</span> <span class="n">p</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">this</span><span class="o">-&gt;</span><span class="n">len</span> <span class="o">=</span> <span class="n">p</span><span class="p">.</span><span class="n">len</span><span class="p">;</span>
+        <span class="k">this</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">char</span><span class="p">[</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">];</span>
+        <span class="n">copy</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">data</span><span class="p">,</span> <span class="n">p</span><span class="p">.</span><span class="n">data</span><span class="o">+</span><span class="n">len</span><span class="p">,</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+        <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span> 
+    
+    <span class="o">~</span><span class="n">packet</span><span class="p">(){</span><span class="k">delete</span><span class="p">[]</span> <span class="n">data</span><span class="p">;}</span>
+    <span class="kt">char</span><span class="o">*</span> <span class="n">get_data</span><span class="p">(){</span><span class="k">return</span> <span class="n">data</span><span class="p">;}</span>
+
+<span class="p">}</span><span class="n">packet</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="n">packet</span><span class="o">&gt;</span> <span class="n">stream</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">t</span> <span class="o">=</span> <span class="s">&quot;hello world.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+    <span class="n">packet</span> <span class="n">p</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="n">t</span><span class="p">);</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">p</span><span class="p">.</span><span class="n">get_data</span><span class="p">(</span> <span class="p">)</span><span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">stream</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">stream</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">get_data</span><span class="p">()</span> <span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>

@@ -1,0 +1,214 @@
+<div class="highlight"><pre><span class="c1">//hashtable的数据结构</span>
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">Value</span><span class="p">,</span> <span class="k">class</span> <span class="nc">Key</span><span class="p">,</span>
+         <span class="k">class</span> <span class="nc">HashFcn</span><span class="p">,</span> <span class="k">class</span> <span class="nc">ExtractKey</span><span class="p">,</span>
+         <span class="k">class</span> <span class="nc">EqualKey</span><span class="p">,</span> <span class="k">class</span> <span class="nc">Alloc</span><span class="o">&gt;</span>
+<span class="k">class</span> <span class="nc">hashtable</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+    <span class="k">typedef</span> <span class="n">Value</span> <span class="n">value_type</span><span class="p">;</span>
+    <span class="k">typedef</span> <span class="n">value_type</span><span class="o">*</span> <span class="n">pointer</span><span class="p">;</span>
+    <span class="k">typedef</span> <span class="k">const</span> <span class="n">pointer</span> <span class="n">const_pointer</span><span class="p">;</span>
+    <span class="k">typedef</span> <span class="n">value_type</span><span class="o">&amp;</span> <span class="n">reference</span><span class="p">;</span>
+    <span class="k">typedef</span> <span class="k">const</span> <span class="n">reference</span> <span class="n">const_reference</span><span class="p">;</span>
+    <span class="k">typedef</span> <span class="n">Key</span> <span class="n">key_type</span><span class="p">;</span>
+    <span class="k">typedef</span> <span class="n">HashFcn</span> <span class="n">hasher</span><span class="p">;</span>
+    <span class="k">typedef</span> <span class="n">EqualKey</span> <span class="n">key_equal</span><span class="p">;</span>
+    <span class="k">typedef</span> <span class="n">size_t</span> <span class="n">size_type</span><span class="p">;</span>
+    <span class="k">typedef</span> <span class="n">__hashtable_iterator</span><span class="o">&lt;</span><span class="n">Value</span><span class="p">,</span> <span class="n">Key</span><span class="p">,</span> <span class="n">HashFcn</span><span class="p">,</span> <span class="n">ExtractKey</span><span class="p">,</span> <span class="n">EqualKey</span><span class="p">,</span> <span class="n">Alloc</span><span class="o">&gt;</span> <span class="n">iterator</span><span class="p">;</span>
+    <span class="k">typedef</span> <span class="k">typename</span> <span class="n">__hashtable_iterator</span><span class="o">&lt;</span><span class="n">Value</span><span class="p">,</span> <span class="n">Key</span><span class="p">,</span> <span class="n">HashFcn</span><span class="p">,</span> <span class="n">ExtractKey</span><span class="p">,</span> <span class="n">EqualKey</span><span class="p">,</span> <span class="n">Alloc</span><span class="o">&gt;::</span><span class="n">const_iterator</span> <span class="n">const_iterator</span><span class="p">;</span>
+<span class="c1">//constructor</span>
+<span class="k">public</span><span class="o">:</span>
+    <span class="n">hashtable</span><span class="p">(</span><span class="n">size_type</span> <span class="n">n</span><span class="p">,</span>
+              <span class="k">const</span> <span class="n">HashFcn</span> <span class="o">&amp;</span><span class="n">hf</span><span class="p">,</span>
+              <span class="k">const</span> <span class="n">EqualKey</span> <span class="o">&amp;</span><span class="n">eql</span><span class="p">,</span>
+              <span class="k">const</span> <span class="n">ExtractKey</span> <span class="o">&amp;</span><span class="n">ext</span><span class="p">)</span>
+        <span class="o">:</span><span class="n">hash</span><span class="p">(</span><span class="n">hf</span><span class="p">),</span><span class="n">equals</span><span class="p">(</span><span class="n">eql</span><span class="p">),</span><span class="n">get_key</span><span class="p">(</span><span class="n">ext</span><span class="p">),</span><span class="n">num_elements</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">initialize_buckets</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">hashtable</span><span class="p">(</span><span class="n">size_type</span> <span class="n">n</span><span class="p">,</span>
+              <span class="k">const</span> <span class="n">HashFcn</span> <span class="o">&amp;</span><span class="n">hf</span><span class="p">,</span>
+              <span class="k">const</span> <span class="n">EqualKey</span> <span class="o">&amp;</span><span class="n">eql</span><span class="p">)</span>
+        <span class="o">:</span><span class="n">hash</span><span class="p">(</span><span class="n">hf</span><span class="p">),</span><span class="n">equals</span><span class="p">(</span><span class="n">eql</span><span class="p">),</span><span class="n">get_key</span><span class="p">(</span><span class="n">ExtractKey</span><span class="p">()),</span><span class="n">num_elements</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">initialize_buckets</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">hashtable</span><span class="p">(</span><span class="k">const</span> <span class="n">hashtable</span> <span class="o">&amp;</span><span class="n">ht</span><span class="p">)</span>
+        <span class="o">:</span><span class="n">hash</span><span class="p">(</span><span class="n">ht</span><span class="p">.</span><span class="n">hash</span><span class="p">),</span><span class="n">equals</span><span class="p">(</span><span class="n">ht</span><span class="p">.</span><span class="n">equals</span><span class="p">),</span><span class="n">get_key</span><span class="p">(</span><span class="n">ht</span><span class="p">.</span><span class="n">get_key</span><span class="p">),</span><span class="n">num_elements</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">copy_from</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ht</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="o">~</span><span class="n">hashtable</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="n">clear</span><span class="p">();</span>
+    <span class="p">};</span>
+
+    <span class="n">hashtable</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="n">hashtable</span> <span class="o">&amp;</span><span class="n">ht</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">ht</span> <span class="o">!=</span> <span class="k">this</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">clear</span><span class="p">();</span>
+            <span class="n">hash</span> <span class="o">=</span> <span class="n">ht</span><span class="p">.</span><span class="n">hash</span><span class="p">;</span>
+            <span class="n">equals</span> <span class="o">=</span> <span class="n">ht</span><span class="p">.</span><span class="n">equals</span><span class="p">;</span>
+            <span class="n">get_key</span> <span class="o">=</span> <span class="n">ht</span><span class="p">.</span><span class="n">get_key</span><span class="p">;</span>
+            <span class="n">copy_from</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ht</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="k">private</span><span class="o">:</span>
+    <span class="n">hasher</span> <span class="n">hash</span><span class="p">;</span>
+    <span class="n">key_equal</span> <span class="n">equals</span><span class="p">;</span>
+    <span class="n">ExtractKey</span> <span class="n">get_key</span><span class="p">;</span>
+
+    <span class="k">typedef</span> <span class="n">__hashtable_nodes</span><span class="o">&lt;</span><span class="n">Value</span><span class="o">&gt;</span> <span class="n">node</span><span class="p">;</span>
+    <span class="k">typedef</span> <span class="n">simple_alloc</span><span class="o">&lt;</span><span class="n">node</span><span class="p">,</span> <span class="n">Alloc</span><span class="o">&gt;</span> <span class="n">node_allocator</span><span class="p">;</span>
+
+    <span class="c1">//std::vector&lt;node*, Alloc&gt; buckets;</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">node</span><span class="o">*&gt;</span> <span class="n">buckets</span><span class="p">;</span>
+    <span class="n">size_type</span> <span class="n">num_elements</span><span class="p">;</span>
+<span class="k">public</span><span class="o">:</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">node</span><span class="o">*&gt;</span> <span class="n">getBuckets</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">buckets</span><span class="p">;}</span>
+    <span class="c1">//返回bucket vector大小</span>
+    <span class="n">size_type</span> <span class="n">bucket_count</span><span class="p">()</span> <span class="k">const</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">buckets</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="c1">//返回bucket vector可能的最大值</span>
+    <span class="n">size_type</span> <span class="n">max_bucket_count</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">__stl_prime_list</span><span class="p">[</span><span class="n">__stl_num_primes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="c1">//返回元素个数</span>
+    <span class="n">size_type</span> <span class="n">size</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">num_elements</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">//找到起始节点</span>
+    <span class="n">iterator</span> <span class="n">begin</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="n">size_type</span> <span class="n">bucketIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="n">node</span><span class="o">*</span> <span class="n">first</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">first</span> <span class="o">=</span> <span class="n">buckets</span><span class="p">[</span><span class="n">bucketIndex</span><span class="p">];</span>
+                <span class="o">!</span><span class="n">first</span> <span class="o">&amp;&amp;</span> <span class="o">++</span><span class="n">bucketIndex</span> <span class="o">&lt;</span> <span class="n">buckets</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+                <span class="n">first</span> <span class="o">=</span> <span class="n">buckets</span><span class="p">[</span><span class="n">bucketIndex</span><span class="p">])</span> <span class="p">{}</span>
+        <span class="k">return</span> <span class="n">iterator</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="c1">//插入元素，不允许重复</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">iterator</span><span class="p">,</span> <span class="kt">bool</span><span class="o">&gt;</span> <span class="n">insert_unique</span><span class="p">(</span><span class="k">const</span> <span class="n">Value</span><span class="o">&amp;</span> <span class="n">obj</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">resize</span><span class="p">(</span><span class="n">num_elements</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">insert_unique_noresize</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="c1">//插入元素，允许重复</span>
+    <span class="n">iterator</span> <span class="n">insert_equal</span><span class="p">(</span><span class="k">const</span> <span class="n">Value</span><span class="o">&amp;</span> <span class="n">obj</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">resize</span><span class="p">(</span><span class="n">num_elements</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">insert_equal_noresize</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="c1">//查找某一键值的节点</span>
+    <span class="n">iterator</span> <span class="n">find</span><span class="p">(</span><span class="k">const</span> <span class="n">Key</span><span class="o">&amp;</span> <span class="n">key</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">size_type</span> <span class="n">bucketIndex</span> <span class="o">=</span> <span class="n">bkt_num_key</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
+        <span class="n">node</span><span class="o">*</span> <span class="n">first</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span> <span class="n">first</span> <span class="o">=</span> <span class="n">buckets</span><span class="p">[</span><span class="n">bucketIndex</span><span class="p">];</span>
+                <span class="n">first</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">equals</span><span class="p">(</span><span class="n">get_key</span><span class="p">(</span><span class="n">first</span><span class="o">-&gt;</span><span class="n">val</span><span class="p">),</span> <span class="n">key</span><span class="p">);</span>
+                <span class="n">first</span> <span class="o">=</span> <span class="n">first</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">)</span> <span class="p">{}</span>
+        <span class="k">return</span> <span class="n">iterator</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="c1">//判断某一值出现的次数</span>
+    <span class="n">size_type</span> <span class="n">count</span><span class="p">(</span><span class="k">const</span> <span class="n">Key</span><span class="o">&amp;</span> <span class="n">key</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">const</span> <span class="n">size_type</span> <span class="n">bucketIndex</span> <span class="o">=</span> <span class="n">bkt_num_key</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
+        <span class="n">size_type</span> <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="k">const</span> <span class="n">node</span><span class="o">*</span> <span class="n">cur</span> <span class="o">=</span> <span class="n">buckets</span><span class="p">[</span><span class="n">bucketIndex</span><span class="p">];</span>
+                <span class="n">cur</span><span class="p">;</span>
+                <span class="n">cur</span> <span class="o">=</span> <span class="n">cur</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">equals</span><span class="p">(</span><span class="n">get_key</span><span class="p">(</span><span class="n">cur</span><span class="o">-&gt;</span><span class="n">val</span><span class="p">),</span> <span class="n">key</span><span class="p">))</span>
+                <span class="o">++</span><span class="n">result</span><span class="p">;</span>
+        <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">//判断元素落在哪个bucket</span>
+    <span class="c1">//提供两个版本</span>
+    <span class="c1">//版本一：只接受实值</span>
+    <span class="n">size_type</span> <span class="n">bkt_num</span><span class="p">(</span><span class="k">const</span> <span class="n">Value</span><span class="o">&amp;</span> <span class="n">obj</span><span class="p">)</span> <span class="k">const</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">bkt_num_key</span><span class="p">(</span><span class="n">get_key</span><span class="p">(</span><span class="n">obj</span><span class="p">));</span>
+    <span class="p">}</span>
+    <span class="c1">//版本二：接受实值和buckets个数</span>
+    <span class="n">size_type</span> <span class="n">bkt_num</span><span class="p">(</span><span class="k">const</span> <span class="n">Value</span><span class="o">&amp;</span> <span class="n">obj</span><span class="p">,</span><span class="n">size_type</span> <span class="n">n</span><span class="p">)</span> <span class="k">const</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">bkt_num_key</span><span class="p">(</span><span class="n">get_key</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span><span class="n">n</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="c1">//返回在index处的节点个数</span>
+    <span class="n">size_type</span> <span class="n">elems_in_bucket</span><span class="p">(</span><span class="n">size_type</span> <span class="n">bucketIndex</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">size_type</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="n">node</span><span class="o">*</span> <span class="n">tempNode</span> <span class="o">=</span> <span class="n">buckets</span><span class="p">[</span><span class="n">bucketIndex</span><span class="p">];</span>
+        <span class="k">while</span><span class="p">(</span><span class="n">tempNode</span> <span class="o">&amp;&amp;</span> <span class="o">++</span><span class="n">n</span><span class="p">)</span> <span class="n">tempNode</span> <span class="o">=</span> <span class="n">tempNode</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+        <span class="k">return</span> <span class="n">n</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">//整体删除</span>
+    <span class="kt">void</span> <span class="n">clear</span><span class="p">();</span>
+    <span class="c1">//复制hash表</span>
+    <span class="kt">void</span> <span class="n">copy_from</span><span class="p">(</span><span class="k">const</span> <span class="n">hashtable</span><span class="o">&amp;</span> <span class="n">ht</span><span class="p">);</span>
+<span class="k">private</span><span class="o">:</span>
+    <span class="c1">//初始化buckets vector</span>
+    <span class="kt">void</span> <span class="n">initialize_buckets</span><span class="p">(</span><span class="n">size_type</span> <span class="n">n</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">const</span> <span class="n">size_type</span> <span class="n">n_buckets</span> <span class="o">=</span> <span class="n">next_size</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+        <span class="n">buckets</span><span class="p">.</span><span class="n">reserve</span><span class="p">(</span><span class="n">n_buckets</span><span class="p">);</span>
+        <span class="n">buckets</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">buckets</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">n_buckets</span><span class="p">,</span> <span class="p">(</span><span class="n">node</span><span class="o">*</span><span class="p">)</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="n">num_elements</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">//节点配置和释放函数</span>
+    <span class="n">node</span><span class="o">*</span> <span class="n">new_node</span><span class="p">(</span><span class="k">const</span> <span class="n">Value</span><span class="o">&amp;</span> <span class="n">obj</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">//node *tempNode = node_allocator::allocate();</span>
+        <span class="n">node</span><span class="o">*</span> <span class="n">tempNode</span> <span class="o">=</span> <span class="k">new</span> <span class="n">node</span><span class="p">;</span>
+        <span class="n">tempNode</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+        <span class="k">try</span>
+        <span class="p">{</span>
+            <span class="n">construct</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tempNode</span><span class="o">-&gt;</span><span class="n">val</span><span class="p">,</span><span class="n">obj</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">catch</span> <span class="p">(...)</span>
+        <span class="p">{</span>
+            <span class="c1">//node_allocator::deallocate(tempNode);</span>
+            <span class="k">delete</span> <span class="n">tempNode</span><span class="p">;</span>
+            <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">tempNode</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kt">void</span> <span class="n">delete_node</span><span class="p">(</span><span class="n">node</span> <span class="o">*</span><span class="n">n</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">n</span><span class="o">-&gt;</span><span class="n">val</span><span class="p">);</span>
+        <span class="k">delete</span> <span class="n">n</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">//返回最接近n并大于等于n的质数</span>
+    <span class="n">size_type</span> <span class="n">next_size</span><span class="p">(</span><span class="n">size_type</span> <span class="n">n</span><span class="p">)</span><span class="k">const</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">__get_next_prime</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="c1">//版本一：只接受键值</span>
+    <span class="n">size_type</span> <span class="n">bkt_num_key</span><span class="p">(</span><span class="k">const</span> <span class="n">Key</span><span class="o">&amp;</span> <span class="n">key</span><span class="p">)</span> <span class="k">const</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">hash</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="n">buckets</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+    <span class="p">}</span>
+    <span class="c1">//版本二：接受键值和buckets个数</span>
+    <span class="n">size_type</span> <span class="n">bkt_num_key</span><span class="p">(</span><span class="k">const</span> <span class="n">Key</span><span class="o">&amp;</span> <span class="n">key</span><span class="p">,</span><span class="n">size_type</span> <span class="n">n</span><span class="p">)</span> <span class="k">const</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">hash</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">//判断是否需要扩充buckets vector，如有需要则进行扩充</span>
+    <span class="kt">void</span> <span class="n">resize</span><span class="p">(</span><span class="n">size_type</span> <span class="n">num_elements_hint</span><span class="p">);</span>
+    <span class="c1">//在不需要重新分配bucket vector的情况下插入元素，元素不允许重复</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">iterator</span><span class="p">,</span> <span class="kt">bool</span><span class="o">&gt;</span> <span class="n">insert_unique_noresize</span><span class="p">(</span><span class="k">const</span> <span class="n">Value</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">);</span>
+    <span class="c1">//在不需要重新分配bucket vector的情况下插入元素，元素不允许重复</span>
+    <span class="n">iterator</span> <span class="n">insert_equal_noresize</span><span class="p">(</span><span class="k">const</span> <span class="n">Value</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">);</span>
+<span class="p">};</span>
+</pre></div>

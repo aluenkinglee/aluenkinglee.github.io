@@ -1,0 +1,19 @@
+<div class="highlight"><pre><span class="nv">$ </span>./svm_train
+
+-s svm_type : <span class="nb">set type </span>of SVM <span class="o">(</span>default 0<span class="o">)</span>
+0 -- C-SVC
+-t kernel_type : <span class="nb">set type </span>of kernel <span class="k">function</span> <span class="o">(</span>default 2<span class="o">)</span>
+0 -- linear: u<span class="err">&#39;</span>*v
+2 -- radial basis <span class="k">function</span>: exp<span class="o">(</span>-gamma*|u-v|^2<span class="o">)</span>
+-g gamma : <span class="nb">set </span>gamma in kernel <span class="k">function</span> <span class="o">(</span>default 1/num_features<span class="o">)</span> num_features是输入向量的个数
+-c cost : <span class="nb">set </span>the parameter C of C-SVC, epsilon-SVR, and nu-SVR <span class="o">(</span>default 1<span class="o">)</span>
+-m cachesize : <span class="nb">set </span>cache memory size in MB <span class="o">(</span>default 100<span class="o">)</span> 使用多少内存
+-e epsilon : <span class="nb">set </span>tolerance of termination criterion <span class="o">(</span>default 0.001<span class="o">)</span> 
+-h shrinking : whether to use the shrinking heuristics, 0 or 1 <span class="o">(</span>default 1<span class="o">)</span> 
+-wi weight : <span class="nb">set </span>the parameter C of class i to weight*C, <span class="k">for </span>C-SVC <span class="o">(</span>default 1<span class="o">)</span> 当各类数量不均衡时为每个类分别指定C
+-v n: n-fold cross validation mode交叉验证时分为多少组
+-q : quiet mode <span class="o">(</span>no outputs<span class="o">)</span>
+
+<span class="nv">$ </span>svm_train -s 0 -c 16 -t 2 -g 1 -e 0.01 trainSet.scale
+<span class="nv">$ </span>./svm-train -s 2 -c 16 -g 1 -v 5 ./trainSet 
+</pre></div>

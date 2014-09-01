@@ -1,0 +1,737 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>曾经渐行远，未免心戚戚</title>
+  <meta name="author" content="Aluen King Lee">
+
+  
+  <meta name="description" content="线性回归模型和logistic回归是判别模型，也就是根据特征值来求结果的概率。形式化表
+示为在参数确定的情况下，求解条件概率。
+通俗的解释为在给定特征后预测结果出现的概率。 就按照Andrew Ng讲的那样，确定肿瘤是良性的还是恶性的，可以使用判别模型的方法是先
+从历史数据中学习到模型， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://aluenkinglee.com/blog/page/2">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="曾经渐行远，未免心戚戚" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+<!-- mathjax config similar to math.stackexchange -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
+          MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
+                  data.math = data.math.replace(/^\s*<!\[CDATA\[\s*((?:\n|.)*)\s*\]\]>\s*$/m,"$1");
+                    });
+          });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">曾经渐行远，未免心戚戚</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:aluenkinglee.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/30/generative-method/">Generative Method</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-30T22:52:00+08:00" pubdate data-updated="true">Apr 30<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/04/30/generative-method/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>线性回归模型和logistic回归是判别模型，也就是根据特征值来求结果的概率。形式化表
+示为<script type="math/tex">p(y|x;\theta)</script>在参数<script type="math/tex">\theta</script>确定的情况下，求解条件概率<script type="math/tex">p(y|x)</script>。
+通俗的解释为在给定特征后预测结果出现的概率。</p>
+
+<p>就按照Andrew Ng讲的那样，确定肿瘤是良性的还是恶性的，可以使用判别模型的方法是先
+从历史数据中学习到模型，然后通过提取肿瘤的特征来预测出它是良性恶性的概率。</p>
+
+<p>反过来，要是我们先从良性肿瘤学习出良性肿瘤的模型，从恶性肿瘤学习出恶性肿瘤的模型，
+然后提取肿瘤的特征，放到良性肿瘤的模型看下概率，在放到恶性肿瘤的模型看下概率，哪个
+大是哪个。</p>
+
+<p>形式化表示为求<script type="math/tex">P(X|Y)</script>,x是特征，y是类型即模型。
+利用贝叶斯公式发现两个模型的统一性：</p>
+
+<script type="math/tex; mode=display">
+p(y|x)=\frac { p(x|y)p(y) }{ p(x) } 
+</script>
+
+<p>由于我们关注的是 y 的离散值结果中哪个概率大（比如良性肿瘤和恶性肿瘤哪个概率大），
+而并不是关心具体的概率，因此上式改写为：</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+
+\quad \quad \quad \quad \begin{eqnarray} \max _{ y }{ p(y|x) }  & = & \max _{ y }{ \frac { p(x|y)p(y) }{ p(x) }  }  \\  & = &\max _{ y } p(x|y)p(y) \end{eqnarray}
+ %]]></script>
+
+<table>
+  <tbody>
+    <tr>
+      <td>其中$$p(x</td>
+      <td>y)<script type="math/tex">称为后验概率,</script>p(y)$$称为先验概率.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>由<script type="math/tex">p(x|y)*p(y)=p(x,y)</script>,因此有时称判别模型求的是条件概率，生成模型求的是联
+合概率。</p>
+
+<p>常见的判别模型有线性回归、对数回归、线性判别分析、支持向量机、boosting、条件
+随机场、神经网络等。</p>
+
+<p>常见的生产模型有隐马尔科夫模型、朴素贝叶斯模型、高斯混合模型、LDA、Restricted 
+Boltzmann Machine 等。</p>
+
+<p>上篇博客较为详细地介绍了两个模型</p>
+
+<h3 id="gaussian-discriminant-analysis">高斯判别分析（Gaussian discriminant analysis）</h3>
+
+<h5 id="section">多维正太分布</h5>
+
+<p>多变量正态分布描述的是n维随机变量的分布情况。所以这里的<script type="math/tex">\mu </script>变成了n维随机变量，<script type="math/tex">\sigma </script>也变成了
+矩阵<script type="math/tex">\Sigma </script>.记做<script type="math/tex">N(\mu,\Sigma)</script>.假设有 n 个随机变量<script type="math/tex">X_1,X_2,\cdots ,X_n</script>.所以显而易见，<script type="math/tex">\mu </script>的第i个分量是<script type="math/tex">E(X_i),\Sigma_{ii}=Var(X_i),\Sigma_{ij}=Cov(X_i,X_j)</script>.</p>
+
+<p>概率密度函数如下：</p>
+
+<script type="math/tex; mode=display">
+p(x;\mu,\Sigma)=\frac { 1 }{ \left( 2\pi  \right) ^{ n/2 }\left| \Sigma  \right| ^{ 1/2 } } exp\left( -\frac { 1 }{ 2 } \left( x-\mu \right)^T \Sigma^{-1}{\left(x-\mu\right)} \right) 
+</script>
+
+<h5 id="section-1">模型分析与应用</h5>
+
+<table>
+  <tbody>
+    <tr>
+      <td>如果输入特征x连续型随机变量，那么可以使用高斯判别分析模型来确定$$p(x</td>
+      <td>y)$$。模型如下,先以二元分布即伯努利分布来说（因为前面的例子是二元的）:</td>
+    </tr>
+  </tbody>
+</table>
+
+<script type="math/tex; mode=display">
+y\sim Bernoulli\left( \phi \right) \\
+x|y=0\sim N(\mu_0,\Sigma)\\
+x|y=1\sim N(\mu_1,\Sigma)
+</script>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/30/discriminative-model-vs-generative-model/">Discriminative Model vs. Generative Model</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-30T17:17:00+08:00" pubdate data-updated="true">Apr 30<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/04/30/discriminative-model-vs-generative-model/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2 id="section">判别模型和生成模型分析</h2>
+
+<p>在学习复习ML内容时，中文检索生成模型搜到了该<a href="http://blog.sciencenet.cn/home.php?mod=space&amp;uid=248173&amp;do=blog&amp;id=227964">这里</a>本文主要参考该文章，并稍作整理。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/04/30/discriminative-model-vs-generative-model/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/29/dynamic-programming/">Dynamic Programming</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-29T19:34:00+08:00" pubdate data-updated="true">Apr 29<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/04/29/dynamic-programming/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>好几年了，没有特意去做与ACM相关的算法题了，时至今日，也确实忘得差不多了，不过，现在也到了该拾起来的时候了。</p>
+
+<h5 id="section">动态规划</h5>
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/04/29/dynamic-programming/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/28/some-commen-list-problems-in-the-interview/">Some Commen List Problems in the Interview</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-28T21:54:00+08:00" pubdate data-updated="true">Apr 28<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/04/28/some-commen-list-problems-in-the-interview/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>链表是最基本的数据结构，面试官也常常用链表来考察面试者的基本能力，而且链表相关的操作相对而言比较简单，也适合考察写代码的能力。链表的操作也离不开指针，指针又很容易导致出错。综合多方面的原因，链表题目在面试中占据着很重要的地位。本文对链表相关的面试题做了较为全面的整理，希望能对找工作的同学有所帮助。
+链表结点声明如下：</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/04/28/some-commen-list-problems-in-the-interview/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/21/feature-selection--infomation-gain/">特征选择-信息增益算法</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-21T15:41:00+08:00" pubdate data-updated="true">Apr 21<span>st</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/04/21/feature-selection--infomation-gain/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><strong>信息增益</strong>：特征 $A$ 对于训练数据集$D$的信息增益 $g\left( D,A \right)$,定义为集合 $D$ 的经验熵 $H\left( D \right)$ 与特征 $A$ 在给定条件下 $D$ 
+的经验条件熵c之差。
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/04/21/feature-selection--infomation-gain/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification/">A Scratch of Feature Selection in Traffic Classification</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-20T21:02:00+08:00" pubdate data-updated="true">Apr 20<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>特征选取在减轻识别流量监测方面起着很重要的作用。该方法可以显著提高计算流量分类的性能。但是，大部分的特征不能应用在实时在线的流量分类中（有些特征只能在获取完整个流量才能得到，比如传输的数据大小，流的传输时长等）。所以在抉择分类的时候，需要一个优化过的特征集合在更短的时间内完成流量的分类。另外一种方案就是使用新型的网络架构如SDN/OpenFlow在目前已有的特征选择方法中，Chi-squared, Fuzzy-rough and Consistency-based的特征选择方法最适合P2P流量选择（那现在的手机端流量分析怎么样？）这些算法在使用ML进行在线P2P检测时会给出较好的特征子集。
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/04/qi-yi-de-nei-cun-fu-gai/">“奇异”的内存覆盖</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-04T22:01:00+08:00" pubdate data-updated="true">Mar 4<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/03/04/qi-yi-de-nei-cun-fu-gai/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>犯了一个愚蠢的问题，让我碰到了这么个内容错误的bug</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/03/04/qi-yi-de-nei-cun-fu-gai/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/">理解TCP中的序列号和确认号</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-26T22:34:00+08:00" pubdate data-updated="true">Feb 26<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>之所以写这么一篇文章是因为被wireshark的序列号搞晕了，我不知道你们是否这样，当你读这篇article时，肯定你已经熟悉了TCP那个三次握手，
+或者是SYN,SYN|ACK,ACK. 而我要做的也就是这个，提取一个流的前N个packets，针对目前的需求，只需要在传输层截取UDP和TCP的前多少个流即可。
+所以我得分析网络层的这些协议底层到底是怎么回事，在结合libpcap完成流的提取任务。</p>
+
+<p>相对来说TCP还是个复杂的协议，而且值得清楚的认识以下。那么结合wireshark和代码来认识下TCP里面的东西。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/24/c-plus-plus-de-hashtablena-xie-shi/">C++的hashtable那些事</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-24T05:29:00+08:00" pubdate data-updated="true">Feb 24<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/02/24/c-plus-plus-de-hashtablena-xie-shi/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>对于想知道hashtable原理的的人来说，多少对基本的数据结构和算法都有些了解，所以不再细说。</p>
+
+<p>平常我们所说的一些容器来说，比如vector，list，stack之类，他们中的元素都是可以排序的，可以归为序列式容器，基于连续内存的vector可以实现随机存储，但是搜索的复杂度是O（n），list也是如此。
+在关联式容器中，每个数据有一个键值和一个实值。元素插入到关联式容器中，容器内部结构根据其键值依据某个特定的规则将这个元素放置于适当的位置，从而实现插入和搜索是对数平均时间（基于红黑树），甚至是尽可能的是常数级别（就是这里说的散列表），其效率依赖于数据的特性和规则的设计。关联式的容器没有所谓的头尾，不会有begin(),end(),push_back()等这样的行为。</p>
+
+<p>数组是个很好的内建数据结构，你甚至可以把数组看成一个最简单的hash表，index是种键值，而内容则是value。是不是很好，常数级寻址。但是也有问题，通常我们面对的键值不仅仅是简单的无符号的整数之流，还有很多的string啊，复杂的类对象啊，而这些问题就是hash函数所要处理的问题。hash函数把这个对象映射到[0-表的长度-1]之间。但是，不能够保证每个元素的键值与函数值是一一对应的，因此极有可能出现对于不同的元素，却计算出了相同的函数值，这样就产生了“冲突”，换句话说，就是把不同的元素分在了相同的“类”之中。 总的来说，“直接定址”与“解决冲突”是哈希表的两大特点。首先，为什么会出现冲突？基于这种想法设计出来的结构无疑是一种空间换时间的典范，尽管现在硬件越来越牛逼，但并不意味着可以随便挥霍，矛盾就出现在空间的数据往往小于我们要处理的数据规模，所以我们不可能设计出一种一一对应的函数来。而解决冲突就是hash第二个要解决的问题。</p>
+
+<p>对于冲突的解决，往往有线性探测和二测探测以及开链法（类似list），前两种往往在数据规模小的情况下，即空间浪费的时候效率较高，这也意味着空间利用率不是很理想，而开链法，器负载系数大于1，就是索引的数组被极大利用了。
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/02/24/c-plus-plus-de-hashtablena-xie-shi/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/01/05/machine-learning-linear-regression/">Machine Learning :linear Regression</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-05T12:00:00+08:00" pubdate data-updated="true">Jan 5<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/01/05/machine-learning-linear-regression/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>机器学习中，总体来说是分为两类问题：</p>
+
+<p>1.有监督的学习方法
+2.无监督的学习方法</p>
+
+<p>其他是这两者的综合，比如说半监督学习方法，强化学习（这个还未接触过）。</p>
+
+<p>本文呢，先从有监督的学习方法开始讲起，主要是记载学习过程中个人认为最重要的地方。</p>
+
+<p>对于监督学习中的两类问题，或者说三类吧，分别是：回归问题，分类问题和标注问题（tagging）。后面这个很有意思，不过在这里现说一下回归和分类的区别，假如我们要
+做一个连续变量的预测，比如说房价的预测，或者明日气温的预测，都是属于回归问题；而对于离散变量的预测，比如判断一个病人是否得了癌症，良性还是恶心，则是一个明显的分
+类问题。</p>
+
+<p>接下来的文章，大概是对Andrew Ng视频的一个简单的总结，会结合变成实例（octave和C++）来插叙。
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/01/05/machine-learning-linear-regression/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/blog/page/3/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he/">浅谈微博标签聚合</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/">Use Svm to Classify Whether a Person Is Good or Bad on Credit Using Sns Data</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/09/wei-pi-pei/">伪匹配</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/">朴素贝叶斯文本分类</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/03/lagrange-duality/">拉格朗日对偶</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+<section>
+  <h1>My Douban</h1>
+  <div>
+  <!--添加到这-->
+  <script type="text/javascript" src="http://www.douban.com/service/badge/aluenkinglee/?selection=random&amp;picsize=small&amp;show=dolist&amp;n=8&amp;cat=book&amp;columns=3"></script>
+  </div>
+</section> 
+<section>
+<h1>Recent Comments</h1>
+<ul class="ds-recent-comments" data-num-items="10" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="18"></ul>
+
+<!--多说js加载开始，一个页面只需要加载一次 -->
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"aluenkinglee"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+<!--多说js加载结束，一个页面只需要加载一次 -->
+
+</section> 
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Aluen King Lee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
