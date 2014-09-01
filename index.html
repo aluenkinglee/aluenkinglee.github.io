@@ -9,8 +9,10 @@
   <meta name="author" content="Aluen King Lee">
 
   
-  <meta name="description" content="首先说明这只是一个思路方向性的大概说明介绍，更多关于业务方面的内容不方便介绍。 如何评价一个人的金融信用，这个可以搜集用户的一些基本数据，比如职业，大学，社交数据来进行评分判断，至于为什么选取这些特征，一个很显然的理由就是
-一个人越倾向使用社交应用，那么这个人就越可能是真实的，可信的。 &hellip;">
+  <meta name="description" content="标注问题在机器学习中是一个监督学习的问题，当然在这里我们所要面对是微博中用户给自己添加标签的
+问题，并不是研究如何给用户添加标签。
+浏览微博中用户的个人资料时，你会发现大部分用户都给自己添加了自认为所属类别的标签，这个很正确，
+属于人工标注的典例。但是，细细浏览下每个人的标签我们会发现， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -104,6 +106,67 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he/">浅谈微博标签聚合</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-09-02T00:47:00+08:00" pubdate data-updated="true">Sep 2<span>nd</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>标注问题在机器学习中是一个监督学习的问题，当然在这里我们所要面对是微博中用户给自己添加标签的
+问题，并不是研究如何给用户添加标签。
+浏览微博中用户的个人资料时，你会发现大部分用户都给自己添加了自认为所属类别的标签，这个很正确，
+属于人工标注的典例。但是，细细浏览下每个人的标签我们会发现，其实好多标签的意思是一样的，比如
+<code>苹果</code>，<code>iphone</code>，<code>iphone5</code>，的意思是类似的，还有<code>安卓</code>,<code>Android</code>,<code>智能手机</code>，<code>安卓手机</code>,
+很明显，他们又是类，有没有办法把类似的标签聚集在一起呢？</p>
+
+<p>直到现在，从我们的需求出发可以看到这是一个聚类问题，将相似的标签聚集到一起，并找出可以代表这
+类相似标签的标签。</p>
+
+<p>整体思路是根据用户的标签数据集得到“标签-用户”矩阵，考录到这个矩阵大部分为0值，所以使用稀疏矩阵
+来降低内存无用消耗。然后使用一个相似度来代表距离，可以使用cosine相似度，pearson相似度，等等，
+在这里使用的是余弦相似度，使用这里的算法进行聚类之后，得到聚类模型，如图所示。</p>
+
+<p>接下来就是找到相似的标签，这个我们可以想象，从根节点开始，离根节点越远的拥有共同祖先的叶节点相似
+越大，每个内节点都有一个代表它孩子的相似度，我们需要做的是，找到一个cutoff，然后，只要某个节点
+小于该cutoff，那么认为他们之前没有相似关系，若大于改值，则意味这以改节点为祖先的叶节点是一个
+簇，简单实用，而且效果不错。</p>
+
+<p>到现在为止，我们找到了相似的标签集合，那么如何从集合中找到代表性的标签呢？一个显而易见的就是，计算
+该标签被用户引用的次数，简单的总是最好的！</p>
+
+<p>如图所示，这是按照上述思路完成的结果的一部分显示结果，数据太多，不方便显示。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -875,120 +938,6 @@ next\left[ q \right] =\begin{Bmatrix} 0 & \quad if\quad { E }_{ q }\quad =\quad 
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/30/generative-method/">Generative Method</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-04-30T22:52:00+08:00" pubdate data-updated="true">Apr 30<span>th</span>, 2014</time>
-        
-        
-          | <a href="/blog/2014/04/30/generative-method/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>线性回归模型和logistic回归是判别模型，也就是根据特征值来求结果的概率。形式化表
-示为<script type="math/tex">p(y|x;\theta)</script>在参数<script type="math/tex">\theta</script>确定的情况下，求解条件概率<script type="math/tex">p(y|x)</script>。
-通俗的解释为在给定特征后预测结果出现的概率。</p>
-
-<p>就按照Andrew Ng讲的那样，确定肿瘤是良性的还是恶性的，可以使用判别模型的方法是先
-从历史数据中学习到模型，然后通过提取肿瘤的特征来预测出它是良性恶性的概率。</p>
-
-<p>反过来，要是我们先从良性肿瘤学习出良性肿瘤的模型，从恶性肿瘤学习出恶性肿瘤的模型，
-然后提取肿瘤的特征，放到良性肿瘤的模型看下概率，在放到恶性肿瘤的模型看下概率，哪个
-大是哪个。</p>
-
-<p>形式化表示为求<script type="math/tex">P(X|Y)</script>,x是特征，y是类型即模型。
-利用贝叶斯公式发现两个模型的统一性：</p>
-
-<script type="math/tex; mode=display">
-p(y|x)=\frac { p(x|y)p(y) }{ p(x) } 
-</script>
-
-<p>由于我们关注的是 y 的离散值结果中哪个概率大（比如良性肿瘤和恶性肿瘤哪个概率大），
-而并不是关心具体的概率，因此上式改写为：</p>
-
-<script type="math/tex; mode=display">% <![CDATA[
-
-\quad \quad \quad \quad \begin{eqnarray} \max _{ y }{ p(y|x) }  & = & \max _{ y }{ \frac { p(x|y)p(y) }{ p(x) }  }  \\  & = &\max _{ y } p(x|y)p(y) \end{eqnarray}
- %]]></script>
-
-<table>
-  <tbody>
-    <tr>
-      <td>其中$$p(x</td>
-      <td>y)<script type="math/tex">称为后验概率,</script>p(y)$$称为先验概率.</td>
-    </tr>
-  </tbody>
-</table>
-
-<p>由<script type="math/tex">p(x|y)*p(y)=p(x,y)</script>,因此有时称判别模型求的是条件概率，生成模型求的是联
-合概率。</p>
-
-<p>常见的判别模型有线性回归、对数回归、线性判别分析、支持向量机、boosting、条件
-随机场、神经网络等。</p>
-
-<p>常见的生产模型有隐马尔科夫模型、朴素贝叶斯模型、高斯混合模型、LDA、Restricted 
-Boltzmann Machine 等。</p>
-
-<p>上篇博客较为详细地介绍了两个模型</p>
-
-<h3 id="gaussian-discriminant-analysis">高斯判别分析（Gaussian discriminant analysis）</h3>
-
-<h5 id="section">多维正太分布</h5>
-
-<p>多变量正态分布描述的是n维随机变量的分布情况。所以这里的<script type="math/tex">\mu </script>变成了n维随机变量，<script type="math/tex">\sigma </script>也变成了
-矩阵<script type="math/tex">\Sigma </script>.记做<script type="math/tex">N(\mu,\Sigma)</script>.假设有 n 个随机变量<script type="math/tex">X_1,X_2,\cdots ,X_n</script>.所以显而易见，<script type="math/tex">\mu </script>的第i个分量是<script type="math/tex">E(X_i),\Sigma_{ii}=Var(X_i),\Sigma_{ij}=Cov(X_i,X_j)</script>.</p>
-
-<p>概率密度函数如下：</p>
-
-<script type="math/tex; mode=display">
-p(x;\mu,\Sigma)=\frac { 1 }{ \left( 2\pi  \right) ^{ n/2 }\left| \Sigma  \right| ^{ 1/2 } } exp\left( -\frac { 1 }{ 2 } \left( x-\mu \right)^T \Sigma^{-1}{\left(x-\mu\right)} \right) 
-</script>
-
-<h5 id="section-1">模型分析与应用</h5>
-
-<table>
-  <tbody>
-    <tr>
-      <td>如果输入特征x连续型随机变量，那么可以使用高斯判别分析模型来确定$$p(x</td>
-      <td>y)$$。模型如下,先以二元分布即伯努利分布来说（因为前面的例子是二元的）:</td>
-    </tr>
-  </tbody>
-</table>
-
-<script type="math/tex; mode=display">
-y\sim Bernoulli\left( \phi \right) \\
-x|y=0\sim N(\mu_0,\Sigma)\\
-x|y=1\sim N(\mu_1,\Sigma)
-</script>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1004,6 +953,10 @@ x|y=1\sim N(\mu_1,\Sigma)
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he/">浅谈微博标签聚合</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/">Use Svm to Classify Whether a Person Is Good or Bad on Credit Using Sns Data</a>
       </li>
     
@@ -1017,10 +970,6 @@ x|y=1\sim N(\mu_1,\Sigma)
     
       <li class="post">
         <a href="/blog/2014/06/03/lagrange-duality/">拉格朗日对偶</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/06/03/my-understanding-about-svm/">从逻辑回归分类到SVM分类</a>
       </li>
     
   </ul>

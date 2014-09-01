@@ -1,4 +1,0 @@
-User-agent: *
-Disallow: 
-
-Sitemap: http://aluenkinglee.com/sitemap.xml 

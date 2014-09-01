@@ -9,7 +9,7 @@
   <meta name="author" content="Aluen King Lee">
 
   
-  <meta name="description" content="首先需要声明的一点是，到目前（2013/11）Nox在所有SDN控制器中不是最火的（相比Pox，floodlight），但是作为最先开发的一个SDN而言，还是有研究意义的。 ">
+  <meta name="description" content="最近又重新看了一下coursera上的机器学习(Andrew Ng讲的)，比起之前上老师的课和机器学习这本书来说，简直好太多。当初选修这个课程的时候明显感到编程实践环节太少，很不适应，只有一个大作业而已。好在这里的Quara和Programming Excises很给力。 我的设想是这样， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -103,6 +103,54 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/12/31/ke-ai-de-armadillo/">可爱的Armadillo</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-31T10:25:00+08:00" pubdate data-updated="true">Dec 31<span>st</span>, 2013</time>
+        
+        
+          | <a href="/blog/2013/12/31/ke-ai-de-armadillo/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>最近又重新看了一下coursera上的<a href="https://class.coursera.org/ml-004/lecture/index">机器学习</a>(Andrew Ng讲的)，比起之前上老师的课和<a href="http://book.douban.com/subject/1102235/" title="机器学习">机器学习</a>这本书来说，简直好太多。当初选修这个课程的时候明显感到编程实践环节太少，很不适应，只有一个大作业而已。好在这里的Quara和Programming Excises很给力。</p>
+
+<p>我的设想是这样，octave作为一种快速验证想法的工具不适合应用在实际的生产环境中的，毕竟计算速度还是可以依靠集群和并行化来加快大数据处理。在此参考了C++的<a href="http://en.wikipedia.org/wiki/Comparison_of_linear_algebra_libraries">线性代数库</a>之后选择了Armadillo,毕竟经常更新并且从官网资料来看，和octave代码相似便于移植，再说，从它本身和其他的对比来看，速度也是相当快的。</p>
+
+<p>不过，在安装完Armadillo之后，编译example目录下的例子并不通过，提示</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/12/31/ke-ai-de-armadillo/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -575,54 +623,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/03/15/some-important-details-in-python-personal/">Python中得一些重要的细节</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-15T16:17:00+08:00" pubdate data-updated="true">Mar 15<span>th</span>, 2013</time>
-        
-        
-          | <a href="/blog/2013/03/15/some-important-details-in-python-personal/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>字符串可以被下表索引，和C一样，第一个字符同样是0。</p>
-
-<p>Python中并没有单独的字符类型，一个字符就是长度为1的字符串。</p>
-
-<p>和C字符串不同的是，python字符串值不能更改。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/03/15/some-important-details-in-python-personal/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/4/">&larr; Older</a>
@@ -640,6 +640,10 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he/">浅谈微博标签聚合</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/">Use Svm to Classify Whether a Person Is Good or Bad on Credit Using Sns Data</a>
       </li>
     
@@ -653,10 +657,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     
       <li class="post">
         <a href="/blog/2014/06/03/lagrange-duality/">拉格朗日对偶</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/06/03/my-understanding-about-svm/">从逻辑回归分类到SVM分类</a>
       </li>
     
   </ul>

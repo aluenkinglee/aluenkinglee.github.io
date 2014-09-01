@@ -9,7 +9,10 @@
   <meta name="author" content="Aluen King Lee">
 
   
-  <meta name="description" content="判别模型和生成模型分析 在学习复习ML内容时，中文检索生成模型搜到了该这里本文主要参考该文章，并稍作整理。 ">
+  <meta name="description" content="线性回归模型和logistic回归是判别模型，也就是根据特征值来求结果的概率。形式化表
+示为在参数确定的情况下，求解条件概率。
+通俗的解释为在给定特征后预测结果出现的概率。 就按照Andrew Ng讲的那样，确定肿瘤是良性的还是恶性的，可以使用判别模型的方法是先
+从历史数据中学习到模型， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -103,6 +106,120 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/30/generative-method/">Generative Method</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-30T22:52:00+08:00" pubdate data-updated="true">Apr 30<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/04/30/generative-method/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>线性回归模型和logistic回归是判别模型，也就是根据特征值来求结果的概率。形式化表
+示为<script type="math/tex">p(y|x;\theta)</script>在参数<script type="math/tex">\theta</script>确定的情况下，求解条件概率<script type="math/tex">p(y|x)</script>。
+通俗的解释为在给定特征后预测结果出现的概率。</p>
+
+<p>就按照Andrew Ng讲的那样，确定肿瘤是良性的还是恶性的，可以使用判别模型的方法是先
+从历史数据中学习到模型，然后通过提取肿瘤的特征来预测出它是良性恶性的概率。</p>
+
+<p>反过来，要是我们先从良性肿瘤学习出良性肿瘤的模型，从恶性肿瘤学习出恶性肿瘤的模型，
+然后提取肿瘤的特征，放到良性肿瘤的模型看下概率，在放到恶性肿瘤的模型看下概率，哪个
+大是哪个。</p>
+
+<p>形式化表示为求<script type="math/tex">P(X|Y)</script>,x是特征，y是类型即模型。
+利用贝叶斯公式发现两个模型的统一性：</p>
+
+<script type="math/tex; mode=display">
+p(y|x)=\frac { p(x|y)p(y) }{ p(x) } 
+</script>
+
+<p>由于我们关注的是 y 的离散值结果中哪个概率大（比如良性肿瘤和恶性肿瘤哪个概率大），
+而并不是关心具体的概率，因此上式改写为：</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+
+\quad \quad \quad \quad \begin{eqnarray} \max _{ y }{ p(y|x) }  & = & \max _{ y }{ \frac { p(x|y)p(y) }{ p(x) }  }  \\  & = &\max _{ y } p(x|y)p(y) \end{eqnarray}
+ %]]></script>
+
+<table>
+  <tbody>
+    <tr>
+      <td>其中$$p(x</td>
+      <td>y)<script type="math/tex">称为后验概率,</script>p(y)$$称为先验概率.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>由<script type="math/tex">p(x|y)*p(y)=p(x,y)</script>,因此有时称判别模型求的是条件概率，生成模型求的是联
+合概率。</p>
+
+<p>常见的判别模型有线性回归、对数回归、线性判别分析、支持向量机、boosting、条件
+随机场、神经网络等。</p>
+
+<p>常见的生产模型有隐马尔科夫模型、朴素贝叶斯模型、高斯混合模型、LDA、Restricted 
+Boltzmann Machine 等。</p>
+
+<p>上篇博客较为详细地介绍了两个模型</p>
+
+<h3 id="gaussian-discriminant-analysis">高斯判别分析（Gaussian discriminant analysis）</h3>
+
+<h5 id="section">多维正太分布</h5>
+
+<p>多变量正态分布描述的是n维随机变量的分布情况。所以这里的<script type="math/tex">\mu </script>变成了n维随机变量，<script type="math/tex">\sigma </script>也变成了
+矩阵<script type="math/tex">\Sigma </script>.记做<script type="math/tex">N(\mu,\Sigma)</script>.假设有 n 个随机变量<script type="math/tex">X_1,X_2,\cdots ,X_n</script>.所以显而易见，<script type="math/tex">\mu </script>的第i个分量是<script type="math/tex">E(X_i),\Sigma_{ii}=Var(X_i),\Sigma_{ij}=Cov(X_i,X_j)</script>.</p>
+
+<p>概率密度函数如下：</p>
+
+<script type="math/tex; mode=display">
+p(x;\mu,\Sigma)=\frac { 1 }{ \left( 2\pi  \right) ^{ n/2 }\left| \Sigma  \right| ^{ 1/2 } } exp\left( -\frac { 1 }{ 2 } \left( x-\mu \right)^T \Sigma^{-1}{\left(x-\mu\right)} \right) 
+</script>
+
+<h5 id="section-1">模型分析与应用</h5>
+
+<table>
+  <tbody>
+    <tr>
+      <td>如果输入特征x连续型随机变量，那么可以使用高斯判别分析模型来确定$$p(x</td>
+      <td>y)$$。模型如下,先以二元分布即伯努利分布来说（因为前面的例子是二元的）:</td>
+    </tr>
+  </tbody>
+</table>
+
+<script type="math/tex; mode=display">
+y\sim Bernoulli\left( \phi \right) \\
+x|y=0\sim N(\mu_0,\Sigma)\\
+x|y=1\sim N(\mu_1,\Sigma)
+</script>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -525,54 +642,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/12/31/ke-ai-de-armadillo/">可爱的Armadillo</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-31T10:25:00+08:00" pubdate data-updated="true">Dec 31<span>st</span>, 2013</time>
-        
-        
-          | <a href="/blog/2013/12/31/ke-ai-de-armadillo/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>最近又重新看了一下coursera上的<a href="https://class.coursera.org/ml-004/lecture/index">机器学习</a>(Andrew Ng讲的)，比起之前上老师的课和<a href="http://book.douban.com/subject/1102235/" title="机器学习">机器学习</a>这本书来说，简直好太多。当初选修这个课程的时候明显感到编程实践环节太少，很不适应，只有一个大作业而已。好在这里的Quara和Programming Excises很给力。</p>
-
-<p>我的设想是这样，octave作为一种快速验证想法的工具不适合应用在实际的生产环境中的，毕竟计算速度还是可以依靠集群和并行化来加快大数据处理。在此参考了C++的<a href="http://en.wikipedia.org/wiki/Comparison_of_linear_algebra_libraries">线性代数库</a>之后选择了Armadillo,毕竟经常更新并且从官网资料来看，和octave代码相似便于移植，再说，从它本身和其他的对比来看，速度也是相当快的。</p>
-
-<p>不过，在安装完Armadillo之后，编译example目录下的例子并不通过，提示</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/12/31/ke-ai-de-armadillo/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -590,6 +659,10 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he/">浅谈微博标签聚合</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/">Use Svm to Classify Whether a Person Is Good or Bad on Credit Using Sns Data</a>
       </li>
     
@@ -603,10 +676,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     
       <li class="post">
         <a href="/blog/2014/06/03/lagrange-duality/">拉格朗日对偶</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/06/03/my-understanding-about-svm/">从逻辑回归分类到SVM分类</a>
       </li>
     
   </ul>
