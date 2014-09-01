@@ -1,0 +1,387 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>从逻辑回归分类到SVM分类 - 曾经渐行远，未免心戚戚</title>
+  <meta name="author" content="Aluen King Lee">
+
+  
+  <meta name="description" content="上一章讲到了线性回归的一个典型算法，核心思想就是利用最小二乘法最为损失函数，不断使用梯度下降法（或者使用随机梯度下降法（stochastic gradient descent））来更新theta值。 后来降到了分类，逻辑回归只不过有个很好的性质就是值分布在0到1之间，正好可以利用到分类上。 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://aluenkinglee.com/blog/2014/06/03/my-understanding-about-svm">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="曾经渐行远，未免心戚戚" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+<!-- mathjax config similar to math.stackexchange -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
+          MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
+                  data.math = data.math.replace(/^\s*<!\[CDATA\[\s*((?:\n|.)*)\s*\]\]>\s*$/m,"$1");
+                    });
+          });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">曾经渐行远，未免心戚戚</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:aluenkinglee.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">从逻辑回归分类到SVM分类</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-03T20:53:00+08:00" pubdate data-updated="true">Jun 3<span>rd</span>, 2014</time>
+        
+        
+          | <a href="#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>上一章讲到了线性回归的一个典型算法，核心思想就是利用最小二乘法最为损失函数，不断使用梯度下降法（或者使用随机梯度下降法（stochastic gradient descent））来更新theta值。</p>
+
+<p>后来降到了分类，逻辑回归只不过有个很好的性质就是值分布在0到1之间，正好可以利用到分类上。logistic回归就是要学习得到θ，使得正例的特征远大于 0，负例的特征远
+小于 0，强调在全部训练实例上达到这个目标。为什么说逻辑回归是个线性模型？这是因为该模型是将特性的线性组合作为自变量，然后使用logistic函数（或者说是sigmoid函数）将自变量映射到（0-1）上，将值和概率结合之后从而应用到分类上。
+函数表示形式：</p>
+
+<script type="math/tex; mode=display">
+h_{ \theta  }\left( x \right) =g\left( \theta ^{ T }x \right) =\frac { 1 }{ 1+{e  }^{ -\theta^{T}x } }
+</script>
+
+<!-- more -->
+
+<p>其中 x 是 n 维特征向量，函数 g 就是 logistic 函数
+从线性回归到了逻辑回归，从逻辑回归又到了分类，那么再来看看SVM这个有监督的分类学习算法。
+在这里我们使用的y的取值记为1和-1，所以对logistic 回归中的做下替换，令logistic回归中的y=0和y=1变为y=-1,y=1。同时将θ替换成 w 和 b。
+所以有<script type="math/tex">\Theta^{T}x=\theta_0x_0+\theta_1x_1+\cdots +\theta_nx_n</script>，现在使用b替换<script type="math/tex">\theta_0</script>,替换后的形式变为<script type="math/tex">w^{ T }x=w_{ 1 }x_{ 1 }+\cdots +w_{ n }x_{ n }+b</script>，这样做之后，我们的假设函数就变成了</p>
+
+<script type="math/tex; mode=display">
+h_{ b,w }\left( x \right) =g\left( w^{ T }x+b \right)
+</script>
+
+<p>和逻辑回归的形式很相像。</p>
+
+<p>表达形式就引申到这里，在来谈下SVM的思想，当我们学习线性回归时，我们的想法就是使用最小二乘法拟合数据，而在分类问题中，我们的想法就是找到一条直线，使正负样本离这个线或者超平面尽可能的远。也就是<code>间隔</code>最大。用一句话来说就是：<strong>在特征空间上的间隔最大的线性分类器。所以我们所有的努力都在如何是间隔最大化上，而这个可以转化为一个凸二次规划的问题</strong>。所以SVM的学习算法就是求解凸二次规划的最优化算法。</p>
+
+<h5 id="functional-margingeometric-margin">函数间隔（functional margin）和几何间隔（geometric margin）</h5>
+
+<p>我们定义函数间隔就是：对于给定的数据集T和超平面（w,b），样本点<script type="math/tex">\left( x^{(i)},y^{(i)} \right) </script>到超平面的函数间隔为：
+$$
+\widehat { \gamma  } ^{ (i) }=y^{ (i) }(w^{T}\cdot x^{ (i) }+b) 
+$$</p>
+
+<p>函数间隔或者间隔本身描述了一种确信度。离超平面越远，间隔值就越大，可信度就越大。</p>
+
+<p>刚刚我们定义的函数间隔是针对某一个样本的，现在我们定义全局样本上的函数间隔，定义超平面关于数据集的函数间隔为超平面中所有样本点函数间隔的最小值，就是在训练样本上分类正例和负例确信度最小那个函数间隔，即</p>
+
+<script type="math/tex; mode=display">
+\widehat {\gamma }=\min _{ i=1,...m }{ \widehat { \gamma  } ^{ (i) } }
+</script>
+
+<p>但是有个问题，如果按比例的增加w和b，那么函数间隔也会按比例改变，这个对结果没有影响，但是问题会变得不好描述，不能定量的计算，所以我们就需要把它规范化(normalization)。只需要结果除以<script type="math/tex">\left\| w \right\| </script>就好了，这个时候<script type="math/tex">w/\left\| w \right\| </script>就成为了单位向量，所以函数间隔和几何间隔的关系也就是这样简单，几何间隔就是规范化后的函数间隔。无论w和b怎么折腾，几何间隔都不会改变。</p>
+
+<p>定义几何间隔就是：对于给定的数据集T和超平面（w,b），样本点<script type="math/tex">\left( x^{(i)},y^{(i)} \right) </script>到超平面的几何间隔为：</p>
+
+<script type="math/tex; mode=display">
+{ \gamma  } ^{ (i) }=y^{ (i) }(w^{T}\cdot x^{ (i) }+b)/\left\| w \right\|
+</script>
+
+<p>定义超平面关于数据集的几何间隔为超平面中所有样本点几何间隔的最小值,即</p>
+
+<script type="math/tex; mode=display">
+{ \gamma  }=\min _{ i=1,...m }{ { \gamma  }^{ (i) } }
+</script>
+
+<p>最优间隔分类器（optimal margin classifier）（利用间隔最大化）</p>
+
+<p>回想前面我们提到我们的目标是寻找一个超平面，使得离超平面比较近的点能有更大的
+间距。 也就是我们不考虑所有的点都必须远离超平面，我们关心求得的超平面能够让所有点中离它最近的点具有最大间距。形象的说，我们将上面的图看作是一张纸，我们要找一条折线，按照这条折线折叠后，离折线最近的点的间距比其他折线都要大。形式化表示为：</p>
+
+<script type="math/tex; mode=display">
+\max _{ \gamma ,w,b }{ \gamma  } \\ s.t\quad { y }^{ \left( i \right)  }\left( { w }^{ T }{ x }^{ \left( i \right)  }+b \right) \ge \gamma ,i=1,\cdots ,m\\ \left\| w \right\| =1
+</script>
+
+<table>
+  <tbody>
+    <tr>
+      <td>这里用</td>
+      <td> </td>
+      <td>w</td>
+      <td> </td>
+      <td>=1 规约 w，使得<script type="math/tex"> w^{T}\cdot x+b</script>是几何间隔。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>到此，我们已经将模型定义出来了。如果求得了 w 和 b，那么来一个特征 x，我们就能
+够分类了，称为最优间隔分类器。接下的问题就是如何求解 w 和 b 的问题了。</p>
+
+<p>由于||w|| = 1不是凸函数，我们想先处理转化一下，考虑几何间隔和函数间隔的关系，
+<script type="math/tex"> \gamma =\frac { \hat { \gamma  }  }{ \left\| w \right\|  } </script>，我们改写一下上面的式子：</p>
+
+<script type="math/tex; mode=display">
+\max _{ \gamma ,w,b }{ \frac { \widehat { \gamma  }  }{ \left\| w \right\|  }  } \\ s.t\quad { y }^{ \left( i \right)  }\left( { w }^{ T }{ x }^{ \left( i \right)  }+b \right) \ge \widehat { \gamma  } ,i=1,\cdots ,m
+</script>
+
+<p>因为函数间隔值得改变对结果没有影响，所以可以给它个固定值比如1.将 <script type="math/tex">\hat { \gamma  } =1</script>代入上面的最优化问题，因为最大化<script type="math/tex"> \frac { 1 }{ \left\| w \right\|  } </script>最小化<script type="math/tex"> \frac { 1 }{ 2 } \left\| w \right\| ^{ 2 }</script>是等价的，于是将上面改写成这样：</p>
+
+<script type="math/tex; mode=display">
+\min _{ \gamma ,w,b }{ \frac { 1 }{ 2 }  } { \left\| w \right\|  }^{ 2 }\\ s.t\quad { y }^{ \left( i \right)  }\left( { w }^{ T }{ x }^{ \left( i \right)  }+b \right) -1\ge 0,i=1,\cdots ,m
+</script>
+
+<p>这就变成了一个凸二次规划问题，详情见<a href="http://zh.wikipedia.org/wiki/%E4%BA%8C%E6%AC%A1%E8%A7%84%E5%88%92">凸二次规划</a></p>
+
+<p>接下来是关于拉格朗日对偶的问题，在这之后，在描述SVM中最简单的分类器——<strong>线性可分支持向量机</strong>，因为这个情况下，数据是线性可分的，而且噪音没有，只需要通过<strong>硬间隔最大化</strong>,即可学习一个线性的分类器，又称硬间隔支持向量机。</p>
+
+<blockquote>
+  <blockquote>
+    <p>参考</p>
+  </blockquote>
+</blockquote>
+
+<ol>
+  <li>
+    <p>Andrew Ng的原始课件讲义</p>
+  </li>
+  <li>
+    <p>统计学习方法</p>
+  </li>
+</ol>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Aluen King Lee</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-03T20:53:00+08:00" pubdate data-updated="true">Jun 3<span>rd</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/svm/'>SVM</a>, <a class='category' href='/blog/categories/ji-qi-xue-xi/'>机器学习</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/05/20/kill-process-on-some-port-under-linux-platform/" title="Previous Post: Linux下通过端口杀死进程">&laquo; Linux下通过端口杀死进程</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/06/03/lagrange-duality/" title="Next Post: 拉格朗日对偶">拉格朗日对偶 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+
+  <section>
+    <h1>Comments</h1>
+    <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"aluenkinglee"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END --></div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/">Use Svm to Classify Whether a Person Is Good or Bad on Credit Using Sns Data</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/09/wei-pi-pei/">伪匹配</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/">朴素贝叶斯文本分类</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/03/lagrange-duality/">拉格朗日对偶</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/03/my-understanding-about-svm/">从逻辑回归分类到SVM分类</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+<section>
+  <h1>My Douban</h1>
+  <div>
+  <!--添加到这-->
+  <script type="text/javascript" src="http://www.douban.com/service/badge/aluenkinglee/?selection=random&amp;picsize=small&amp;show=dolist&amp;n=8&amp;cat=book&amp;columns=3"></script>
+  </div>
+</section> 
+<section>
+<h1>Recent Comments</h1>
+<ul class="ds-recent-comments" data-num-items="10" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="18"></ul>
+
+</section> 
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Aluen King Lee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

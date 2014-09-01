@@ -4,7 +4,7 @@
   <title><![CDATA[曾经渐行远，未免心戚戚]]></title>
   <link href="http://aluenkinglee.com/atom.xml" rel="self"/>
   <link href="http://aluenkinglee.com/"/>
-  <updated>2014-05-19T23:18:48+08:00</updated>
+  <updated>2014-07-17T19:49:48+08:00</updated>
   <id>http://aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
@@ -12,6 +12,1302 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[use svm to classify whether a person is good or bad on credit using sns data]]></title>
+    <link href="http://aluenkinglee.com/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/"/>
+    <updated>2014-07-12T17:21:00+08:00</updated>
+    <id>http://aluenkinglee.com/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data</id>
+    <content type="html"><![CDATA[<p>首先说明这只是一个思路方向性的大概说明介绍，更多关于业务方面的内容不方便介绍。</p>
+
+<p>如何评价一个人的金融信用，这个可以搜集用户的一些基本数据，比如职业，大学，社交数据来进行评分判断，至于为什么选取这些特征，一个很显然的理由就是
+一个人越倾向使用社交应用，那么这个人就越可能是真实的，可信的。职业学校和人的信用也是成一定关系但不是绝对就是向我们想当然的那样。</p>
+
+<p>之前的文章也断断续续的聊过伪匹配，分类的内容，是和此有一定关联。</p>
+
+<p>对于模型的构建，方式有很多，贝叶斯网络，逻辑回归模型，svm模型，甚至是神经网络模型都可以对此进行建模使用，但是哪个性能更好呢？不知道，只有分别做出之后
+比较才可以说明问题。</p>
+
+<!-- more -->
+
+<h4 id="svm">非线性SVM</h4>
+
+<p>前面的blog有讲到线性svm，对于非线性分类器就要把x映射到特征空间,同时考虑误差ε的存在（即有些样本点会越过分类边界），上述优化问题变为：、</p>
+
+<script type="math/tex; mode=display">
+\min { \quad \frac { 1 }{ 2 } \left\| w \right\| ^{ 2 }+c\sum _{ i=1 }^{ l }{ { \xi  }_{ i } }  } \\ st.\quad y_{ i }(\omega ^{ T }\phi (x_i)-b)\ge 1-\xi _{ i },\left( \xi _{ i }>0 \right) 
+</script>
+
+<p>从输入空间是映射到特征空间的函数称为核函数，LibSVM中使用的默认核函数是RBF（径向基函数radial basis function），即</p>
+
+<script type="math/tex; mode=display">
+K(x,y)=exp{ \left( \frac { -\left\| x-y \right\| ^{ 2 } }{ 2\sigma ^{ 2 } }  \right)  }
+</script>
+
+<p>这样一来就有两个参数需要用户指定：c和gamma。实际上在LibSVM中用户需要给出一个c和gamma的区间，
+LibSVM采用交叉验证cross-validation accuracy的方法确定分类效果最好的c和gamma。</p>
+
+<p>举个例子说明什么是交叉验证，假如把训练样本集拆成三组，然后先拿 1 跟 2 来 train model 并 predict 3 以得到正确率；
+再来拿 2 跟 3 train 并 predict 1 ，最后 1,3 train 并 predict 2 ，最后取预测精度最高的那组c和gamma。</p>
+
+<h4 id="libsvm">libsvm</h4>
+
+<p>点击<a href="http://www.csie.ntu.edu.tw/~cjlin/cgi-bin/libsvm.cgi?+http://www.csie.ntu.edu.tw/~cjlin/libsvm+tar.gz">here</a>下载libsvm.</p>
+
+<p>看readme即可使用了。</p>
+
+<p>LibSVM要求处理的文件数据都满足如下格式：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">rlabel1 index1:value1   index2:value2   …...
+</span><span class="line">rlabel2 index1:value1   index2:value2   …...
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>rlabel表示分类，为一个数字。Index从1开始递增，表示输入向量的序号，value是输入向量相应维度上的值，如果value为0,该项可以不写。下面是一个示例文件：</p>
+
+<p>目前简单的分类所使用的属性有：年龄WOE   类型WOE   信用卡邮箱授权WOE  搜多引擎返回数WOE  贴吧搜索返回数WOE  微博数WOE  活跃度WOE  淘友朋友WOE 人人看过的人数WOE  好友数WOE  微博注册时间WOE
+预测值为还款情况（还款1，逾期0）</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">0 1:0.010003 2:-0.10524 3:0.131117521 4:0.061095504 5:0.029130009 6:-0.178635093 7:-0.149465309 8:-0.03275873 9:-0.047039163 10:-0.047039163 11:-0.158328769
+</span><span class="line">0 1:0.010003 2:-0.10524 3:0.131117521 4:-0.025995297 5:-0.051360537 6:-0.090148625 7:-0.149465309 8:-0.005168969 9:0.000132475 10:-0.050262447 11:-0.158328769
+</span><span class="line">0 1:-0.08606 2:-0.10524 3:0.131117521 4:-0.163782716 5:-0.051360537 6:-0.178635093 7:-0.149465309 8:-0.03275873 9:-0.047039163 10:-0.047039163 11:-0.158328769
+</span><span class="line">0 1:-0.21088 2:0.009167 3:0.131117521 4:0.061095504 5:0.029130009 6:-0.090148625 7:-0.129577755 8:-0.03275873 9:0.000132475 10:-0.050262447 11:-0.226676962
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>svm_scale用于把输入向量按列进行规范化（或曰缩放）。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">Usage: svm-scale <span class="o">[</span>options<span class="o">]</span> data_filename
+</span><span class="line">options:
+</span><span class="line">-l lower : x scaling lower limit <span class="o">(</span>default -1<span class="o">)</span>
+</span><span class="line">-u upper : x scaling upper limit <span class="o">(</span>default +1<span class="o">)</span>
+</span><span class="line">-y y_lower y_upper : y scaling limits <span class="o">(</span>default: no y scaling<span class="o">)</span>
+</span><span class="line">-s save_filename : save scaling parameters to save_filename
+</span><span class="line">-r restore_filename : restore scaling parameters from restore_filename
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>例如： <code>svm_scale -l 0 -u 1 -s range trainSet &gt; trainSet.scale</code>则输入文件是trainSet，输出文件是trainSet.scale，把输入向量的各列都缩放到[0，1]的范围内，range文件中保存了相关的缩放信息。</p>
+
+<p>这个时候我们应该把训练集分为两部分，训练集和测试集，在训练集上通过交叉验证学到最佳的参数，然后在测试集上验证。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nv">$python</span> subset.py
+</span><span class="line">Usage: subset.py <span class="o">[</span>options<span class="o">]</span> dataset number <span class="o">[</span>output1<span class="o">]</span> <span class="o">[</span>output2<span class="o">]</span>
+</span><span class="line">This script selects a subset of the given data set.
+</span><span class="line">options:
+</span><span class="line">-s method : method of selection <span class="o">(</span>default 0<span class="o">)</span>
+</span><span class="line">
+</span><span class="line">     0 -- stratified selection <span class="o">(</span>classification only<span class="o">)</span>
+</span><span class="line">
+</span><span class="line">     1 -- random selection
+</span><span class="line">
+</span><span class="line">output1 : the subset <span class="o">(</span>optional<span class="o">)</span>
+</span><span class="line">
+</span><span class="line">output2 : the rest of data <span class="o">(</span>optional<span class="o">)</span>
+</span><span class="line">
+</span><span class="line">If output1 is omitted, the subset will be printed on the screen.
+</span><span class="line">
+</span><span class="line"><span class="nv">$python</span> subset.py trainSet 0.3*m<span class="o">(</span>实例个数<span class="o">)</span> trainSet.data testSet.data
+</span><span class="line"><span class="nv">$ </span>./tools/subset.py ./trainningset.txt 280 testSet trainSet
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>grid.py是一种用于RBF核函数的C-SVM分类的参数选择程序。用户只需给定参数的一个范围，grid.py采用交叉验证的方法计算每种参数组合的准确度来找到最好的参数。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">python</span> <span class="n">grid</span><span class="o">.</span><span class="n">py</span>
+</span><span class="line"><span class="n">Usage</span><span class="p">:</span> <span class="n">grid</span><span class="o">.</span><span class="n">py</span> <span class="p">[</span><span class="o">-</span><span class="n">log2c</span> <span class="n">begin</span><span class="p">,</span><span class="n">end</span><span class="p">,</span><span class="n">step</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">log2g</span> <span class="n">begin</span><span class="p">,</span><span class="n">end</span><span class="p">,</span><span class="n">step</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span> <span class="n">fold</span><span class="p">]</span>
+</span><span class="line">       <span class="p">[</span><span class="o">-</span><span class="n">svmtrain</span> <span class="n">pathname</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">gnuplot</span> <span class="n">pathname</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">out</span> <span class="n">pathname</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">png</span> <span class="n">pathname</span><span class="p">]</span>
+</span><span class="line">       <span class="p">[</span><span class="n">additional</span> <span class="n">parameters</span> <span class="k">for</span> <span class="n">svm</span><span class="o">-</span><span class="n">train</span><span class="p">]</span> <span class="n">dataset</span>
+</span><span class="line"><span class="n">The</span> <span class="n">program</span> <span class="n">conducts</span> <span class="n">v</span><span class="o">-</span><span class="n">fold</span> <span class="n">cross</span> <span class="n">validation</span> <span class="n">using</span> <span class="n">parameter</span> <span class="n">C</span> <span class="p">(</span><span class="ow">and</span> <span class="n">gamma</span><span class="p">)</span><span class="o">=</span> <span class="mi">2</span><span class="o">^</span><span class="n">begin</span><span class="p">,</span> <span class="mi">2</span><span class="o">^</span><span class="p">(</span><span class="n">begin</span><span class="o">+</span><span class="n">step</span><span class="p">),</span> <span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="o">^</span><span class="n">end</span><span class="o">.</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>首先<code>sudo apt-get install gnuplot</code></p>
+
+<p>然后编译C++版本的LibSVM，生成svm-train二进制可执行文件。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">python grid.py -log2c -5,5,1 -log2g -4,0,1 -v 5 -svmtrain /path/to/your/svm-train -m 500 trainSet.data <span class="o">(</span>svm-train 的路径自个找好<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>-m 500是使用svm_train时可以使用的参数。
+最后输出两个文件：dataset.png绘出了交叉验证精度的轮廓图，dataset.out对于每一组log2(c)和log2(gamma)对应的CV精度值。</p>
+
+<p>得到c=16，g=1</p>
+
+<p>这个是我实验的截图</p>
+
+<p><img src="https://raw.githubusercontent.com/aluenkinglee/mlclass/master/libsvm-3.18/trainSet.png" alt="实验截图" /></p>
+
+<p>最后来训练我们的模型</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nv">$ </span>./svm_train
+</span><span class="line">
+</span><span class="line">-s svm_type : <span class="nb">set type </span>of SVM <span class="o">(</span>default 0<span class="o">)</span>
+</span><span class="line">0 -- C-SVC
+</span><span class="line">-t kernel_type : <span class="nb">set type </span>of kernel <span class="k">function</span> <span class="o">(</span>default 2<span class="o">)</span>
+</span><span class="line">0 -- linear: u<span class="err">&#39;</span>*v
+</span><span class="line">2 -- radial basis <span class="k">function</span>: exp<span class="o">(</span>-gamma*|u-v|^2<span class="o">)</span>
+</span><span class="line">-g gamma : <span class="nb">set </span>gamma in kernel <span class="k">function</span> <span class="o">(</span>default 1/num_features<span class="o">)</span> num_features是输入向量的个数
+</span><span class="line">-c cost : <span class="nb">set </span>the parameter C of C-SVC, epsilon-SVR, and nu-SVR <span class="o">(</span>default 1<span class="o">)</span>
+</span><span class="line">-m cachesize : <span class="nb">set </span>cache memory size in MB <span class="o">(</span>default 100<span class="o">)</span> 使用多少内存
+</span><span class="line">-e epsilon : <span class="nb">set </span>tolerance of termination criterion <span class="o">(</span>default 0.001<span class="o">)</span>
+</span><span class="line">-h shrinking : whether to use the shrinking heuristics, 0 or 1 <span class="o">(</span>default 1<span class="o">)</span>
+</span><span class="line">-wi weight : <span class="nb">set </span>the parameter C of class i to weight*C, <span class="k">for </span>C-SVC <span class="o">(</span>default 1<span class="o">)</span> 当各类数量不均衡时为每个类分别指定C
+</span><span class="line">-v n: n-fold cross validation mode交叉验证时分为多少组
+</span><span class="line">-q : quiet mode <span class="o">(</span>no outputs<span class="o">)</span>
+</span><span class="line">
+</span><span class="line"><span class="nv">$ </span>svm_train -s 0 -c 16 -t 2 -g 1 -e 0.01 trainSet.scale
+</span><span class="line"><span class="nv">$ </span>./svm-train -s 2 -c 16 -g 1 -v 5 ./trainSet
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>会得到训练结果，然后使用这个模型来预测测试集的数据准确性</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">./svm-predict testSet result
+</span><span class="line">./svm-predict -b 0 testSet trainSet.model  result
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="section">实验结果</h3>
+
+<p>对数据进行格式转换后，首先对数据集进行分割得到训练集和测试集，选择常规比例为6：4</p>
+
+<p>1.一开始未设置最有参数时即C和simga的值时，由训练集得到的模型分类性能在测试集上达到了Accuracy = 79.64285714285714% (223/280)的精度。</p>
+
+<p>2.选择合适的参数。</p>
+
+<p>通过交叉验证方法对模型进行选择得到针对训练集上最优的参数为c=16 g=1</p>
+
+<p>由此得到的训练模型在测试集上的准确率达到了Accuracy = 81.4286% (228/280) (classification)，将近2%的精度提升，也算不错了。</p>
+
+<p>目前由这些属性判断用户的还款情况，准确率在80%左右。但是预测结果全部预测为1.不合理。</p>
+
+<p>实验结果准确率，在指定one-vs-class 之后，准确率为40%。比起逻辑回归模型仍然好点。</p>
+
+<blockquote>
+  <blockquote>
+    <p>Ref</p>
+  </blockquote>
+</blockquote>
+
+<p>数据可以到<a href="https://github.com/aluenkinglee/mlclass/tree/master/libsvm-3.18">这里</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[伪匹配]]></title>
+    <link href="http://aluenkinglee.com/blog/2014/07/09/wei-pi-pei/"/>
+    <updated>2014-07-09T17:13:00+08:00</updated>
+    <id>http://aluenkinglee.com/blog/2014/07/09/wei-pi-pei</id>
+    <content type="html"><![CDATA[<p>这里提到的伪匹配的概念是指在网上搜索某些特征词，比如人名公司手机QQ号等内容时，网页反馈的结果：重要关键词在人看来是逻辑没有关联的时候就是伪匹配。</p>
+
+<p>比如说，某XX，公司名，地点很明显的构成一个记录的时候，在人看来是个写在一起的，那么结果就是匹配的。相反，要是搜索词相距很远，那么就是伪匹配。</p>
+
+<p>那么好，人工审核此类内容是否匹配时，是个无聊枯燥的工作内容，那么只好找机器帮忙，思路也很简单，分析样本伪匹配的原因是什么？和网页文档有什么不同？</p>
+
+<p>对目标网页的分析可以发现，搜索词在目标网页中有时是结构化存在的，就是搜索词处在不同的节点中，节点关系为树中的关系，或者是兄弟关系，或者是父子关系。
+同时还有非结构化的内容，比如搜索词是在同一个节点中，此时就不存在上述判断关系，只能由另外一种关系来处理。
+<!-- more -->
+接着说，当是结构化的关系的时候，从我们人的观点来看，他们应该是兄弟节点，相邻很近，或者用另外一个距离：节点到最近祖先再到另外一个节点的距离。此距离也是很近的。</p>
+
+<p>当时非结构话的关系时，他们是在用一语意范围内，所以字符距离很近。</p>
+
+<p>OK，有了上面的思路，我们所做的就是分析统计目标网页的结构，然后查看具体指标的范围。</p>
+
+<p>首先看如何区分是否结构化，这个可以依靠text的长度来判断（这是分析后发现的）。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="octave"><span class="line"><span class="n">x1</span><span class="p">=[</span>54<span class="p">,</span>161<span class="p">,</span>70<span class="p">,</span>65<span class="p">,</span>66<span class="p">,</span>3369<span class="p">,</span>101<span class="p">,</span>50<span class="p">,</span>167<span class="p">];</span>
+</span><span class="line"><span class="n">y1</span><span class="p">=[</span>1<span class="p">,</span>1<span class="p">,</span>1<span class="p">,</span>1<span class="p">,</span>1<span class="p">,</span>1<span class="p">,</span>1<span class="p">,</span>1<span class="p">,</span>1<span class="p">];</span>
+</span><span class="line"><span class="n">x2</span><span class="p">=[</span>114265<span class="p">,</span>89406<span class="p">,</span>137824<span class="p">,</span>11300<span class="p">,</span>14001<span class="p">,</span>54575<span class="p">,</span>108596<span class="p">,</span>78197<span class="p">,</span>67810<span class="p">,</span>11948<span class="p">,</span>8660<span class="p">,</span>2677<span class="p">,</span>103724<span class="p">,</span>8686<span class="p">];</span>
+</span><span class="line"><span class="n">y2</span><span class="p">=[</span>0 0 0 0 0 0 0 0 0 0 0 0 0 0<span class="p">];</span>
+</span><span class="line"><span class="nb">figure</span> <span class="p">;</span>
+</span><span class="line"><span class="nb">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">y1</span><span class="p">,</span><span class="s">&#39;rx&#39;</span><span class="p">,</span><span class="s">&#39;MarkerSize&#39;</span><span class="p">,</span>10<span class="p">);</span>
+</span><span class="line"><span class="nb">hold</span> <span class="n">on</span><span class="p">;</span>
+</span><span class="line"><span class="nb">plot</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span><span class="n">y2</span><span class="p">,</span><span class="s">&#39;bo&#39;</span><span class="p">,</span><span class="s">&#39;MarkerSize&#39;</span><span class="p">,</span>10<span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>数据是分析后得到的。</p>
+
+<p>分布图如下：</p>
+
+<p><img src="https://raw.githubusercontent.com/aluenkinglee/aluenkinglee.github.io/source/source/images/2014-07-09-wei-pi-pei/false%20match1.png" alt="是否结构化与最长文本长度分布图" title="是否结构化与最长文本长度分布图" /></p>
+
+<p>从图形分界出来看，max(x1)=3369,min(x2)=2677,这个cutoff可以选取2677～3369之间的长度即可。</p>
+
+<p>代码如下,摘选了函数的一部分，url是函数的形参。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line">    <span class="k">try</span> <span class="o">{</span>
+</span><span class="line">        <span class="n">Document</span> <span class="n">doc</span> <span class="o">=</span> <span class="n">Jsoup</span><span class="o">.</span><span class="na">connect</span><span class="o">(</span><span class="n">url</span><span class="o">).</span><span class="na">get</span><span class="o">();</span>
+</span><span class="line">        <span class="n">Vector</span><span class="o">&lt;</span><span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Vector</span><span class="o">&lt;</span><span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;&gt;();</span>
+</span><span class="line">        <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;</span> <span class="n">tagCount</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;();</span>
+</span><span class="line">        <span class="n">Map</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;</span> <span class="n">lenCount</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;();</span>
+</span><span class="line">        <span class="n">Elements</span> <span class="n">content</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="na">getAllElements</span><span class="o">();</span>
+</span><span class="line">        <span class="kt">int</span> <span class="n">max</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class="line">        <span class="n">String</span> <span class="n">tag</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span><span class="line">        <span class="k">for</span> <span class="o">(</span><span class="n">Element</span> <span class="n">e</span> <span class="o">:</span> <span class="n">content</span><span class="o">)</span> <span class="o">{</span><span class="c1">// 此处就是遍历了</span>
+</span><span class="line">            <span class="k">if</span> <span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">ownText</span><span class="o">().</span><span class="na">length</span><span class="o">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">                <span class="n">String</span> <span class="n">key</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">nodeName</span><span class="o">();</span>
+</span><span class="line">                <span class="kt">int</span> <span class="n">len</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">ownText</span><span class="o">().</span><span class="na">length</span><span class="o">();</span>
+</span><span class="line">                <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;</span> <span class="n">ins</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
+</span><span class="line">                <span class="n">ins</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">len</span><span class="o">);</span>
+</span><span class="line">                <span class="n">map</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">ins</span><span class="o">);</span>
+</span><span class="line">                <span class="k">if</span> <span class="o">(</span><span class="n">len</span> <span class="o">&gt;</span> <span class="n">max</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">                    <span class="n">max</span> <span class="o">=</span> <span class="n">len</span><span class="o">;</span>
+</span><span class="line">                    <span class="n">tag</span> <span class="o">=</span> <span class="n">key</span><span class="o">;</span>
+</span><span class="line">                <span class="o">}</span>
+</span><span class="line">                <span class="k">if</span> <span class="o">(</span><span class="n">lenCount</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="n">len</span><span class="o">))</span> <span class="o">{</span>
+</span><span class="line">                    <span class="n">lenCount</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">len</span><span class="o">,</span> <span class="n">lenCount</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">len</span><span class="o">)</span> <span class="o">+</span> <span class="mi">1</span><span class="o">);</span>
+</span><span class="line">                <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class="line">                    <span class="n">lenCount</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">len</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
+</span><span class="line">                <span class="o">}</span>
+</span><span class="line">                <span class="k">if</span> <span class="o">(</span><span class="n">tagCount</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="n">key</span><span class="o">))</span> <span class="o">{</span>
+</span><span class="line">                    <span class="n">tagCount</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">tagCount</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">key</span><span class="o">)</span> <span class="o">+</span> <span class="mi">1</span><span class="o">);</span>
+</span><span class="line">                <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class="line">                    <span class="n">tagCount</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
+</span><span class="line">                <span class="o">}</span>
+</span><span class="line">            <span class="o">}</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">map</span><span class="o">);</span>
+</span><span class="line">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">tagCount</span><span class="o">);</span>
+</span><span class="line">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">lenCount</span><span class="o">);</span>
+</span><span class="line">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">tag</span> <span class="o">+</span> <span class="s">&quot;:&quot;</span> <span class="o">+</span> <span class="n">max</span><span class="o">);</span>
+</span><span class="line">
+</span><span class="line">    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="c1">// TODO Auto-generated catch block</span>
+</span><span class="line">        <span class="c1">// e.printStackTrace();</span>
+</span><span class="line">    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>接着在做搜索节点的距离值的分布，一个搜索词可以会出现在不同的位置，既然搜索词之间有关联效应，那么，即使出现位置很多，
+也会有不同的搜索词因为语意关联的缘故，他们的节点距离是很近的，照这个思路，有了以下的分布图。</p>
+
+<p>网页结构化中伪匹配,节点距离兄弟距离的分布图图示如下：</p>
+
+<p><img src="https://raw.githubusercontent.com/aluenkinglee/aluenkinglee.github.io/source/source/images/2014-07-09-wei-pi-pei/false%20match3.png" alt="网页结构化中伪匹配节点距离兄弟距离的分布图" title="网页结构化中伪匹配节点距离兄弟距离的分布图" /></p>
+
+<p>这个尾部节点兄弟距离太大了，一定是伪匹配的的，看数据较小的距离分布。</p>
+
+<p><img src="https://raw.githubusercontent.com/aluenkinglee/aluenkinglee.github.io/source/source/images/2014-07-09-wei-pi-pei/false%20match4.png" alt="网页结构化中伪匹配节点距离兄弟距离的分布图" title="网页结构化中伪匹配节点距离兄弟距离的分布图" /></p>
+
+<p>从图可以看出，节点距离和伪匹配的关系不大，主要是兄弟距离起作用。</p>
+
+<p>而兄弟距离于未匹配的分布图：</p>
+
+<p><img src="https://raw.githubusercontent.com/aluenkinglee/aluenkinglee.github.io/source/source/images/2014-07-09-wei-pi-pei/false%20match5.png" alt="兄弟距离于未匹配的分布图" title="兄弟距离于未匹配的分布图" /></p>
+
+<p>各个距离的直方图如下：</p>
+
+<p><img src="https://raw.githubusercontent.com/aluenkinglee/aluenkinglee.github.io/source/source/images/2014-07-09-wei-pi-pei/false%20match6.png" alt="兄弟距离于未匹配的直方图" title="兄弟距离于未匹配的直方图" /></p>
+
+<p>其中X轴是兄弟距离长度，y是个数。范围值可以选在3-28之间。</p>
+
+<p>而在无结构中，搜索词的语意判断就是文本距离，搜索词的下标靠的很近。图示如下：</p>
+
+<p><img src="https://raw.githubusercontent.com/aluenkinglee/aluenkinglee.github.io/source/source/images/2014-07-09-wei-pi-pei/false%20match2.png" alt="间隔分布图" title="间隔分布图" /></p>
+
+<p>文本长度的数据（取一个网页中搜索词之间距离的最小值）为<code>4 13 25 58 89 102 249 893 1356 2000 2445 3023 4243 12533 13234
+</code>
+,从这个可以看出，距离很大的肯定就是伪匹配了，最小值的这个不确定。</p>
+
+<p>完整代码请看<a href="https://github.com/aluenkinglee/stuff/tree/master/java/match">这里</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[朴素贝叶斯文本分类]]></title>
+    <link href="http://aluenkinglee.com/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/"/>
+    <updated>2014-06-27T13:11:00+08:00</updated>
+    <id>http://aluenkinglee.com/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei</id>
+    <content type="html"><![CDATA[<p>回顾朴素贝叶斯(NB)分类器:</p>
+
+<script type="math/tex; mode=display">
+p(y_k|x)=\frac{p(y_k)p(x|y_k)}{p(x)}\propto p(y_k)p(x|y_k)=p(y_k)\prod_{i=1}^{d}{p(x_i|y_k)}
+</script>
+
+<p>对于文本分类任务,即对一篇文章进行分类,是 NLP 中最常见的机器学习任务。一般情
+况下,类别从几个到几十不等,或者更多。使用朴素贝叶斯文分类器进行文本分类,我们需要首先考
+虑特征是什么,即x如何表示;<script type="math/tex">p(x_i|y_k )</script>的物理意义是什么,如何计算。
+对于特征方面,文本分类常规都是使用 bag-of-words 的特征,即以文章中出现的词作为
+特征,而不考虑词语出现的顺序。朴素贝叶斯文分类器也一般使用这种形式。那么特征空间的大小,
+就取决于词表(vocabulary)的大小,即语料集合中不重复词的个数。对于汉语来说,一般
+几万到百万不等。</p>
+
+<p>在 bag-of-words 的特征体系下,特征空间是确定了的,但是具体<script type="math/tex">x_i</script>的取值以及对应的
+<script type="math/tex">p(x_i |y_k )</script>的物理意义却可以有不同的考虑,对应着不同的参数计算公式及分类器训练和预测
+的实现。这取决于我们是否考虑词语在文章中出现的频次。</p>
+
+<!-- more -->
+
+<h4 id="bernoullinb">伯努力(Bernoulli)NB</h4>
+
+<p>先看不考虑词频的情况。即只看某词语在某文章中是否出现,而不管出现了具体是多少次。
+这种假设下,
+每维特征的取值为 0-1,此时对应的 NB 分类器又被称为伯努力(Bernoulli)NB 分类器。
+比如,如果词表是{2014、年、巴西、世界杯、足球赛、举行、是、第、20、届、球队},
+某文档是“2014 年巴西世界杯足球赛是第 20 届世界杯足球赛 ”,那么特征空间是 11,该文档
+特征向量是:</p>
+
+<script type="math/tex; mode=display">
+x = (1,1,1,1,1,0,1,1,1,1,0)
+</script>
+
+<p>此时,<script type="math/tex">p(x_i|y_k)</script>的物理意义可认为是:若文章为 k 类别,则第 i 特征(词表第 i 个词)出
+现或者不出现的概率。那么:</p>
+
+<script type="math/tex; mode=display">
+p(x_i = 0|y_k ) = 1 − p(x_i = 1|y_k)
+</script>
+
+<p>习惯的,我们经常用<script type="math/tex">p(x_i |y_k )</script>来作为<script type="math/tex">p(x_i = 1|y_k)</script>同等含义的一种表示。那此时,原NB
+模型的表达式可以写为:</p>
+
+<script type="math/tex; mode=display">
+p\left( { { y }_{ k } }|{ x } \right) \propto 
+p\left( { y }_{ k } \right) \prod _{ i=1 }^{ d }{ \left\{ { \alpha  }_{ i }p\left( { { x }_{ i } }|{ { y }_{ k } } \right) 
++\left( 1-{ \alpha  }_{ i } \right) \left( 1-p\left( { { x }_{ i } }|{ { y }_{ k } } \right)  \right)  \right\}  } 
+</script>
+
+<p><script type="math/tex">\alpha_i</script> 表示第 i 个词在该文档中出现了,没出现则为0.
+此时要非常注意,计算文章属于某个类别的得分的时候,不只要考虑该文章的 word,
+还要考虑在词表中的但是在该文章中没出现的 word!这类词对得分的贡献是<script type="math/tex">1 − p(x_i |y_k )</script>。
+因此伯努力 NB 下,分类的时间复杂度是 <script type="math/tex">O(Cd)</script>,C 是类别数,d 是词表大小。</p>
+
+<p>那么伯努力 NB 下,p的参数估计表达式是多少呢?假设根据如上定义,及最大似然估
+计,可以得到:</p>
+
+<script type="math/tex; mode=display">
+p\left( { { x }_{ i } }|{ { y }_{ k } } \right) 
+=\frac { \sum _{ t=1 }^{ n }{ I\left\{ y_{ k }={ y }_{t } \right\} I\{ x_{ i }\quad in\quad y_{ t }\}  }  }{ \sum _{ t=1 }^{ t }{ I\left\{ y_{ k }={ y }_{ t } \right\}  }  }
+=\frac { 特征词i在第k类文章中出现的文章数 }{ 第k类文章数 } 
+</script>
+
+<p>其中函数I是指示函数，若x出现则值为1。可见,对于高频词,对应的这种条件概率是非常高的。 比如“的”(假设没去除停用词),其对应的条件概率值很可能会接近于 1.</p>
+
+<p>再重复强调一下,此时的概率意义约束是:</p>
+
+<script type="math/tex; mode=display">
+p(x_i = 1|y_k) + p(x_i = 0|y_k ) = 1
+</script>
+
+<p>看一下伯努力 NB 下参数平滑的问题。使用加 1 平滑,即拉普拉斯平滑,此时在保证概
+率意义下,其平滑公式应该为:</p>
+
+<script type="math/tex; mode=display">
+p(x_i |y_k ) = \frac{第 k 类文章中出现过第 i 词的文章数 + 1}{第k类文章数 + 2}
+</script>
+
+<p>提醒一下,此处分母加的值是 2,而不是词表大小。注意,平滑一定要使得平滑之后仍
+满足概率意义。</p>
+
+<h4 id="multinomialnb">多项式(Multinomial)NB</h4>
+
+<p>当我们考虑文章内词语的频次,而不只是考虑出现或未出现,此时特征的取值不再
+是 0-1,不过总的特征空间大小仍未变化。拿前面的例子来做对照,词表是{2014、年、
+巴西、世界杯、足球赛、举行、是、第、20、届、球队},某文档是“2014 年巴西世界
+杯足球赛是第 20 届世界杯足球赛”,此时该文章的特征向量为:</p>
+
+<script type="math/tex; mode=display">
+x = (1,1,1,2,2,0,1,1,1,1,0)
+</script>
+
+<p>此时对应的 NB 一般称为多项式 NB。设 m 为文章内的总词频数,对应的模型表达
+式应该如下:</p>
+
+<script type="math/tex; mode=display">
+p(y_k|x)∝p(y_k)p(x|y_k)=p(y_k)
+\frac{m!}{\prod_{i=1}^{d} x_i!}
+\prod_{i=1}^{d}p(w_i|y_k)^{x_i}
+∝p(y_k)\prod_{i=1}^{d}p(w_i|y_k)^{x_i}
+</script>
+
+<p>之所以可以省掉这个多项式系数,是因为它是和类别<script type="math/tex">y_k</script>无关的。而此时,第 k 类别的所有文章中第 i 词的分布概率:</p>
+
+<script type="math/tex; mode=display">
+p\left( { { w }_{ i } }|{ { y }_{ k } } \right)
+ =\frac { \sum _{ t=1 }^{ n }{ I\left\{ y_{ k }={ y }_{ t } \right\} x_{ i }^{ t } }  }
+{ \sum _{ j=1 }^{ d }{ \sum _{ t=1 }^{ n }{ I\left\{ y_{ k }={ y }_{ t } \right\} x_{ i }^{ t } }  }  } 
+=\frac { 特征词i在第k类文章中出现的总词频数 }{ 第k文章总词频数 } 
+</script>
+
+<p>在多项式NB下,即使极高频词,其
+<script type="math/tex">p(w_i|y_k)</script>也很难接近于 1,
+另外其在模型中作用的时候是:<script type="math/tex">p(w_i|y_k)^{x_i}</script>.这时候的概率约束是:</p>
+
+<script type="math/tex; mode=display">
+\sum_{i=1}^{d}p(w_i|y_k)=1
+</script>
+
+<p>因此对应的加 1 平滑为:</p>
+
+<script type="math/tex; mode=display">
+p\left( { { w }_{ i } }|{ { y }_{ k } } \right) =\frac { \sum _{ t=1 }^{ n }{ I\left\{ y_{ k }={ y }_{ t } \right\} x_{ i }^{ t } } +1 }
+{ \sum _{ j=1 }^{ d }{ \sum _{ t=1 }^{ n }{ I\left\{ y_{ k }={ y }_{ t } \right\} x_{ i }^{ t } }  }  +d} 
+</script>
+
+<p>注意事项：</p>
+
+<ul>
+  <li>
+    <p>训练时候对于词语平铺的文本,应该要做词的聚合,即行程 bag-of-words 的形式比较有利于后续统计计算,特别是对于伯努利 NB 必须做去重。当然,对于
+多项式 NB,也可以顺次扫描累加。</p>
+  </li>
+  <li>
+    <p>预测时候的概率连乘,为了防止精度损失,可以改用取 log 相加。</p>
+  </li>
+  <li>
+    <p>对于短一些的文本,伯努利 NB 即可;对于长文本,考虑词频的多项式 NB 即
+可。当然也可以使用 tf-idf 等特征值,仿照多项式 NB 的形式。</p>
+  </li>
+  <li>
+    <p>预测时候,对于词表中出现但是本文章未出现的词语,伯努利 NB 下对得分有
+贡献,多项式 NB 下不用考虑;对于在词表中未出现的词,都可以不予以考虑,
+因为未登录词对各个类别的贡献是一样的。</p>
+  </li>
+</ul>
+
+<h4 id="section">实验</h4>
+
+<p>关于实验数据，可以到<a href="https://github.com/aluenkinglee/mlclass/tree/master/NativeBayes">这里</a>下载，训练集和测试集都已经很明白
+总量在4000-的水平，result.dat是训练结果，可以看到测试集在训练数据的结果上准确率达到了100%。。这个是因为类别太少的缘故。只有3个类别，不过这个已经
+可以看到朴素贝叶斯在工业界的应用可以达到较好的性能。</p>
+
+<p>朴素贝叶斯分类器代码：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+<span class="line-number">53</span>
+<span class="line-number">54</span>
+<span class="line-number">55</span>
+<span class="line-number">56</span>
+<span class="line-number">57</span>
+<span class="line-number">58</span>
+<span class="line-number">59</span>
+<span class="line-number">60</span>
+<span class="line-number">61</span>
+<span class="line-number">62</span>
+<span class="line-number">63</span>
+<span class="line-number">64</span>
+<span class="line-number">65</span>
+<span class="line-number">66</span>
+<span class="line-number">67</span>
+<span class="line-number">68</span>
+<span class="line-number">69</span>
+<span class="line-number">70</span>
+<span class="line-number">71</span>
+<span class="line-number">72</span>
+<span class="line-number">73</span>
+<span class="line-number">74</span>
+<span class="line-number">75</span>
+<span class="line-number">76</span>
+<span class="line-number">77</span>
+<span class="line-number">78</span>
+<span class="line-number">79</span>
+<span class="line-number">80</span>
+<span class="line-number">81</span>
+<span class="line-number">82</span>
+<span class="line-number">83</span>
+<span class="line-number">84</span>
+<span class="line-number">85</span>
+<span class="line-number">86</span>
+<span class="line-number">87</span>
+<span class="line-number">88</span>
+<span class="line-number">89</span>
+<span class="line-number">90</span>
+<span class="line-number">91</span>
+<span class="line-number">92</span>
+<span class="line-number">93</span>
+<span class="line-number">94</span>
+<span class="line-number">95</span>
+<span class="line-number">96</span>
+<span class="line-number">97</span>
+<span class="line-number">98</span>
+<span class="line-number">99</span>
+<span class="line-number">100</span>
+<span class="line-number">101</span>
+<span class="line-number">102</span>
+<span class="line-number">103</span>
+<span class="line-number">104</span>
+<span class="line-number">105</span>
+<span class="line-number">106</span>
+<span class="line-number">107</span>
+<span class="line-number">108</span>
+<span class="line-number">109</span>
+<span class="line-number">110</span>
+<span class="line-number">111</span>
+<span class="line-number">112</span>
+<span class="line-number">113</span>
+<span class="line-number">114</span>
+<span class="line-number">115</span>
+<span class="line-number">116</span>
+<span class="line-number">117</span>
+<span class="line-number">118</span>
+<span class="line-number">119</span>
+<span class="line-number">120</span>
+<span class="line-number">121</span>
+<span class="line-number">122</span>
+<span class="line-number">123</span>
+<span class="line-number">124</span>
+<span class="line-number">125</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="cm">/**</span>
+</span><span class="line"><span class="cm">     * 训练目录下的样本集合</span>
+</span><span class="line"><span class="cm">     * </span>
+</span><span class="line"><span class="cm">     * @throws IOException</span>
+</span><span class="line"><span class="cm">     */</span>
+</span><span class="line">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">trainSamples</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+</span><span class="line">        <span class="n">NaiveBayes</span> <span class="n">classifier</span> <span class="o">=</span> <span class="k">new</span> <span class="n">NaiveBayes</span><span class="o">();</span>
+</span><span class="line">        <span class="n">File</span> <span class="n">flist</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">&quot;./data-trainning-set&quot;</span><span class="o">);</span>
+</span><span class="line">        <span class="k">for</span> <span class="o">(</span><span class="n">File</span> <span class="n">f</span> <span class="o">:</span> <span class="n">flist</span><span class="o">.</span><span class="na">listFiles</span><span class="o">())</span> <span class="o">{</span>
+</span><span class="line">            <span class="n">classifier</span><span class="o">.</span><span class="na">training</span><span class="o">(</span><span class="k">new</span> <span class="n">Instance</span><span class="o">(</span><span class="n">f</span><span class="o">));</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">        <span class="n">classifier</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">&quot;result.dat&quot;</span><span class="o">));</span>
+</span><span class="line">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Trainning finished&quot;</span><span class="o">);</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="cm">/**</span>
+</span><span class="line"><span class="cm">     * specify the training dataset directory, and store result in the outfile</span>
+</span><span class="line"><span class="cm">     * </span>
+</span><span class="line"><span class="cm">     * @param directory</span>
+</span><span class="line"><span class="cm">     * @param result</span>
+</span><span class="line"><span class="cm">     * @throws IOException</span>
+</span><span class="line"><span class="cm">     */</span>
+</span><span class="line">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">trainSamples</span><span class="o">(</span><span class="n">String</span> <span class="n">directory</span><span class="o">,</span> <span class="n">String</span> <span class="n">outfile</span><span class="o">)</span>
+</span><span class="line">            <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+</span><span class="line">        <span class="n">NaiveBayes</span> <span class="n">classifier</span> <span class="o">=</span> <span class="k">new</span> <span class="n">NaiveBayes</span><span class="o">();</span>
+</span><span class="line">        <span class="n">File</span> <span class="n">flist</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">directory</span><span class="o">);</span>
+</span><span class="line">        <span class="k">for</span> <span class="o">(</span><span class="n">File</span> <span class="n">f</span> <span class="o">:</span> <span class="n">flist</span><span class="o">.</span><span class="na">listFiles</span><span class="o">())</span> <span class="o">{</span>
+</span><span class="line">            <span class="n">classifier</span><span class="o">.</span><span class="na">training</span><span class="o">(</span><span class="k">new</span> <span class="n">Instance</span><span class="o">(</span><span class="n">f</span><span class="o">));</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">        <span class="n">classifier</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">outfile</span><span class="o">));</span>
+</span><span class="line">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Trainning finished&quot;</span><span class="o">);</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="cm">/**</span>
+</span><span class="line"><span class="cm">     * 判断该实例所属的类别category</span>
+</span><span class="line"><span class="cm">     * </span>
+</span><span class="line"><span class="cm">     * @param doc</span>
+</span><span class="line"><span class="cm">     * @return</span>
+</span><span class="line"><span class="cm">     */</span>
+</span><span class="line">    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getCategory</span><span class="o">(</span><span class="n">Instance</span> <span class="n">doc</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="n">Collection</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">categories</span> <span class="o">=</span> <span class="n">VARIABLE</span><span class="o">.</span><span class="na">getCategories</span><span class="o">();</span>
+</span><span class="line">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">categories</span><span class="o">);</span>
+</span><span class="line">        <span class="kt">double</span> <span class="n">best</span> <span class="o">=</span> <span class="n">Double</span><span class="o">.</span><span class="na">NEGATIVE_INFINITY</span><span class="o">;</span>
+</span><span class="line">        <span class="n">String</span> <span class="n">bestName</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span><span class="line">        <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">c</span> <span class="o">:</span> <span class="n">categories</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">            <span class="kt">double</span> <span class="n">current</span> <span class="o">=</span> <span class="n">getProbability</span><span class="o">(</span><span class="n">c</span><span class="o">,</span> <span class="n">doc</span><span class="o">);</span>
+</span><span class="line">            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">c</span> <span class="o">+</span> <span class="s">&quot;:&quot;</span> <span class="o">+</span> <span class="n">current</span><span class="o">);</span>
+</span><span class="line">            <span class="k">if</span> <span class="o">(</span><span class="n">best</span> <span class="o">&lt;</span> <span class="n">current</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">                <span class="n">best</span> <span class="o">=</span> <span class="n">current</span><span class="o">;</span>
+</span><span class="line">                <span class="n">bestName</span> <span class="o">=</span> <span class="n">c</span><span class="o">;</span>
+</span><span class="line">            <span class="o">}</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">bestName</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="cm">/**</span>
+</span><span class="line"><span class="cm">     * 计算P（C)=该类型文档总数/文档总数，返回的数对数值</span>
+</span><span class="line"><span class="cm">     * </span>
+</span><span class="line"><span class="cm">     * @param category</span>
+</span><span class="line"><span class="cm">     * @return</span>
+</span><span class="line"><span class="cm">     */</span>
+</span><span class="line">    <span class="kd">public</span> <span class="kt">double</span> <span class="nf">getCategoryProbability</span><span class="o">(</span><span class="n">String</span> <span class="n">category</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">Math</span><span class="o">.</span><span class="na">log</span><span class="o">(</span><span class="n">VARIABLE</span><span class="o">.</span><span class="na">getDocCount</span><span class="o">(</span><span class="n">category</span><span class="o">)</span> <span class="o">*</span> <span class="mf">1.0f</span>
+</span><span class="line">                <span class="o">/</span> <span class="n">VARIABLE</span><span class="o">.</span><span class="na">getDocCount</span><span class="o">());</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="cm">/**</span>
+</span><span class="line"><span class="cm">     * 计算P(feature|cateogry),返回的是取对数后的数值</span>
+</span><span class="line"><span class="cm">     * </span>
+</span><span class="line"><span class="cm">     * @param feature</span>
+</span><span class="line"><span class="cm">     * @param category</span>
+</span><span class="line"><span class="cm">     * @return</span>
+</span><span class="line"><span class="cm">     */</span>
+</span><span class="line">    <span class="kd">public</span> <span class="kt">double</span> <span class="nf">getFeatureProbability</span><span class="o">(</span><span class="n">String</span> <span class="n">feature</span><span class="o">,</span> <span class="n">String</span> <span class="n">category</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="kt">int</span> <span class="n">m</span> <span class="o">=</span> <span class="n">VARIABLE</span><span class="o">.</span><span class="na">getFeatureCount</span><span class="o">();</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">Math</span><span class="o">.</span><span class="na">log</span><span class="o">((</span><span class="n">VARIABLE</span><span class="o">.</span><span class="na">getDocCount</span><span class="o">(</span><span class="n">feature</span><span class="o">,</span> <span class="n">category</span><span class="o">)</span> <span class="o">+</span> <span class="mf">1.0</span><span class="o">)</span>
+</span><span class="line">                <span class="o">/</span> <span class="o">(</span><span class="n">VARIABLE</span><span class="o">.</span><span class="na">getDocCount</span><span class="o">(</span><span class="n">category</span><span class="o">)</span> <span class="o">+</span> <span class="n">m</span><span class="o">));</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="cm">/**</span>
+</span><span class="line"><span class="cm">     * 计算给定实例文档属于指定类别的概率，返回的是取对数后的数值</span>
+</span><span class="line"><span class="cm">     * </span>
+</span><span class="line"><span class="cm">     * @param category</span>
+</span><span class="line"><span class="cm">     * @param doc</span>
+</span><span class="line"><span class="cm">     * @return</span>
+</span><span class="line"><span class="cm">     */</span>
+</span><span class="line">    <span class="kd">public</span> <span class="kt">double</span> <span class="nf">getProbability</span><span class="o">(</span><span class="n">String</span> <span class="n">category</span><span class="o">,</span> <span class="n">Instance</span> <span class="n">doc</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="kt">double</span> <span class="n">result</span> <span class="o">=</span> <span class="n">getCategoryProbability</span><span class="o">(</span><span class="n">category</span><span class="o">);</span>
+</span><span class="line">        <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">feature</span> <span class="o">:</span> <span class="n">doc</span><span class="o">.</span><span class="na">getWords</span><span class="o">())</span> <span class="o">{</span>
+</span><span class="line">            <span class="k">if</span> <span class="o">(</span><span class="n">VARIABLE</span><span class="o">.</span><span class="na">containFeature</span><span class="o">(</span><span class="n">feature</span><span class="o">))</span> <span class="o">{</span>
+</span><span class="line">                <span class="n">result</span> <span class="o">+=</span> <span class="n">getFeatureProbability</span><span class="o">(</span><span class="n">feature</span><span class="o">,</span> <span class="n">category</span><span class="o">);</span>
+</span><span class="line">            <span class="o">}</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="cm">/**</span>
+</span><span class="line"><span class="cm">     * 加载训练结果</span>
+</span><span class="line"><span class="cm">     * </span>
+</span><span class="line"><span class="cm">     * @param file</span>
+</span><span class="line"><span class="cm">     * @throws IOException</span>
+</span><span class="line"><span class="cm">     */</span>
+</span><span class="line">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">load</span><span class="o">(</span><span class="n">File</span> <span class="n">file</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+</span><span class="line">        <span class="n">DataInputStream</span> <span class="n">in</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DataInputStream</span><span class="o">(</span><span class="k">new</span> <span class="n">FileInputStream</span><span class="o">(</span><span class="n">file</span><span class="o">));</span>
+</span><span class="line">        <span class="n">VARIABLE</span> <span class="o">=</span> <span class="n">Variable</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="n">in</span><span class="o">);</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="cm">/**</span>
+</span><span class="line"><span class="cm">     * 保存训练结果</span>
+</span><span class="line"><span class="cm">     * </span>
+</span><span class="line"><span class="cm">     * @throws IOException</span>
+</span><span class="line"><span class="cm">     */</span>
+</span><span class="line">    <span class="kt">void</span> <span class="nf">save</span><span class="o">(</span><span class="n">File</span> <span class="n">file</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+</span><span class="line">        <span class="n">DataOutput</span> <span class="n">out</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DataOutputStream</span><span class="o">(</span><span class="k">new</span> <span class="n">FileOutputStream</span><span class="o">(</span><span class="n">file</span><span class="o">));</span>
+</span><span class="line">        <span class="n">VARIABLE</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">out</span><span class="o">);</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="cm">/**</span>
+</span><span class="line"><span class="cm">     * 训练一篇文档</span>
+</span><span class="line"><span class="cm">     * </span>
+</span><span class="line"><span class="cm">     * @param doc</span>
+</span><span class="line"><span class="cm">     */</span>
+</span><span class="line">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">training</span><span class="o">(</span><span class="n">Instance</span> <span class="n">doc</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="n">VARIABLE</span><span class="o">.</span><span class="na">addInstance</span><span class="o">(</span><span class="n">doc</span><span class="o">);</span>
+</span><span class="line">    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>特征词类代码：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+<span class="line-number">53</span>
+<span class="line-number">54</span>
+<span class="line-number">55</span>
+<span class="line-number">56</span>
+<span class="line-number">57</span>
+<span class="line-number">58</span>
+<span class="line-number">59</span>
+<span class="line-number">60</span>
+<span class="line-number">61</span>
+<span class="line-number">62</span>
+<span class="line-number">63</span>
+<span class="line-number">64</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Feature</span> <span class="o">{</span>
+</span><span class="line">    <span class="cm">/** 每个关键词在不同类别中出现的文档数量 */</span>
+</span><span class="line">    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;</span> <span class="n">docCountMap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;();</span>
+</span><span class="line">    <span class="cm">/** 特征名称 */</span>
+</span><span class="line">    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">incDocCount</span><span class="o">(</span><span class="n">String</span> <span class="n">category</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">if</span> <span class="o">(</span><span class="n">docCountMap</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="n">category</span><span class="o">))</span> <span class="o">{</span>
+</span><span class="line">            <span class="n">docCountMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">category</span><span class="o">,</span> <span class="n">docCountMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">category</span><span class="o">)</span> <span class="o">+</span> <span class="mi">1</span><span class="o">);</span>
+</span><span class="line">        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class="line">            <span class="n">docCountMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">category</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getDocCount</span><span class="o">(</span><span class="n">String</span> <span class="n">category</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">if</span> <span class="o">(</span><span class="n">docCountMap</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="n">category</span><span class="o">))</span> <span class="o">{</span>
+</span><span class="line">            <span class="k">return</span> <span class="n">docCountMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">category</span><span class="o">);</span>
+</span><span class="line">        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class="line">            <span class="k">return</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">write</span><span class="o">(</span><span class="n">DataOutput</span> <span class="n">out</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+</span><span class="line">        <span class="n">out</span><span class="o">.</span><span class="na">writeUTF</span><span class="o">(</span><span class="n">name</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">?</span> <span class="s">&quot;&quot;</span> <span class="o">:</span> <span class="n">name</span><span class="o">);</span>
+</span><span class="line">
+</span><span class="line">        <span class="n">out</span><span class="o">.</span><span class="na">writeInt</span><span class="o">(</span><span class="n">docCountMap</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
+</span><span class="line">        <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">category</span> <span class="o">:</span> <span class="n">docCountMap</span><span class="o">.</span><span class="na">keySet</span><span class="o">())</span> <span class="o">{</span>
+</span><span class="line">            <span class="n">out</span><span class="o">.</span><span class="na">writeUTF</span><span class="o">(</span><span class="n">category</span><span class="o">);</span>
+</span><span class="line">            <span class="n">out</span><span class="o">.</span><span class="na">writeInt</span><span class="o">(</span><span class="n">docCountMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">category</span><span class="o">));</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">readFields</span><span class="o">(</span><span class="n">DataInput</span> <span class="n">in</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">in</span><span class="o">.</span><span class="na">readUTF</span><span class="o">();</span>
+</span><span class="line">
+</span><span class="line">        <span class="n">docCountMap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;();</span>
+</span><span class="line">        <span class="kt">int</span> <span class="n">size</span> <span class="o">=</span> <span class="n">in</span><span class="o">.</span><span class="na">readInt</span><span class="o">();</span>
+</span><span class="line">        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span><span class="line">            <span class="n">String</span> <span class="n">category</span> <span class="o">=</span> <span class="n">in</span><span class="o">.</span><span class="na">readUTF</span><span class="o">();</span>
+</span><span class="line">            <span class="kt">int</span> <span class="n">docCount</span> <span class="o">=</span> <span class="n">in</span><span class="o">.</span><span class="na">readInt</span><span class="o">();</span>
+</span><span class="line">            <span class="n">docCountMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">category</span><span class="o">,</span> <span class="n">docCount</span><span class="o">);</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Feature</span> <span class="nf">read</span><span class="o">(</span><span class="n">DataInput</span> <span class="n">in</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+</span><span class="line">        <span class="n">Feature</span> <span class="n">f</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Feature</span><span class="o">();</span>
+</span><span class="line">        <span class="n">f</span><span class="o">.</span><span class="na">readFields</span><span class="o">(</span><span class="n">in</span><span class="o">);</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">f</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="c1">// TODO Auto-generated method stub</span>
+</span><span class="line">
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>更多代码请看<a href="https://github.com/aluenkinglee/mlclass/tree/master/NativeBayes/src">这里</a></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[拉格朗日对偶]]></title>
+    <link href="http://aluenkinglee.com/blog/2014/06/03/lagrange-duality/"/>
+    <updated>2014-06-03T21:41:00+08:00</updated>
+    <id>http://aluenkinglee.com/blog/2014/06/03/lagrange-duality</id>
+    <content type="html"><![CDATA[<p>在解决约束最优化的额问题中，常常利用拉格朗日对偶性将原始问题转化为对偶问题，通过解对偶问题得到原始问题的解。该方法主要应用的SVM和最大熵模型中。</p>
+
+<p>先抛开上面的二次规划问题，先来看看存在等式约束的极值问题求法，比如下面的最优化问题：</p>
+
+<script type="math/tex; mode=display">
+\min _{ w }{ f\left( w \right)  } \\ s.t\quad h_{ i }\left( w \right) =0,\quad i=1,\cdots ,l
+</script>
+
+<p>目标函数是f(w)，下面是等式约束。通常解法是引入拉格朗日算子，这里使用<script type="math/tex">\beta</script>来表示算子，得到拉格朗日公式为</p>
+
+<!-- more -->
+
+<script type="math/tex; mode=display">
+L \left( w,\beta  \right) =f\left( w \right) +\sum _{ i=1 }^{ l }{ \beta _{ i }h_{ i } } \left( w \right) 
+</script>
+
+<p>L是等式约束的个数。</p>
+
+<p>然后分别对w和 <script type="math/tex">\beta</script>求偏导，使得偏导数等于0，然后解出w和 <script type="math/tex">\beta_i</script>。至于为什么引入拉格朗日算子可以求出极值，原因是f(w)
+的dw变化方向受其他不等式的约束，dw的变化方向与f(w)的梯度垂直时才能获得极值，而且在极值处，f(w)的梯度与其他等式梯度的线性组合平行，因此他们之间存在线性关系。（参考《最优化与KKT条件》）
+然后我们探讨有不等式约束的极值问题求法，问题如下：</p>
+
+<script type="math/tex; mode=display">
+\min _{ w }{ f\left( w \right)  } \\ 
+s.t\quad h_{ i }\left( w \right) =0,\quad i=1,\cdots ,l\\ 
+\quad \quad \quad g_{ i }\left( w \right) \le 0,\quad i=1,\cdots ,k
+</script>
+
+<p>我们定义一般化的拉格朗日公式</p>
+
+<script type="math/tex; mode=display">
+L\left( w,\beta  \right) =f\left( w \right) +\sum _{ i=1 }^{ k }{ \alpha _{ i }g_{ i } } \left( w \right) \sum _{ i=1 }^{ l }{ \beta _{ i }h_{ i } } \left( w \right) 
+</script>
+
+<p>这里的<script type="math/tex">\alpha _{ i } </script>和<script type="math/tex">\beta _{ i } </script> 都是拉格朗日算子。如果按这个公式求解，会出现问题，因为我们求解的是最小值，而这里的 <script type="math/tex">g_{ i } \left( w \right) </script>已经不是0了，我们可以将 <script type="math/tex">\alpha _{ i } </script>调整成很大的正值，来使最后的函数结果是负无穷。因此我们需要排除这种情况，我们定义下面的函数：</p>
+
+<script type="math/tex; mode=display">
+{ \theta  }_{p  }\left( w \right) =\max _{ \alpha ,\beta :{ \alpha  }_{ i }\ge 0 }{ L\left( w,\alpha ,\beta  \right)  } 
+</script>
+
+<p>这里的P代表primal。假设<script type="math/tex">g_{ i }\left( w \right)</script> &gt;0 或者<script type="math/tex">h_{ i }\left( w \right) \neq 0</script> ，那么我们总是可以调整 <script type="math/tex">\alpha_i</script>和<script type="math/tex">\beta_i</script> 来使得<script type="math/tex"> { \theta  }_{ p  }\left( w \right)</script>有最大值为正无穷。而只有g和h满足约束时，<script type="math/tex"> { \theta  }_{ p }\left( w \right)</script> 为f(w)。这个函数的精妙之处在于 <script type="math/tex">\alpha_i \ge 0</script>，而且求极大值。</p>
+
+<p>因此,</p>
+
+<script type="math/tex; mode=display">
+{ \theta  }_{ p  }\left( w \right) =\begin{cases} f\left( w \right) ,\quad w满足原始问题约束 \\ +\infty ，其他\quad  \end{cases}
+</script>
+
+<p>所以如果考虑极小化问题</p>
+
+<script type="math/tex; mode=display">
+{ \min _{ w }{ { \theta  }_{p  }\left( w \right)  }  }={ \min _{ w }{ \max _{ \alpha ,\beta :{ \alpha  }_{ i }\ge 0 }{ L\left( w,\alpha ,\beta  \right)  }  }  }
+</script>
+
+<p>它是原始问题的等价解，原始最优化问题转化成了拉格朗日函数的极小极大问题，这时候把原始问题的最优值记为：</p>
+
+<script type="math/tex; mode=display">
+{ p }^{ \ast  }=\min _{ w }{ { \theta  }_{ p }\left( w \right)  } 
+</script>
+
+<p>哎哟，看看我们的等价形式哦，首先有两个参数，其中还是一个不等式约束=。=,考虑下对偶吧，极小极大问题转化为等价的极大极小问题。</p>
+
+<h4 id="section">对偶形式</h4>
+
+<p>定义<script type="math/tex">{ \theta  }_{ D }\left( \alpha ,\beta  \right) =\min _{ w }{ L\left( w,\alpha ,\beta  \right)  } </script>，在考虑极大化<script type="math/tex">{ \theta  }_{ D }\left( \alpha ,\beta  \right) </script>,先把这两个参数看成固定值，求关于w的最小值，之后在求对偶的最大值即</p>
+
+<script type="math/tex; mode=display">
+\max _{ \alpha ,\beta :{ \alpha  }_{ i }\ge 0 }{ { \theta  }_{ D }\left( \alpha ,\beta  \right)  } =\max _{ \alpha ,\beta :{ \alpha  }_{ i }\ge 0 }{ \min _{ w }{ L\left( w,\alpha ,\beta  \right)  }  } 
+</script>
+
+<p>这个问题是原问题的对偶问题，相对于原问题只是更换了min和max的顺序，而一般更换顺序的结果是Max Min(X) &lt;= MinMax(X)。然而在这里两者相等。用<script type="math/tex">{ d }^{ \ast  }</script> 来表示对偶问题如下：</p>
+
+<script type="math/tex; mode=display">
+{ d }^{ \ast  }=\max _{ \alpha ,\beta :{ \alpha  }_{ i }\ge 0 }{ \min _{ w }{ L\left( w,\alpha ,\beta  \right)  }  } \le { \min _{ w }{ \max _{ \alpha ,\beta :{ \alpha  }_{ i }\ge 0 }{ L\left( w,\alpha ,\beta  \right)  }  }  }={ p }^{ \ast  }
+ </script>
+
+<p>存在 <script type="math/tex">{ w }^{ \ast  },{ \alpha }^{ \ast  },{ \beta }^{ \ast  }</script> 使得<script type="math/tex">{ w }^{ \ast  }</script>是原问题的解，<script type="math/tex">{ \alpha }^{ \ast  },{ \beta }^{ \ast  }</script>  是对偶问题的解。还有 <script type="math/tex">{ p }^{ \ast  }={ d}^{ \ast  } = L({ w }^{ \ast  },{ \alpha }^{ \ast  },{ \beta }^{ \ast  })</script> </p>
+
+<p>另外，  <script type="math/tex">{ w }^{ \ast  },{ \alpha }^{ \ast  },{ \beta }^{ \ast  }</script> 满足库恩-塔克条件（Karush-Kuhn-Tucker, KKT condition），该条件如下：</p>
+
+<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2014-06-03-lagrange-duality/kkt.png?raw=true 库恩-塔克条件（Karush-Kuhn-Tucker, KKT condition）&quot;" alt="库恩-塔克条件（Karush-Kuhn-Tucker, KKT condition）" /></p>
+
+<p>所以如果 <script type="math/tex">{ w }^{ \ast  },{ \alpha }^{ \ast  },{ \beta }^{ \ast  }</script>  满足了库恩-塔克条件，那么他们就是原问题和对偶问题的解。当<script type="math/tex">g_{i}(w^{ \ast  })=0</script> 时，w处于可行域的边界上，这时才是起作用的约束。而其他位于可行域内部（ <script type="math/tex">% &lt;![CDATA[
+g_{i}(w^{ \ast  })<0 %]]&gt;</script> 的）点都是不起作用的约束，其 <script type="math/tex">{ \alpha }^{ \ast  }=0</script>。这个KKT双重补足条件会用来解释支持向量和SMO的收敛测试。</p>
+
+<p>KKT的总体思想是将极值会在可行域边界上取得，也就是不等式为0或等式约束里取得，而最优下降方向一般是这些等式的线性组合，其中每个元素要么是不等式为0的约束，要么是等式约束。对于在可行域边界内的点，对最优解不起作用，因此前面的系数为0。</p>
+
+<blockquote>
+  <blockquote>
+    <p>参考</p>
+  </blockquote>
+</blockquote>
+
+<ol>
+  <li>
+    <p>Andrew Ng的原始课件讲义</p>
+  </li>
+  <li>
+    <p>统计学习方法</p>
+  </li>
+</ol>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[从逻辑回归分类到SVM分类]]></title>
+    <link href="http://aluenkinglee.com/blog/2014/06/03/my-understanding-about-svm/"/>
+    <updated>2014-06-03T20:53:00+08:00</updated>
+    <id>http://aluenkinglee.com/blog/2014/06/03/my-understanding-about-svm</id>
+    <content type="html"><![CDATA[<p>上一章讲到了线性回归的一个典型算法，核心思想就是利用最小二乘法最为损失函数，不断使用梯度下降法（或者使用随机梯度下降法（stochastic gradient descent））来更新theta值。</p>
+
+<p>后来降到了分类，逻辑回归只不过有个很好的性质就是值分布在0到1之间，正好可以利用到分类上。logistic回归就是要学习得到θ，使得正例的特征远大于 0，负例的特征远
+小于 0，强调在全部训练实例上达到这个目标。为什么说逻辑回归是个线性模型？这是因为该模型是将特性的线性组合作为自变量，然后使用logistic函数（或者说是sigmoid函数）将自变量映射到（0-1）上，将值和概率结合之后从而应用到分类上。
+函数表示形式：</p>
+
+<script type="math/tex; mode=display">
+h_{ \theta  }\left( x \right) =g\left( \theta ^{ T }x \right) =\frac { 1 }{ 1+{e  }^{ -\theta^{T}x } }
+</script>
+
+<!-- more -->
+
+<p>其中 x 是 n 维特征向量，函数 g 就是 logistic 函数
+从线性回归到了逻辑回归，从逻辑回归又到了分类，那么再来看看SVM这个有监督的分类学习算法。
+在这里我们使用的y的取值记为1和-1，所以对logistic 回归中的做下替换，令logistic回归中的y=0和y=1变为y=-1,y=1。同时将θ替换成 w 和 b。
+所以有<script type="math/tex">\Theta^{T}x=\theta_0x_0+\theta_1x_1+\cdots +\theta_nx_n</script>，现在使用b替换<script type="math/tex">\theta_0</script>,替换后的形式变为<script type="math/tex">w^{ T }x=w_{ 1 }x_{ 1 }+\cdots +w_{ n }x_{ n }+b</script>，这样做之后，我们的假设函数就变成了</p>
+
+<script type="math/tex; mode=display">
+h_{ b,w }\left( x \right) =g\left( w^{ T }x+b \right)
+</script>
+
+<p>和逻辑回归的形式很相像。</p>
+
+<p>表达形式就引申到这里，在来谈下SVM的思想，当我们学习线性回归时，我们的想法就是使用最小二乘法拟合数据，而在分类问题中，我们的想法就是找到一条直线，使正负样本离这个线或者超平面尽可能的远。也就是<code>间隔</code>最大。用一句话来说就是：<strong>在特征空间上的间隔最大的线性分类器。所以我们所有的努力都在如何是间隔最大化上，而这个可以转化为一个凸二次规划的问题</strong>。所以SVM的学习算法就是求解凸二次规划的最优化算法。</p>
+
+<h5 id="functional-margingeometric-margin">函数间隔（functional margin）和几何间隔（geometric margin）</h5>
+
+<p>我们定义函数间隔就是：对于给定的数据集T和超平面（w,b），样本点<script type="math/tex">\left( x^{(i)},y^{(i)} \right) </script>到超平面的函数间隔为：
+$$
+\widehat { \gamma  } ^{ (i) }=y^{ (i) }(w^{T}\cdot x^{ (i) }+b) 
+$$</p>
+
+<p>函数间隔或者间隔本身描述了一种确信度。离超平面越远，间隔值就越大，可信度就越大。</p>
+
+<p>刚刚我们定义的函数间隔是针对某一个样本的，现在我们定义全局样本上的函数间隔，定义超平面关于数据集的函数间隔为超平面中所有样本点函数间隔的最小值，就是在训练样本上分类正例和负例确信度最小那个函数间隔，即</p>
+
+<script type="math/tex; mode=display">
+\widehat {\gamma }=\min _{ i=1,...m }{ \widehat { \gamma  } ^{ (i) } }
+</script>
+
+<p>但是有个问题，如果按比例的增加w和b，那么函数间隔也会按比例改变，这个对结果没有影响，但是问题会变得不好描述，不能定量的计算，所以我们就需要把它规范化(normalization)。只需要结果除以<script type="math/tex">\left\| w \right\| </script>就好了，这个时候<script type="math/tex">w/\left\| w \right\| </script>就成为了单位向量，所以函数间隔和几何间隔的关系也就是这样简单，几何间隔就是规范化后的函数间隔。无论w和b怎么折腾，几何间隔都不会改变。</p>
+
+<p>定义几何间隔就是：对于给定的数据集T和超平面（w,b），样本点<script type="math/tex">\left( x^{(i)},y^{(i)} \right) </script>到超平面的几何间隔为：</p>
+
+<script type="math/tex; mode=display">
+{ \gamma  } ^{ (i) }=y^{ (i) }(w^{T}\cdot x^{ (i) }+b)/\left\| w \right\|
+</script>
+
+<p>定义超平面关于数据集的几何间隔为超平面中所有样本点几何间隔的最小值,即</p>
+
+<script type="math/tex; mode=display">
+{ \gamma  }=\min _{ i=1,...m }{ { \gamma  }^{ (i) } }
+</script>
+
+<p>最优间隔分类器（optimal margin classifier）（利用间隔最大化）</p>
+
+<p>回想前面我们提到我们的目标是寻找一个超平面，使得离超平面比较近的点能有更大的
+间距。 也就是我们不考虑所有的点都必须远离超平面，我们关心求得的超平面能够让所有点中离它最近的点具有最大间距。形象的说，我们将上面的图看作是一张纸，我们要找一条折线，按照这条折线折叠后，离折线最近的点的间距比其他折线都要大。形式化表示为：</p>
+
+<script type="math/tex; mode=display">
+\max _{ \gamma ,w,b }{ \gamma  } \\ s.t\quad { y }^{ \left( i \right)  }\left( { w }^{ T }{ x }^{ \left( i \right)  }+b \right) \ge \gamma ,i=1,\cdots ,m\\ \left\| w \right\| =1
+</script>
+
+<table>
+  <tbody>
+    <tr>
+      <td>这里用</td>
+      <td> </td>
+      <td>w</td>
+      <td> </td>
+      <td>=1 规约 w，使得<script type="math/tex"> w^{T}\cdot x+b</script>是几何间隔。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>到此，我们已经将模型定义出来了。如果求得了 w 和 b，那么来一个特征 x，我们就能
+够分类了，称为最优间隔分类器。接下的问题就是如何求解 w 和 b 的问题了。</p>
+
+<p>由于||w|| = 1不是凸函数，我们想先处理转化一下，考虑几何间隔和函数间隔的关系，
+<script type="math/tex"> \gamma =\frac { \hat { \gamma  }  }{ \left\| w \right\|  } </script>，我们改写一下上面的式子：</p>
+
+<script type="math/tex; mode=display">
+\max _{ \gamma ,w,b }{ \frac { \widehat { \gamma  }  }{ \left\| w \right\|  }  } \\ s.t\quad { y }^{ \left( i \right)  }\left( { w }^{ T }{ x }^{ \left( i \right)  }+b \right) \ge \widehat { \gamma  } ,i=1,\cdots ,m
+</script>
+
+<p>因为函数间隔值得改变对结果没有影响，所以可以给它个固定值比如1.将 <script type="math/tex">\hat { \gamma  } =1</script>代入上面的最优化问题，因为最大化<script type="math/tex"> \frac { 1 }{ \left\| w \right\|  } </script>最小化<script type="math/tex"> \frac { 1 }{ 2 } \left\| w \right\| ^{ 2 }</script>是等价的，于是将上面改写成这样：</p>
+
+<script type="math/tex; mode=display">
+\min _{ \gamma ,w,b }{ \frac { 1 }{ 2 }  } { \left\| w \right\|  }^{ 2 }\\ s.t\quad { y }^{ \left( i \right)  }\left( { w }^{ T }{ x }^{ \left( i \right)  }+b \right) -1\ge 0,i=1,\cdots ,m
+</script>
+
+<p>这就变成了一个凸二次规划问题，详情见<a href="http://zh.wikipedia.org/wiki/%E4%BA%8C%E6%AC%A1%E8%A7%84%E5%88%92">凸二次规划</a></p>
+
+<p>接下来是关于拉格朗日对偶的问题，在这之后，在描述SVM中最简单的分类器——<strong>线性可分支持向量机</strong>，因为这个情况下，数据是线性可分的，而且噪音没有，只需要通过<strong>硬间隔最大化</strong>,即可学习一个线性的分类器，又称硬间隔支持向量机。</p>
+
+<blockquote>
+  <blockquote>
+    <p>参考</p>
+  </blockquote>
+</blockquote>
+
+<ol>
+  <li>
+    <p>Andrew Ng的原始课件讲义</p>
+  </li>
+  <li>
+    <p>统计学习方法</p>
+  </li>
+</ol>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Linux下通过端口杀死进程]]></title>
+    <link href="http://aluenkinglee.com/blog/2014/05/20/kill-process-on-some-port-under-linux-platform/"/>
+    <updated>2014-05-20T10:41:00+08:00</updated>
+    <id>http://aluenkinglee.com/blog/2014/05/20/kill-process-on-some-port-under-linux-platform</id>
+    <content type="html"><![CDATA[<p>就是把一些常用命令记录下来拉。一直在用，可就是容易忘记命令。</p>
+
+<p>floodlight 控制器启动之后，因为不正常的关闭程序（ctrl+c）造成6633端口还在被占用。</p>
+
+<p>流程如下：</p>
+
+<ol>
+  <li>
+    <p>netstat -nlp 查看占用端口号的服务</p>
+  </li>
+  <li>
+    <p>找到该端口号的进程，可以使用grep</p>
+  </li>
+  <li>
+    <p>找到该进程id</p>
+  </li>
+  <li>
+    <p>kill pid</p>
+  </li>
+</ol>
+
+<h5 id="section">查看占用端口号的服务</h5>
+
+<p>可以使用netstat命令</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">Active Internet connections (only servers)
+</span><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+</span><span class="line">Active Internet connections (only servers)
+</span><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+</span><span class="line">tcp        0      0 0.0.0.0:6633            0.0.0.0:*               LISTEN      6267/java
+</span><span class="line">tcp        0      0 0.0.0.0:3307            0.0.0.0:*               LISTEN      12711/
+</span><span class="line">tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      3936/httpd
+</span><span class="line">tcp        0      0 0.0.0.0:21              0.0.0.0:*               LISTEN      3910/
+</span><span class="line">tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      3753/sshd
+</span><span class="line">tcp        0      0 0.0.0.0:25              0.0.0.0:*               LISTEN      3786/
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>######用管道符给grep处理</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"> netstat -nlp | grep 6633
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>既然取出一行了，那就容易了，再筛选一下，用awk分割取出其中一个</p>
+
+<h6 id="section-1">读取出端口号</h6>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">netstat -nlp | grep 6633 | awk <span class="s1">&#39;{print $7}&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>6267/java</p>
+
+<p>意思是取第七个字段，这里默认应该是用tab字符分割的，已经读取出来了，但是还得拿到/前面的数字</p>
+
+<h6 id="awk">取/前面的数字就可以了，这里还是可以用awk处理</h6>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">netstat -nlp | grep 6633 | awk <span class="s1">&#39;{print $7}&#39;</span> | awk -F<span class="s2">&quot;/&quot;</span> <span class="s1">&#39;{ print $1 }&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>6267</p>
+
+<h6 id="kill">把这个数字传给kill就可以</h6>
+
+<p>kill命令不能跟在管道符后面继续处理了，会出错的.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nb">kill</span> <span class="o">[</span><span class="s1">&#39;] netstat -nlp | grep 6633 | awk &#39;</span><span class="o">{</span>print <span class="nv">$7</span><span class="o">}</span><span class="s1">&#39; | awk -F&quot;/&quot; &#39;</span><span class="o">{</span> print <span class="nv">$1</span> <span class="o">}</span><span class="s1">&#39; [&#39;</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<blockquote>
+  <blockquote>
+    <p>其它类似的命令</p>
+  </blockquote>
+</blockquote>
+
+<ol>
+  <li>查看端口属于哪个程序？端口被哪个进程占用</li>
+</ol>
+
+<p>也可以使用lsof命令。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nv">$ </span>lsof -i :6633
+</span><span class="line">
+</span><span class="line">COMMAND   PID   USER      FD   TYPE    DEVICE  SIZE/OFF NODE NAME
+</span><span class="line">java    7838   kinglee   50r   IPv6  35452317       0t0  TCP *:6633 <span class="o">(</span>LISTEN<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="reference">reference</h4>
+
+<ol>
+  <li>
+    <p><a href="http://baike.baidu.com/link?url=idG3yCyykQj00QVBW_jreekVZWjIGU5urL553dG9o4ZYgwpbnjd7jJ2DVjxrm5EZ">netstat</a></p>
+  </li>
+  <li>
+    <p><a href="http://www.cnblogs.com/peter9/archive/2011/07/28/2362156.html">Linux下通过端口杀死进程</a></p>
+  </li>
+  <li>
+    <p><a href="http://blog.csdn.net/andy572633/article/details/7211546">linux下杀死进程（kill）的N种方法</a></p>
+  </li>
+</ol>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[threading:why import it into os]]></title>
@@ -255,6 +1551,159 @@ next\left[ q \right] =\begin{Bmatrix} 0 & \quad if\quad { E }_{ q }\quad =\quad 
 <p>相对于朴素的匹配算法，这里并不是在匹配失败后直接无脑的外后移一位就可以了，而是利用了模式串本身的信息，<strong>位移的距离=已经匹配的长度-该位置next值</strong>。</p>
 
 <p>希望对你有用。当然要是觉得有问题直接留言好了，一起学吧。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[链表排序]]></title>
+    <link href="http://aluenkinglee.com/blog/2014/05/14/sort-list/"/>
+    <updated>2014-05-14T13:51:00+08:00</updated>
+    <id>http://aluenkinglee.com/blog/2014/05/14/sort-list</id>
+    <content type="html"><![CDATA[<p>链表不想数组那样是连续的即像数组那样随机访问，只能从前往后遍历。所以排序的方法只能是像插入排序，选择排序，和归并排序。</p>
+
+<p>下面就先说归并排序。</p>
+
+<!-- more -->
+
+<p>简单的数据结构</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="kd">public</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">ListNode</span> <span class="o">{</span>
+</span><span class="line">    <span class="kt">int</span> <span class="n">val</span><span class="o">;</span>
+</span><span class="line">    <span class="n">ListNode</span> <span class="n">next</span><span class="o">;</span>
+</span><span class="line">    <span class="n">ListNode</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="n">val</span> <span class="o">=</span> <span class="n">x</span><span class="o">;</span>
+</span><span class="line">        <span class="n">next</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>思想很简单，就是找到链表的中点，然后左右递归排序，最后合并。
+详情还是看代码：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+<span class="line-number">53</span>
+<span class="line-number">54</span>
+<span class="line-number">55</span>
+</pre></td><td class="code"><pre><code class="java"><span class="line">    <span class="cm">/**</span>
+</span><span class="line"><span class="cm">     * @param head</span>
+</span><span class="line"><span class="cm">     * @return 链表中点</span>
+</span><span class="line"><span class="cm">     */</span>
+</span><span class="line">    <span class="kd">public</span> <span class="n">ListNode</span> <span class="nf">middle</span><span class="o">(</span><span class="n">ListNode</span> <span class="n">head</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="k">if</span> <span class="o">(</span><span class="n">head</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">head</span><span class="o">.</span><span class="na">next</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span>
+</span><span class="line">            <span class="k">return</span> <span class="n">head</span><span class="o">;</span>
+</span><span class="line">        <span class="n">ListNode</span> <span class="n">pre</span> <span class="o">=</span> <span class="n">head</span><span class="o">;</span>
+</span><span class="line">        <span class="n">ListNode</span> <span class="n">cur</span> <span class="o">=</span> <span class="n">head</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+</span><span class="line">        <span class="k">while</span> <span class="o">(</span><span class="n">cur</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">cur</span><span class="o">.</span><span class="na">next</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">            <span class="n">pre</span> <span class="o">=</span> <span class="n">pre</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+</span><span class="line">            <span class="n">cur</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+</span><span class="line">            <span class="k">if</span> <span class="o">(</span><span class="n">cur</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">                <span class="n">cur</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+</span><span class="line">            <span class="o">}</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">pre</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="n">ListNode</span> <span class="nf">merge</span><span class="o">(</span><span class="n">ListNode</span> <span class="n">leftHead</span><span class="o">,</span> <span class="n">ListNode</span> <span class="n">rightHead</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="c1">// 头部节点，本身没有用处，只是为了让代码更简便</span>
+</span><span class="line">        <span class="n">ListNode</span> <span class="n">head</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ListNode</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+</span><span class="line">        <span class="n">ListNode</span> <span class="n">cur</span> <span class="o">=</span> <span class="n">head</span><span class="o">;</span>
+</span><span class="line">        <span class="k">while</span> <span class="o">(</span><span class="n">leftHead</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">rightHead</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">            <span class="k">if</span> <span class="o">(</span><span class="n">leftHead</span><span class="o">.</span><span class="na">val</span> <span class="o">&lt;</span> <span class="n">rightHead</span><span class="o">.</span><span class="na">val</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">                <span class="n">cur</span><span class="o">.</span><span class="na">next</span> <span class="o">=</span> <span class="n">leftHead</span><span class="o">;</span>
+</span><span class="line">                <span class="n">leftHead</span> <span class="o">=</span> <span class="n">leftHead</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+</span><span class="line">            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class="line">                <span class="n">cur</span><span class="o">.</span><span class="na">next</span> <span class="o">=</span> <span class="n">rightHead</span><span class="o">;</span>
+</span><span class="line">                <span class="n">rightHead</span> <span class="o">=</span> <span class="n">rightHead</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+</span><span class="line">            <span class="o">}</span>
+</span><span class="line">            <span class="n">cur</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">if</span> <span class="o">(</span><span class="n">leftHead</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">            <span class="n">cur</span><span class="o">.</span><span class="na">next</span> <span class="o">=</span> <span class="n">leftHead</span><span class="o">;</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">        <span class="k">if</span> <span class="o">(</span><span class="n">rightHead</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">            <span class="n">cur</span><span class="o">.</span><span class="na">next</span> <span class="o">=</span> <span class="n">rightHead</span><span class="o">;</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">head</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">public</span> <span class="n">ListNode</span> <span class="nf">sortList</span><span class="o">(</span><span class="n">ListNode</span> <span class="n">head</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">        <span class="c1">//单个节点直接返回</span>
+</span><span class="line">        <span class="k">if</span> <span class="o">(</span><span class="n">head</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">head</span><span class="o">.</span><span class="na">next</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class="line">            <span class="n">ListNode</span> <span class="n">mid</span> <span class="o">=</span> <span class="n">middle</span><span class="o">(</span><span class="n">head</span><span class="o">);</span>
+</span><span class="line">            <span class="n">ListNode</span> <span class="n">after</span> <span class="o">=</span> <span class="n">mid</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+</span><span class="line">            <span class="n">mid</span><span class="o">.</span><span class="na">next</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span><span class="line">            <span class="n">head</span> <span class="o">=</span> <span class="n">sortList</span><span class="o">(</span><span class="n">head</span><span class="o">);</span>
+</span><span class="line">            <span class="n">after</span> <span class="o">=</span> <span class="n">sortList</span><span class="o">(</span><span class="n">after</span><span class="o">);</span>
+</span><span class="line">            <span class="n">head</span> <span class="o">=</span> <span class="n">merge</span><span class="o">(</span><span class="n">head</span><span class="o">,</span> <span class="n">after</span><span class="o">);</span>
+</span><span class="line">        <span class="o">}</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">head</span><span class="o">;</span>
+</span><span class="line">    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>测试样例：边界值
+2 1
+1 
+2 -1 1</p>
 ]]></content>
   </entry>
   
@@ -2872,1516 +4321,6 @@ mlclass-ex1/gradientDescent.m">详见</a></p>
 <p>至于怎么安装，还是请看Readme吧各位。希望这个帖子能帮助有类似问题的人。（在debain系列的linux上有可能会有这样的问题。）</p>
 
 <p>接下来，应该就会把之前看过的视频和资料的东西在整理一下，并借用这个库实现应该实现的部分。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[install nox on debian-bug fixed]]></title>
-    <link href="http://aluenkinglee.com/blog/2013/11/13/install-nox-on-debian-bug-fixed/"/>
-    <updated>2013-11-13T22:44:00+08:00</updated>
-    <id>http://aluenkinglee.com/blog/2013/11/13/install-nox-on-debian-bug-fixed</id>
-    <content type="html"><![CDATA[<p>首先需要声明的一点是，到目前（2013/11）Nox在所有SDN控制器中不是最火的（相比Pox，floodlight），但是作为最先开发的一个SDN而言，还是有研究意义的。</p>
-
-<!--more-->
-
-<h5 id="section">安装提示</h5>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">cd /etc/apt/sources.list.d/
-</span><span class="line">sudo wget http://openflowswitch.org/downloads/debian/nox.list
-</span><span class="line">sudo apt-get update
-</span><span class="line">sudo apt-get install nox-dependencies
-</span><span class="line">sudo apt-get install libtbb-dev
-</span><span class="line">sudo apt-get install libboost-serialization-dev libboost-all-dev</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>然后在你想放置Nox源码的地方做如下操作：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">git clone git://github.com/noxrepo/nox
-</span><span class="line">cd nox
-</span><span class="line">./boot.sh
-</span><span class="line">mkdir build
-</span><span class="line">cd build
-</span><span class="line">../configure
-</span><span class="line">make -j 5
-</span><span class="line">make install</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>很不幸，遇到了如下的错误：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">../../src/builtin/component.cc:414:1: required from here
-</span><span class="line">/usr/include/boost/property_tree/detail/json_parser_read.hpp:105:17: error:
-</span><span class="line">no matching function for call to ‘boost::property_tree::basic_ptree
-</span><span class="line">std::basic_string&lt;char, std::basic_string &gt;::push_back(std::pair
-</span><span class="line">std::basic_string&lt;char, std::basic_string &gt;)’
-</span><span class="line">/usr/include/boost/property_tree/detail/json_parser_read.hpp:105:17: note:
-</span><span class="line">candidate is:
-</span><span class="line">In file included from /usr/include/boost/property_tree/ptree.hpp:516:0,
-</span><span class="line">from ../../src/include/component.hh:35,
-</span><span class="line">from ../../src/builtin/component.cc:18:
-</span><span class="line">/usr/include/boost/property_tree/detail/ptree_implementation.hpp:362:9:
-</span><span class="line">note: boost::property_tree::basic_ptree::iterator
-</span><span class="line">boost::property_tree::basic_ptree::push_back(const value_type&amp;) [with Key =
-</span><span class="line">std::basic_string; Data = std::basic_string; KeyCompare = std::less
-</span><span class="line">std::basic_string&lt;char &gt;; boost::property_tree::basic_ptree::value_type =
-</span><span class="line">std::pair, boost::property_tree::basic_ptreestd::basic_string&lt;char,
-</span><span class="line">std::basic_string &gt; &gt;]
-</span><span class="line">/usr/include/boost/property_tree/detail/ptree_implementation.hpp:362:9:
-</span><span class="line">note: no known conversion for argument 1 from ‘std::pair
-</span><span class="line">std::basic_string&lt;char, std::basic_string &gt;’ to ‘const value_type&amp; {aka
-</span><span class="line">const std::pair, boost::property_tree::basic_ptreestd::basic_string&lt;char,
-</span><span class="line">std::basic_string &gt; &gt;&amp;}’
-</span><span class="line">make[4]: *** [nox_core-component.o] Error 1</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>这个错误来源于nox依赖的boost库版本（1.49）的错误.注意错误原因是：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">/usr/include/boost/property_tree/detail/json_parser_read.hpp:105
-</span><span class="line">error:
-</span><span class="line">no matching function for call to ‘boost::property_tree::basic_ptree
-</span><span class="line">std::basic_string&lt;char, std::basic_string &gt;::push_back(std::pair
-</span><span class="line">std::basic_string&lt;char, std::basic_string &gt;)’</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>同样的问题点击<a href="http://lists.noxrepo.org/pipermail/nox-dev-noxrepo.org/2013-February/000668.html" title="[nox-dev] Nox build fails">这里</a></p>
-
-<p>解决方法：<code>/usr/include/boost/property_tree/detail/json_parser_read.hpp</code>找到这个文件。定位到<code>105行，</code></p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">c.stack.back()-&gt;push_back(std::make_pair(c.name, Str(b, e)));</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>换成</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">c.stack.back()-&gt;push_back(std::make_pair(c.name, Ptree(Str(b, e))));</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>重新make&amp;&amp; make install 即可。</p>
-
-<h5 id="reference">Reference</h5>
-
-<ol>
-  <li>
-    <p><a href="https://svn.boost.org/trac/boost/ticket/6785">read_json does not compile on GCC 4.7.0 with std=c++11</a></p>
-  </li>
-  <li>
-    <p><a href="http://lists.noxrepo.org/pipermail/nox-dev-noxrepo.org/2013-February/000668.html">nox-dev Nox build fails</a></p>
-  </li>
-</ol>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[在不同PC上协同写作同一个Octopress博客]]></title>
-    <link href="http://aluenkinglee.com/blog/2013/11/13/co-write-same-octopress-blog-on-different-pc/"/>
-    <updated>2013-11-13T15:20:00+08:00</updated>
-    <id>http://aluenkinglee.com/blog/2013/11/13/co-write-same-octopress-blog-on-different-pc</id>
-    <content type="html"><![CDATA[<p>因为需要在不同的地方写博客，在加上之前错误的操作，所以有了这篇文章。</p>
-
-<p>假设已经学会了然后安装Octopress博客。</p>
-
-<h2 id="octopress-">Octopress 分支说明</h2>
-
-<p>Octopress的git仓库(repository)有两个分支，分别是<code>master</code>和<code>source</code>，其中：</p>
-
-<ol>
-  <li>
-    <p><code>master</code>存储的是博客网站本身，github基于此对页面渲染。该分支根目录处在<code>_deploy</code>文件夹，由<code>rake deploy</code>命令推送到服务器，一般而言，我们不需要对<code>master</code>做任何操作。</p>
-  </li>
-  <li>
-    <p><code>source</code>存储的是生成博客的源文件（各种markdown文件）,写作博客是在这个分支。每次写完之后，记得推送到服务器。这样就不用担心我们的备份了。</p>
-  </li>
-</ol>
-
-<!--more-->
-
-<h2 id="git">克隆服务器上的git到新机器</h2>
-
-<p>将博客的源文件clone到本地的（假设就叫做）octopress文件夹内。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">$ git clone -b source git@github.com:username/username.github.com.git octopress</span></code></pre></td></tr></table></div></figure></notextile></div>
-<p>接下来这步骤是最重要的，当初栽在这儿了。(会出现<code>No such file or directory - _deploy</code>)</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">$ cd octopress
-</span><span class="line">$ git clone -b master git@github.com:username/username.github.com.git _deploy </span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>还是要安装博客的。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">$ gem install bundler
-</span><span class="line">$ rbenv rehash    		# If you use rbenv, rehash to be able to run the bundle command
-</span><span class="line">$ bundle install
-</span><span class="line">$ rake setup_github_pages	#执行初始化</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>然后会提示输入仓库的ssh url。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">Enter the read/write url for your repository
-</span><span class="line">(For example, 'git@github.com:your_username/your_username.github.com)</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h2 id="co-write-">Co-write 协同写作博客</h2>
-
-<p>如果你是和别人合作博客，或者自己同时在好几个电脑上写博客，每次开始之前，git pull origin source获得最新的文件,rake generate生成新的页面.更新master并不是必须的，因为你更改源文件之后还是需要rake generate的.</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">$ cd octopress
-</span><span class="line">$ git pull origin source  	# update the local source branch
-</span><span class="line">$ cd ./_deploy
-</span><span class="line">$ git pull origin master  	# update the local master branch</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>在source分支做了博客的发布，或者改变了博客的设置之后</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">$ rake generate		 	#生成新的页面
-</span><span class="line">
-</span><span class="line">$ git add .
-</span><span class="line">$ git commit -am "Some comment here." 
-</span><span class="line">$ git push origin source  	# 上面三行是更新远端source分支
-</span><span class="line">
-</span><span class="line">$ rake deploy             	# 更新远端master分支，文章就发布到了博客中</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h2 id="reference">Reference</h2>
-
-<ol>
-  <li>
-    <p><a href="http://williamherry.com/blog/2012/07/20/octopress-setup/">Octopress - 像黑客一样写博客</a></p>
-  </li>
-  <li>
-    <p><a href="http://code.dblock.org/octopress-setting-up-a-blog-and-contributing-to-an-existing-one">Setting up a Blog and Contributing to an Existing One</a></p>
-  </li>
-  <li>
-    <p><a href="http://boboshone.com/blog/2013/06/05/write-octopress-blog-on-multiple-machines/">在多台电脑上写Octopress博客</a></p>
-  </li>
-  <li>
-    <p><a href="http://www.whispering.co/blog/2011/12/03/octopress-for-freshman/">Octopress: 新手教程</a></p>
-  </li>
-</ol>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Use MathJax in Octopress to Write beautiful LaTex]]></title>
-    <link href="http://aluenkinglee.com/blog/2013/11/13/use-mathjax-in-octopress-to-write-beautiful-latex/"/>
-    <updated>2013-11-13T12:37:00+08:00</updated>
-    <id>http://aluenkinglee.com/blog/2013/11/13/use-mathjax-in-octopress-to-write-beautiful-latex</id>
-    <content type="html"><![CDATA[<h4 id="latex">首先看下$\LaTeX$的例子</h4>
-
-<ul>
-  <li>块状的$\LaTeX$ 数学公式 (1)</li>
-</ul>
-
-<script type="math/tex; mode=display">% &lt;![CDATA[
-
-\begin{align*}
-  & \phi(x,y) = \phi \left(\sum_{i=1}^n x_ie_i, \sum_{j=1}^n y_je_j \right)
-  = \sum_{i=1}^n \sum_{j=1}^n x_i y_j \phi(e_i, e_j) = \\
-  & (x_1, \ldots, x_n) \left( \begin{array}{ccc}
-      \phi(e_1, e_1) & \cdots & \phi(e_1, e_n) \\
-      \vdots & \ddots & \vdots \\
-      \phi(e_n, e_1) & \cdots & \phi(e_n, e_n)
-    \end{array} \right)
-  \left( \begin{array}{c}
-      y_1 \\
-      \vdots \\
-      y_n
-    \end{array} \right)
-\end{align*}
- %]]&gt;</script>
-
-<!--more-->
-
-<ul>
-  <li>块状的$\LaTeX$ 数学公式 (2)</li>
-</ul>
-
-<p>另外一个例子<a href="http://en.wikipedia.org/wiki/Multivariate_normal_distribution" title="Multivariate normal distribution">Multivariate normal distribution</a>:</p>
-
-<script type="math/tex; mode=display">
-f_x(x_1,...,x_k)=\frac{1}{(2\pi)^{k/2}|\Sigma|^{1/2}}exp(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu))
-</script>
-
-<ul>
-  <li>内联$\LaTeX$ 数学公式 (3)</li>
-</ul>
-
-<p>在段内插入LaTeX代码： $\exp(-\frac{x^2}{2})$ 。</p>
-
-<h4 id="latex-support">$\LaTeX$ support</h4>
-
-<p>为了能够使用MathJax对数学公式渲染，还是得使用几个步骤的。</p>
-
-<ul>
-  <li>添加ramdown组件</li>
-</ul>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">gem install kramdown</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<ul>
-  <li>找到<code>source/_includes/custom/head.html</code>这个文件，加入以下内容</li>
-</ul>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">&lt;script type="text/x-mathjax-config"&gt;
-</span><span class="line">MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
-</span><span class="line">          MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
-</span><span class="line">                  data.math = data.math.replace(/^\s*&lt;!\[CDATA\[\s*((?:\n|.)*)\s*\]\]&gt;\s*$/m,"$1");
-</span><span class="line">                    });
-</span><span class="line">          });
-</span><span class="line">&lt;/script&gt;
-</span><span class="line">
-</span><span class="line">&lt;script type="text/x-mathjax-config"&gt;
-</span><span class="line">  MathJax.Hub.Config({
-</span><span class="line">    tex2jax: {
-</span><span class="line">      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-</span><span class="line">      processEscapes: true
-</span><span class="line">    }
-</span><span class="line">  });
-</span><span class="line">&lt;/script&gt;
-</span><span class="line">
-</span><span class="line">&lt;script type="text/x-mathjax-config"&gt;
-</span><span class="line">    MathJax.Hub.Config({
-</span><span class="line">      tex2jax: {
-</span><span class="line">        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-</span><span class="line">      }
-</span><span class="line">    });
-</span><span class="line">&lt;/script&gt;
-</span><span class="line">
-</span><span class="line">&lt;script type="text/x-mathjax-config"&gt;
-</span><span class="line">    MathJax.Hub.Queue(function() {
-</span><span class="line">        var all = MathJax.Hub.getAllJax(), i;
-</span><span class="line">        for(i=0; i &lt; all.length; i += 1) {
-</span><span class="line">            all[i].SourceElement().parentNode.className += ' has-jax';
-</span><span class="line">        }
-</span><span class="line">    });
-</span><span class="line">&lt;/script&gt;
-</span><span class="line">
-</span><span class="line">&lt;script type="text/javascript"
-</span><span class="line">   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"&gt;
-</span><span class="line">&lt;/script&gt;
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<ul>
-  <li>
-    <p>修改_config.yml 文件 把markdown的渲染引擎从<code>rdiscount</code> 变为<code>kramdown</code></p>
-  </li>
-  <li>
-    <p>对于内联的$\LaTeX$ 数学公式，只需简单使用<code>$</code>…<code>$</code>即可。</p>
-  </li>
-</ul>
-
-<p>就像这样：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">在段内插入LaTeX代码： $\exp(-\frac{x^2}{2})$ 。</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<ul>
-  <li>对于块状的$\LaTeX$ 数学公式，只需简单使用<code>$$</code>…<code>$$</code>即可。
-就像这样：</li>
-</ul>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">$$
-</span><span class="line">f_x(x_1,...,x_k)=\frac{1}{(2\pi)^{k/2}|\Sigma|^{1/2}}exp(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu))
-</span><span class="line">$$</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h4 id="reference">Reference</h4>
-
-<p><a href="http://kkx.github.io/blog/2012/05/05/zai-octopresszhong-shi-yong-latex/" title="在octopress中使用latex">在octopress中使用latex</a></p>
-
-<p><a href="http://kqueue.org/blog/2012/01/05/hello-world/" title="Hello world">Hello world</a></p>
-
-<p><a href="http://hungmingwu-blog.logdown.com/posts/14279-latex-on-octopress" title="在Octopress中使用Latex">在Octopress中使用Latex</a></p>
-
-<p><a href="http://yanping.me/cn/blog/2012/03/10/octopress-with-latex/" title="在Octopress中使用Latex">在Octopress中使用Latex</a></p>
-
-<p><a href="http://wowubuntu.com/markdown/#p" title="Markdown 语法说明 (简体中文版)">Markdown 语法说明 (简体中文版)</a></p>
-
-<p><a href="http://kramdown.gettalong.org/syntax.html#math-blocks" title="kramdown Syntax">kramdown Syntax</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[C++前置声明和复制控制]]></title>
-    <link href="http://aluenkinglee.com/blog/2013/10/24/c-plus-plus-forward-declaration-and-copy-control/"/>
-    <updated>2013-10-24T05:33:00+08:00</updated>
-    <id>http://aluenkinglee.com/blog/2013/10/24/c-plus-plus-forward-declaration-and-copy-control</id>
-    <content type="html"><![CDATA[<p>突然有兴致想起了看会C++，因为最近一直是python，java，python的节奏…在这样下去，C++水平恐怕就停留在了只会编算法的地儿了…</p>
-
-<p>随手一翻，看到了复制控制。对于这章，印象里的记忆是：
-» 如果一个类它有形如指针或者申请了其他的系统资源成员，这个时候就得注意了，如申请资源，如何释放资源，复制的时候应该注意这些成员的行为是怎么样的。</p>
-
-<p>然后，就不是很清楚了。大概看了看 其实也差不多…好吧是差很多。编程的过程中出现了一些问题。在这里记录下来&gt;.&lt; 真实忘不了了！</p>
-
-<h5 id="section">复制构造函数</h5>
-<p>它是一个特殊的构造函数，而且形参常用const Type&amp; 来修饰(如果凶残点，用指针也不是不行，但一定得是这两种！想想是为什么？)</p>
-
-<!--more-->
-<p>有两种情况会调用它：</p>
-
-<ol>
-  <li>定义一个新对象，并用一个同类型的对象对它初始化，就像这样 <code>string fileDesp(filename);</code>此处的filename是已经定义好的对象。’显示调用’</li>
-  <li>复制一个对象，并把它作为实参传给一个函数。’隐式调用’</li>
-  <li>从函数返回时复制一个对象。’隐式调用’</li>
-  <li>初始化顺序容器中的元素。’隐式调用’</li>
-  <li>根据元素初始化列表初始化数组元素。’隐式调用’</li>
-</ol>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="n">string</span> <span class="n">book</span> <span class="o">=</span> <span class="s">&quot;ISBN-2323-23234&quot;</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>创建book对象时，编译器首先会接受一个C语言风格形参的string构造函数，创建一个临时对象，然后调用string的复制构造函数将book初始化那个临时对象的副本。（但是我感觉更像是’临时对象-&gt;赋值操作’..这里需要编码测试一下）</p>
-
-<p>和java，python创建对象的方法来比,C++方法真心多…</p>
-
-<h5 id="section-1">合成的复制构造函数</h5>
-<p>就是自个没写编译器默认提供的复制构造函数，完成的功能很简单，数据成员逐个初始化，（<code>static</code>成员例外！！因为他们是属于类的！！）</p>
-
-<h5 id="explicit">关于explicit的复制构造函数</h5>
-<p>(以后加上，真心没写过，只知道IO类型的复制构造函数都是explicit的)</p>
-
-<h5 id="section-2">赋值重载</h5>
-<p>=是个二元运算符，所以有两个形参，分别对应左操作数和右操作数(const引用),当为成员函数时就是左操作数默认绑定到this指针上了。返回值为同一类型的引用。</p>
-
-<h5 id="section-3">关于析构函数</h5>
-<p>析构函数就是用来回收那些申请的系统资源的。所以自个度量何时该自己写给类的析构函数吧。</p>
-
-<h5 id="section-4">关于何时调用析构函数</h5>
-<ol>
-  <li>撤销类的对象自动调用</li>
-  <li>动态分配的对象只有在删除指向该指针时，才会运行析构函数！！否则会导致内存泄漏，小心啦。</li>
-</ol>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="n">string</span> <span class="n">filename</span> <span class="o">*</span> <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">string</span><span class="p">();</span>
-</span><span class="line"><span class="k">delete</span> <span class="n">p</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-<p>上述删除的行为不会销毁属于类的成员对象——static成员！其实挺好理解的啊。</p>
-
-<p>下面是个例子。现在先在这里贴下代码，以后放到github里面去。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-<span class="line-number">38</span>
-<span class="line-number">39</span>
-<span class="line-number">40</span>
-<span class="line-number">41</span>
-<span class="line-number">42</span>
-<span class="line-number">43</span>
-<span class="line-number">44</span>
-<span class="line-number">45</span>
-<span class="line-number">46</span>
-<span class="line-number">47</span>
-<span class="line-number">48</span>
-<span class="line-number">49</span>
-<span class="line-number">50</span>
-<span class="line-number">51</span>
-<span class="line-number">52</span>
-<span class="line-number">53</span>
-<span class="line-number">54</span>
-<span class="line-number">55</span>
-<span class="line-number">56</span>
-<span class="line-number">57</span>
-<span class="line-number">58</span>
-<span class="line-number">59</span>
-<span class="line-number">60</span>
-<span class="line-number">61</span>
-<span class="line-number">62</span>
-<span class="line-number">63</span>
-<span class="line-number">64</span>
-<span class="line-number">65</span>
-<span class="line-number">66</span>
-<span class="line-number">67</span>
-<span class="line-number">68</span>
-<span class="line-number">69</span>
-<span class="line-number">70</span>
-<span class="line-number">71</span>
-<span class="line-number">72</span>
-<span class="line-number">73</span>
-<span class="line-number">74</span>
-<span class="line-number">75</span>
-<span class="line-number">76</span>
-<span class="line-number">77</span>
-<span class="line-number">78</span>
-<span class="line-number">79</span>
-<span class="line-number">80</span>
-<span class="line-number">81</span>
-<span class="line-number">82</span>
-<span class="line-number">83</span>
-<span class="line-number">84</span>
-<span class="line-number">85</span>
-<span class="line-number">86</span>
-<span class="line-number">87</span>
-<span class="line-number">88</span>
-<span class="line-number">89</span>
-<span class="line-number">90</span>
-<span class="line-number">91</span>
-<span class="line-number">92</span>
-<span class="line-number">93</span>
-<span class="line-number">94</span>
-<span class="line-number">95</span>
-<span class="line-number">96</span>
-<span class="line-number">97</span>
-<span class="line-number">98</span>
-<span class="line-number">99</span>
-<span class="line-number">100</span>
-<span class="line-number">101</span>
-<span class="line-number">102</span>
-<span class="line-number">103</span>
-<span class="line-number">104</span>
-<span class="line-number">105</span>
-<span class="line-number">106</span>
-<span class="line-number">107</span>
-<span class="line-number">108</span>
-<span class="line-number">109</span>
-<span class="line-number">110</span>
-<span class="line-number">111</span>
-<span class="line-number">112</span>
-<span class="line-number">113</span>
-<span class="line-number">114</span>
-<span class="line-number">115</span>
-<span class="line-number">116</span>
-<span class="line-number">117</span>
-<span class="line-number">118</span>
-<span class="line-number">119</span>
-<span class="line-number">120</span>
-<span class="line-number">121</span>
-<span class="line-number">122</span>
-<span class="line-number">123</span>
-<span class="line-number">124</span>
-<span class="line-number">125</span>
-<span class="line-number">126</span>
-<span class="line-number">127</span>
-<span class="line-number">128</span>
-<span class="line-number">129</span>
-<span class="line-number">130</span>
-<span class="line-number">131</span>
-<span class="line-number">132</span>
-<span class="line-number">133</span>
-<span class="line-number">134</span>
-<span class="line-number">135</span>
-<span class="line-number">136</span>
-<span class="line-number">137</span>
-<span class="line-number">138</span>
-<span class="line-number">139</span>
-<span class="line-number">140</span>
-<span class="line-number">141</span>
-<span class="line-number">142</span>
-<span class="line-number">143</span>
-<span class="line-number">144</span>
-<span class="line-number">145</span>
-<span class="line-number">146</span>
-<span class="line-number">147</span>
-<span class="line-number">148</span>
-<span class="line-number">149</span>
-<span class="line-number">150</span>
-<span class="line-number">151</span>
-<span class="line-number">152</span>
-<span class="line-number">153</span>
-<span class="line-number">154</span>
-<span class="line-number">155</span>
-<span class="line-number">156</span>
-<span class="line-number">157</span>
-<span class="line-number">158</span>
-<span class="line-number">159</span>
-<span class="line-number">160</span>
-<span class="line-number">161</span>
-<span class="line-number">162</span>
-<span class="line-number">163</span>
-<span class="line-number">164</span>
-<span class="line-number">165</span>
-<span class="line-number">166</span>
-<span class="line-number">167</span>
-<span class="line-number">168</span>
-<span class="line-number">169</span>
-<span class="line-number">170</span>
-<span class="line-number">171</span>
-<span class="line-number">172</span>
-<span class="line-number">173</span>
-<span class="line-number">174</span>
-<span class="line-number">175</span>
-<span class="line-number">176</span>
-<span class="line-number">177</span>
-<span class="line-number">178</span>
-<span class="line-number">179</span>
-<span class="line-number">180</span>
-<span class="line-number">181</span>
-<span class="line-number">182</span>
-<span class="line-number">183</span>
-<span class="line-number">184</span>
-<span class="line-number">185</span>
-<span class="line-number">186</span>
-<span class="line-number">187</span>
-<span class="line-number">188</span>
-<span class="line-number">189</span>
-<span class="line-number">190</span>
-<span class="line-number">191</span>
-<span class="line-number">192</span>
-<span class="line-number">193</span>
-<span class="line-number">194</span>
-<span class="line-number">195</span>
-<span class="line-number">196</span>
-<span class="line-number">197</span>
-<span class="line-number">198</span>
-</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
-</span><span class="line"><span class="cp">#include &lt;set&gt;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">;</span>
-</span><span class="line"><span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">set</span><span class="p">;</span>
-</span><span class="line"><span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">;</span>
-</span><span class="line"><span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span><span class="line"><span class="c1">//predeclaration of Message</span>
-</span><span class="line"><span class="k">class</span> <span class="nc">Message</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Folder</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">    <span class="n">Folder</span><span class="p">(){</span>
-</span><span class="line">    	<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Folder&quot;</span> <span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">    <span class="n">Folder</span><span class="p">(</span><span class="k">const</span> <span class="n">Folder</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="n">Folder</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Folder</span> <span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="o">~</span><span class="n">Folder</span><span class="p">();</span>
-</span><span class="line">
-</span><span class="line">    <span class="kt">void</span> <span class="n">save</span><span class="p">(</span><span class="n">Message</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="kt">void</span> <span class="n">remove</span><span class="p">(</span><span class="n">Message</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="kt">void</span> <span class="n">addMsg</span><span class="p">(</span><span class="n">Message</span><span class="o">*</span><span class="p">);</span>
-</span><span class="line">    <span class="kt">void</span> <span class="n">remMsg</span><span class="p">(</span><span class="n">Message</span><span class="o">*</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line"><span class="k">private</span><span class="o">:</span>
-</span><span class="line">    <span class="n">set</span><span class="o">&lt;</span><span class="n">Message</span><span class="o">*&gt;</span> <span class="n">messages</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="kt">void</span> <span class="n">put_Folder_in_Message</span><span class="p">(</span><span class="k">const</span> <span class="n">set</span><span class="o">&lt;</span><span class="n">Message</span><span class="o">*&gt;&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="kt">void</span> <span class="n">remove_Folder_from_Message</span><span class="p">();</span>
-</span><span class="line">
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Message</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">    <span class="n">Message</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span> <span class="n">str</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span><span class="o">:</span>
-</span><span class="line">        <span class="n">contents</span><span class="p">(</span><span class="n">str</span><span class="p">)</span>
-</span><span class="line">        <span class="p">{}</span>
-</span><span class="line">    <span class="n">Message</span><span class="p">(</span><span class="k">const</span> <span class="n">Message</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="n">Message</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Message</span> <span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="o">~</span><span class="n">Message</span><span class="p">();</span>
-</span><span class="line">
-</span><span class="line">    <span class="kt">void</span> <span class="n">save</span><span class="p">(</span><span class="n">Folder</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="kt">void</span> <span class="n">remove</span><span class="p">(</span><span class="n">Folder</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="kt">void</span> <span class="n">addFldr</span><span class="p">(</span><span class="n">Folder</span><span class="o">*</span><span class="p">);</span>
-</span><span class="line">    <span class="kt">void</span> <span class="n">remFldr</span><span class="p">(</span><span class="n">Folder</span><span class="o">*</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line"><span class="k">private</span><span class="o">:</span>
-</span><span class="line">    <span class="n">string</span> <span class="n">contents</span><span class="p">;</span>
-</span><span class="line">    <span class="n">set</span><span class="o">&lt;</span><span class="n">Folder</span><span class="o">*&gt;</span> <span class="n">folders</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="kt">void</span> <span class="n">put_Msg_in_Folders</span><span class="p">(</span><span class="k">const</span> <span class="n">set</span><span class="o">&lt;</span><span class="n">Folder</span><span class="o">*&gt;&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="kt">void</span> <span class="n">remove_Msg_from_Folders</span><span class="p">();</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line">
-</span><span class="line"><span class="n">Folder</span><span class="o">::</span><span class="n">Folder</span><span class="p">(</span><span class="k">const</span> <span class="n">Folder</span><span class="o">&amp;</span> <span class="n">f</span><span class="p">)</span><span class="o">:</span>
-</span><span class="line">    <span class="n">messages</span><span class="p">(</span><span class="n">f</span><span class="p">.</span><span class="n">messages</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">put_Folder_in_Message</span><span class="p">(</span><span class="n">messages</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">void</span> <span class="n">Folder</span><span class="o">::</span><span class="n">put_Folder_in_Message</span><span class="p">(</span><span class="k">const</span> <span class="n">set</span><span class="o">&lt;</span><span class="n">Message</span><span class="o">*&gt;</span> <span class="o">&amp;</span> <span class="n">msg</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">for</span> <span class="p">(</span><span class="n">set</span><span class="o">&lt;</span><span class="n">Message</span><span class="o">*&gt;::</span><span class="n">const_iterator</span> <span class="n">beg</span> <span class="o">=</span> <span class="n">msg</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
-</span><span class="line">            <span class="n">beg</span> <span class="o">!=</span> <span class="n">msg</span><span class="p">.</span><span class="n">end</span><span class="p">();</span>
-</span><span class="line">            <span class="o">++</span><span class="n">beg</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="p">(</span><span class="o">*</span><span class="n">beg</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">addFldr</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">Folder</span><span class="o">&amp;</span> <span class="n">Folder</span><span class="o">::</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Folder</span> <span class="o">&amp;</span> <span class="n">f</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">if</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">f</span> <span class="o">!=</span> <span class="k">this</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="c1">//先把自己的给清除掉，在加上要赋值的，要不然肯定不一样。。</span>
-</span><span class="line">        <span class="c1">//因为Messages不一样。。</span>
-</span><span class="line">        <span class="n">remove_Folder_from_Message</span><span class="p">();</span>
-</span><span class="line">        <span class="n">messages</span> <span class="o">=</span> <span class="n">f</span><span class="p">.</span><span class="n">messages</span><span class="p">;</span>
-</span><span class="line">        <span class="n">put_Folder_in_Message</span><span class="p">(</span><span class="n">messages</span><span class="p">);</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">    <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">void</span> <span class="n">Folder</span><span class="o">::</span><span class="n">remove_Folder_from_Message</span><span class="p">()</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">for</span><span class="p">(</span><span class="n">set</span><span class="o">&lt;</span><span class="n">Message</span><span class="o">*&gt;::</span><span class="n">const_iterator</span> <span class="n">beg</span> <span class="o">=</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">messages</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
-</span><span class="line">            <span class="n">beg</span> <span class="o">!=</span> <span class="n">messages</span><span class="p">.</span><span class="n">end</span><span class="p">();</span>
-</span><span class="line">            <span class="o">++</span><span class="n">beg</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="p">(</span><span class="o">*</span><span class="n">beg</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">remFldr</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">Folder</span><span class="o">::~</span><span class="n">Folder</span><span class="p">()</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">remove_Folder_from_Message</span><span class="p">();</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">void</span> <span class="n">Folder</span><span class="o">::</span><span class="n">save</span><span class="p">(</span><span class="n">Message</span> <span class="o">&amp;</span> <span class="n">msg</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">addMsg</span><span class="p">(</span><span class="o">&amp;</span><span class="n">msg</span><span class="p">);</span>
-</span><span class="line">    <span class="n">msg</span><span class="p">.</span><span class="n">addFldr</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">void</span> <span class="n">Folder</span><span class="o">::</span><span class="n">remove</span><span class="p">(</span><span class="n">Message</span><span class="o">&amp;</span> <span class="n">msg</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">remMsg</span><span class="p">(</span><span class="o">&amp;</span><span class="n">msg</span><span class="p">);</span>
-</span><span class="line">    <span class="n">msg</span><span class="p">.</span><span class="n">remFldr</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">void</span> <span class="n">Folder</span><span class="o">::</span><span class="n">addMsg</span><span class="p">(</span><span class="n">Message</span><span class="o">*</span> <span class="n">msg</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">messages</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">void</span> <span class="n">Folder</span><span class="o">::</span><span class="n">remMsg</span><span class="p">(</span><span class="n">Message</span><span class="o">*</span> <span class="n">msg</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">messages</span><span class="p">.</span><span class="n">erase</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="c1">//copy construction ,put the new message into the folders where the msg is pointed.</span>
-</span><span class="line"><span class="kr">inline</span> <span class="n">Message</span><span class="o">::</span><span class="n">Message</span><span class="p">(</span><span class="k">const</span> <span class="n">Message</span><span class="o">&amp;</span> <span class="n">m</span><span class="p">)</span><span class="o">:</span>
-</span><span class="line">    <span class="n">contents</span><span class="p">(</span><span class="n">m</span><span class="p">.</span><span class="n">contents</span><span class="p">),</span> <span class="n">folders</span><span class="p">(</span><span class="n">m</span><span class="p">.</span><span class="n">folders</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">put_Msg_in_Folders</span><span class="p">(</span><span class="n">folders</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">void</span> <span class="n">Message</span><span class="o">::</span><span class="n">put_Msg_in_Folders</span><span class="p">(</span><span class="k">const</span> <span class="n">set</span><span class="o">&lt;</span><span class="n">Folder</span><span class="o">*&gt;</span> <span class="o">&amp;</span><span class="n">folders</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">for</span><span class="p">(</span><span class="n">set</span><span class="o">&lt;</span><span class="n">Folder</span><span class="o">*&gt;::</span><span class="n">const_iterator</span> <span class="n">beg</span> <span class="o">=</span> <span class="n">folders</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
-</span><span class="line">            <span class="n">beg</span> <span class="o">!=</span> <span class="n">folders</span><span class="p">.</span><span class="n">end</span><span class="p">();</span>
-</span><span class="line">            <span class="o">++</span> <span class="n">beg</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="c1">//beg is a pointer to Folder*</span>
-</span><span class="line">        <span class="p">(</span><span class="o">*</span><span class="n">beg</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">addMsg</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kr">inline</span> <span class="n">Message</span><span class="o">&amp;</span> <span class="n">Message</span><span class="o">::</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Message</span><span class="o">&amp;</span> <span class="n">msg</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="o">&amp;</span><span class="n">msg</span> <span class="o">!=</span> <span class="k">this</span><span class="p">)</span> <span class="p">{</span>
-</span><span class="line">        <span class="c1">//首先把自己指向的那些folder都给取消掉</span>
-</span><span class="line">        <span class="n">remove_Msg_from_Folders</span><span class="p">();</span>
-</span><span class="line">        <span class="c1">//消息的内容copy过来</span>
-</span><span class="line">        <span class="n">contents</span> <span class="o">=</span> <span class="n">msg</span><span class="p">.</span><span class="n">contents</span><span class="p">;</span>
-</span><span class="line">        <span class="n">folders</span> <span class="o">=</span> <span class="n">msg</span><span class="p">.</span><span class="n">folders</span><span class="p">;</span>
-</span><span class="line">        <span class="n">put_Msg_in_Folders</span><span class="p">(</span><span class="n">folders</span><span class="p">);</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">    <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">void</span> <span class="n">Message</span><span class="o">::</span><span class="n">remove_Msg_from_Folders</span><span class="p">()</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="k">for</span><span class="p">(</span><span class="n">set</span><span class="o">&lt;</span><span class="n">Folder</span><span class="o">*&gt;::</span><span class="n">const_iterator</span> <span class="n">beg</span> <span class="o">=</span> <span class="n">folders</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
-</span><span class="line">            <span class="n">beg</span> <span class="o">!=</span> <span class="n">folders</span><span class="p">.</span><span class="n">end</span><span class="p">();</span>
-</span><span class="line">            <span class="o">++</span><span class="n">beg</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="p">(</span><span class="o">*</span><span class="n">beg</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">remMsg</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kr">inline</span> <span class="n">Message</span><span class="o">::~</span><span class="n">Message</span><span class="p">()</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">remove_Msg_from_Folders</span><span class="p">();</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">void</span> <span class="n">Message</span><span class="o">::</span><span class="n">save</span><span class="p">(</span><span class="n">Folder</span><span class="o">&amp;</span> <span class="n">folder</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">addFldr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">folder</span><span class="p">);</span>
-</span><span class="line">    <span class="n">folder</span><span class="p">.</span><span class="n">addMsg</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">void</span> <span class="n">Message</span><span class="o">::</span><span class="n">addFldr</span><span class="p">(</span><span class="n">Folder</span><span class="o">*</span> <span class="n">pfolder</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">folders</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pfolder</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">void</span> <span class="n">Message</span><span class="o">::</span><span class="n">remove</span><span class="p">(</span><span class="n">Folder</span><span class="o">&amp;</span> <span class="n">folder</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">remFldr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">folder</span><span class="p">);</span>
-</span><span class="line">    <span class="n">folder</span><span class="p">.</span><span class="n">remMsg</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">void</span> <span class="n">Message</span><span class="o">::</span><span class="n">remFldr</span><span class="p">(</span><span class="n">Folder</span><span class="o">*</span> <span class="n">pfolder</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">folders</span><span class="p">.</span><span class="n">erase</span><span class="p">(</span><span class="n">pfolder</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">main</span><span class="p">()</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">	<span class="n">Message</span> <span class="n">m</span><span class="p">(</span><span class="s">&quot;dsfasdf&quot;</span><span class="p">);</span>
-</span><span class="line">	<span class="n">Folder</span> <span class="n">f</span> <span class="o">=</span> <span class="n">Folder</span><span class="p">();</span>
-</span><span class="line">	<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;asdf&quot;</span><span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>可以运行，但是不是想要的。</p>
-
-<p>正确的应该分开写</p>
-
-<p><code>Folder.h</code></p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-<span class="line-number">38</span>
-<span class="line-number">39</span>
-<span class="line-number">40</span>
-<span class="line-number">41</span>
-</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
-</span><span class="line"><span class="cp">#include &lt;set&gt;</span>
-</span><span class="line">
-</span><span class="line"><span class="cp">#ifndef __Folder__</span>
-</span><span class="line"><span class="cp">#define __Folder__</span>
-</span><span class="line">
-</span><span class="line"><span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">;</span>
-</span><span class="line"><span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">set</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">
-</span><span class="line"><span class="cp">#include &quot;Message.h&quot;</span>
-</span><span class="line"><span class="c1">//predeclaration of Message</span>
-</span><span class="line"><span class="k">class</span> <span class="nc">Message</span><span class="p">;</span>
-</span><span class="line"><span class="c1">// Message is a incomplete type.It can be used in limited ways only.</span>
-</span><span class="line"><span class="c1">// 1.can not define object of this type.</span>
-</span><span class="line"><span class="c1">// 2.only used as a pointer or ref.</span>
-</span><span class="line"><span class="c1">// 3.declare it as the formal parameter of a function or return type of a function.</span>
-</span><span class="line"><span class="k">class</span> <span class="nc">Folder</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">    <span class="n">Folder</span><span class="p">(){}</span>
-</span><span class="line">    <span class="n">Folder</span><span class="p">(</span><span class="k">const</span> <span class="n">Folder</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="n">Folder</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Folder</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="o">~</span><span class="n">Folder</span><span class="p">();</span>
-</span><span class="line">
-</span><span class="line">    <span class="c1">// Message is used as the formal parameter.</span>
-</span><span class="line">    <span class="kt">void</span> <span class="n">save</span><span class="p">(</span><span class="n">Message</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="kt">void</span> <span class="n">remove</span><span class="p">(</span><span class="n">Message</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="kt">void</span> <span class="n">addMsg</span><span class="p">(</span><span class="n">Message</span><span class="o">*</span><span class="p">);</span>
-</span><span class="line">    <span class="kt">void</span> <span class="n">remMsg</span><span class="p">(</span><span class="n">Message</span><span class="o">*</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line"><span class="k">private</span><span class="o">:</span>
-</span><span class="line">    <span class="c1">// Message is used as the typename of the template.</span>
-</span><span class="line">    <span class="n">set</span><span class="o">&lt;</span><span class="n">Message</span><span class="o">*&gt;</span> <span class="n">messages</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="kt">void</span> <span class="n">put_Folder_in_Message</span><span class="p">(</span><span class="k">const</span> <span class="n">set</span><span class="o">&lt;</span><span class="n">Message</span><span class="o">*&gt;&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="kt">void</span> <span class="n">remove_Folder_from_Message</span><span class="p">();</span>
-</span><span class="line">
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="cp">#endif</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p><code>Message.h</code></p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-<span class="line-number">38</span>
-<span class="line-number">39</span>
-<span class="line-number">40</span>
-<span class="line-number">41</span>
-<span class="line-number">42</span>
-</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
-</span><span class="line"><span class="cp">#include &lt;set&gt;</span>
-</span><span class="line">
-</span><span class="line"><span class="cp">#ifndef __Message__</span>
-</span><span class="line"><span class="cp">#define __Message__</span>
-</span><span class="line">
-</span><span class="line"><span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">;</span>
-</span><span class="line"><span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">set</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="cp">#include &quot;Folder.h&quot;</span>
-</span><span class="line"><span class="c1">//predeclaration of Folder</span>
-</span><span class="line"><span class="k">class</span> <span class="nc">Folder</span><span class="p">;</span>
-</span><span class="line"><span class="c1">// Folder is a incomplete type.It only can be used in limited ways.</span>
-</span><span class="line"><span class="c1">// 1.can not define object of this type.</span>
-</span><span class="line"><span class="c1">// 2.only used as a pointer or ref.</span>
-</span><span class="line"><span class="c1">// 3.declare it as the formal parameter of a function or return type of a function.</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Message</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">    <span class="n">Message</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span> <span class="n">str</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span><span class="o">:</span>
-</span><span class="line">        <span class="n">contents</span><span class="p">(</span><span class="n">str</span><span class="p">)</span> <span class="p">{}</span>
-</span><span class="line">    <span class="n">Message</span><span class="p">(</span><span class="k">const</span> <span class="n">Message</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="n">Message</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Message</span> <span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="o">~</span><span class="n">Message</span><span class="p">();</span>
-</span><span class="line">
-</span><span class="line">    <span class="c1">// Folder is used as the formal parameter.</span>
-</span><span class="line">    <span class="kt">void</span> <span class="n">save</span><span class="p">(</span><span class="n">Folder</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="kt">void</span> <span class="n">remove</span><span class="p">(</span><span class="n">Folder</span><span class="o">&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="kt">void</span> <span class="n">addFldr</span><span class="p">(</span><span class="n">Folder</span><span class="o">*</span><span class="p">);</span>
-</span><span class="line">    <span class="kt">void</span> <span class="n">remFldr</span><span class="p">(</span><span class="n">Folder</span><span class="o">*</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line"><span class="k">private</span><span class="o">:</span>
-</span><span class="line">    <span class="n">string</span> <span class="n">contents</span><span class="p">;</span>
-</span><span class="line">    <span class="n">set</span><span class="o">&lt;</span><span class="n">Folder</span><span class="o">*&gt;</span> <span class="n">folders</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line">    <span class="c1">// Folder is used as the typename of the template.</span>
-</span><span class="line">    <span class="kt">void</span> <span class="n">put_Msg_in_Folders</span><span class="p">(</span><span class="k">const</span> <span class="n">set</span><span class="o">&lt;</span><span class="n">Folder</span><span class="o">*&gt;&amp;</span><span class="p">);</span>
-</span><span class="line">    <span class="kt">void</span> <span class="n">remove_Msg_from_Folders</span><span class="p">();</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="cp">#endif</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>一个简单的例子，就是来测试一下<code>class A=B</code>时究竟会不会同时调用赋值构造函数和拷贝构造函数。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-<span class="line-number">38</span>
-<span class="line-number">39</span>
-<span class="line-number">40</span>
-<span class="line-number">41</span>
-<span class="line-number">42</span>
-<span class="line-number">43</span>
-<span class="line-number">44</span>
-<span class="line-number">45</span>
-<span class="line-number">46</span>
-<span class="line-number">47</span>
-<span class="line-number">48</span>
-<span class="line-number">49</span>
-<span class="line-number">50</span>
-<span class="line-number">51</span>
-<span class="line-number">52</span>
-<span class="line-number">53</span>
-<span class="line-number">54</span>
-<span class="line-number">55</span>
-</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
-</span><span class="line"><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">object</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line"><span class="k">private</span><span class="o">:</span>
-</span><span class="line">    <span class="kt">int</span> <span class="n">data</span><span class="p">;</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">    <span class="n">object</span><span class="p">(</span><span class="kt">int</span> <span class="n">d</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span>
-</span><span class="line">        <span class="n">data</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;default constructor&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">object</span><span class="p">(</span><span class="k">const</span> <span class="n">object</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span><span class="o">:</span>
-</span><span class="line">        <span class="n">data</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;copy constructor&quot;</span> <span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">object</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">object</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span>
-</span><span class="line">    <span class="p">{</span>
-</span><span class="line">        <span class="k">if</span><span class="p">(</span><span class="o">&amp;</span><span class="n">other</span> <span class="o">!=</span> <span class="k">this</span><span class="p">)</span>
-</span><span class="line">        <span class="p">{</span>
-</span><span class="line">            <span class="n">data</span> <span class="o">=</span> <span class="n">other</span><span class="p">.</span><span class="n">data</span><span class="p">;</span>
-</span><span class="line">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;assignment constructor&quot;</span> <span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
-</span><span class="line">        <span class="p">}</span>
-</span><span class="line">        <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
-</span><span class="line">    <span class="p">}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">void</span> <span class="n">behavior1</span><span class="p">(</span><span class="n">object</span> <span class="n">other</span><span class="p">)</span>	<span class="c1">//形参调用copy constructor</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;test behavior1&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">void</span> <span class="n">behavior2</span><span class="p">(</span><span class="n">object</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;test behavior2&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line"><span class="kt">int</span> <span class="n">main</span><span class="p">()</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">    <span class="n">object</span> <span class="n">A</span><span class="p">;</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">    <span class="n">object</span> <span class="n">B</span><span class="p">(</span><span class="n">A</span><span class="p">);</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">    <span class="n">object</span> <span class="n">C</span> <span class="o">=</span> <span class="n">A</span><span class="p">;</span>  <span class="c1">//这个情况仍然只是调用copy constructor</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">    <span class="n">C</span><span class="o">=</span><span class="n">B</span><span class="p">;</span>	   <span class="c1">//只有这种情况下才会调用assignment constructor</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">    <span class="n">behavior1</span><span class="p">(</span><span class="n">A</span><span class="p">);</span>
-</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">    <span class="n">behavior2</span><span class="p">(</span><span class="n">A</span><span class="p">);</span>
-</span><span class="line">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>测试结果显示如下：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-</pre></td><td class="code"><pre><code class="text"><span class="line">default constructor
-</span><span class="line">
-</span><span class="line">copy constructor
-</span><span class="line">
-</span><span class="line">copy constructor
-</span><span class="line">
-</span><span class="line">assignment constructor
-</span><span class="line">
-</span><span class="line">copy constructor
-</span><span class="line">test behavior1
-</span><span class="line">
-</span><span class="line">test behavior2
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[virtualbox网络环境和登录]]></title>
-    <link href="http://aluenkinglee.com/blog/2013/10/20/virtualbox-network-environment-and-login/"/>
-    <updated>2013-10-20T22:46:00+08:00</updated>
-    <id>http://aluenkinglee.com/blog/2013/10/20/virtualbox-network-environment-and-login</id>
-    <content type="html"><![CDATA[<p>最近由于实验室需要研究SDN的一些东西，再此先来搭配下环境。
-对于虚拟机的一些选择，可以看这里:
-<a href="http://mininet.org/vm-setup-notes/">vm-setup-notes</a> 
-我这里的环境是:</p>
-
-<p><code>os:            debian 7(wheezy) 64bit</code></p>
-
-<p><code>xwindows:      kde</code></p>
-
-<p><code>VM：           virtualbox</code></p>
-
-<p><code>controller:    pox</code></p>
-
-<!--more-->
-
-<p>按照上述的网址，可以比较容易的搭配出来需要的环境，下面就说以下之后遇到的问题。</p>
-
-<ul>
-  <li>virtualbox的鼠标独占问题，只是提示太不明明显了！对于那个right ctrl的提示我郁闷了好一会，我以为是鼠标右键+ctrl…其实是右边的ctrl键。对于这个键的设定，你可以从“管理”&gt;“全局设定”&gt;”热键”来设置你喜欢的按键..我就吐槽这么一句，之前vmware对此的说明很明了！</li>
-  <li>Using Host-only adapter to SSH guest from host.</li>
-</ul>
-
-<h3 id="nat">NAT模式</h3>
-<p>特点：
-1. 如果主机可以上网，虚拟机可以上网
-2. 虚拟机之间不能ping通
-3. 虚拟机可以ping通主机（此时ping虚拟机的网关，即是ping主机）
-4. 主机不能ping通虚拟机</p>
-
-<p>但是这个情况下是不能满足我的使用条件…我需要在host登录到guest中，so pass</p>
-
-<h3 id="section">桥接模式</h3>
-<p>特点：
-1. 如果主机可以上网，虚拟机可以上网
-2. 虚拟机之间可以ping通
-3. 虚拟机可以ping通主机
-4. 主机可以ping通虚拟机 (以上各点基于一个前提：主机可以上网)
-5. 如果主机不可以上网，所有1-4特点均无</p>
-
-<p>这个挺好，觉得可以满足我的要求但是，发现它的IP地址要求是自动非配的，我们实验室的IP是校园内网固定IP…</p>
-
-<h3 id="host-only-adapter">Host-only Adapter模式</h3>
-
-<p>特点：</p>
-
-<ol>
-  <li>虚拟机<code>不</code>可以上网</li>
-  <li>虚拟机之间可以ping通</li>
-  <li>虚拟机可以ping通主机（注意虚拟机与主机通信是通过主机的名为VirtualBox Host-Only Network的网卡，因此ip
-是该网卡ip <code>192.168.56.1</code>，而不是你现在正在上网所用的ip）</li>
-  <li>主机可以ping通虚拟机</li>
-</ol>
-
-<p>应用场景：
-需要搭建一个模拟局域网，所有机器可以互访。（颇不得以选这个的..）</p>
-
-<p>ip样式：<code>netstat -rn</code>查看路由表
-ip 与本机VirtualBox Host-Only Network的网卡ip在同一网段内（默认192.168.56.*）
-网关 本机VirtualBox Host-Only Network的网卡ip（默认192.168.56.1）</p>
-
-<h3 id="section-1">登录虚拟机</h3>
-<p>登录虚拟机，首先开开virtualbox的虚拟机</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">mininet-vm login: mininet
-</span><span class="line">Password: mininet</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>接下来查看我们的vm地址：（在guest里面操作）</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">sudo ifconfig</span></code></pre></td></tr></table></div></figure></notextile></div>
-<p>例如我这里的ip地址是<code>192.168.56.101</code>,然后就使用我们可爱的SSH</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">ssh -Y mininet@192.168.56.101</span></code></pre></td></tr></table></div></figure></notextile></div>
-<p>输入密码就可以了</p>
-
-<p>当然上面的不好看，做下别名好了。（在我们host里面操作）</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">sudo nano /etc/hosts
-</span><span class="line">192.168.56.101 mininet-vm</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>保存即可，这样子就可以使用</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">ssh -Y mininet@mininet-vm</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>接下来就可以去玩下面的实验了^^</p>
-
-<blockquote>
-  <p>参考文档:</p>
-</blockquote>
-
-<blockquote>
-  <p><a href="http://blog.csdn.net/yxc135/article/details/8458939">VirtualBox虚拟机网络环境解析</a></p>
-</blockquote>
-
-<blockquote>
-  <p><a href="http://www.live-in.org/archives/832.html">ssh命令用于远程登录上Linux主机</a></p>
-</blockquote>
-
-<blockquote>
-  <p><a href="http://mininet.org/vm-setup-notes/">SSH into VM</a></p>
-</blockquote>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[MySql交换两列]]></title>
-    <link href="http://aluenkinglee.com/blog/2013/06/14/mysqljiao-huan-liang-lie/"/>
-    <updated>2013-06-14T15:35:00+08:00</updated>
-    <id>http://aluenkinglee.com/blog/2013/06/14/mysqljiao-huan-liang-lie</id>
-    <content type="html"><![CDATA[<p>事情的起因是这个发现数据库中出现了某两列数据正好颠倒了，大部分数据都是正常的，
-这些错误的原因是数据源有问题，今天在进一步的做标签聚类的时候分析的时候发现这
-些占很小比例的误差，辛亏发现了，否则做出来的结果有可能会郁闷很久。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">select id,place_lat,place_lon from `nearbyinfo` where `nearbyinfo`.`place_lat`&gt;0;</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>正常的数据都是&lt; <code>39.xxx</code>, <code>160.2xxx</code> &gt;之间，如图所示:
-<!--more--></p>
-
-<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/11.png?raw=true" alt="正常数据" title="正常数据" /></p>
-
-<p>但是幸好及时发现了存在这样的数据，</p>
-
-<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/12.png?raw=true" alt="异常数据" title="异常数据" /></p>
-
-<p>一开始想的是想写sql语句试着把这两栏的数据给交换过来，可是sql太渣…然后就想着找
-到这些ID和他们的坐标值（都已经出来了），然后用python读出来写成update的语句，
-然后在执行一下就可以了，这也太…</p>
-
-<p>辛亏最终还是找到了，在这还是完整的说明一下吧。首先创建一个表，在Mysql中</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">CREATE DATABASE  IF NOT EXISTS `weibodata` 
-</span><span class="line">USE `weibodata`;
-</span><span class="line">DROP TABLE IF EXISTS `test`;
-</span><span class="line">CREATE TABLE `test` (
-</span><span class="line">  `id` int(11) NOT NULL AUTO_INCREMENT,
-</span><span class="line">  `a` varchar(45) DEFAULT NULL,
-</span><span class="line">  `b` varchar(45) DEFAULT NULL,
-</span><span class="line">  PRIMARY KEY (`id`)
-</span><span class="line">) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-</span><span class="line">LOCK TABLES `test` WRITE;
-</span><span class="line">INSERT INTO `test` VALUES (1,'-1','4'),(2,'3','2');
-</span><span class="line">UNLOCK TABLES;</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>所以看起来会是这个样子:</p>
-
-<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/12.png?raw=true" alt="交换之前" title="交换之前" /></p>
-
-<p>然后执行下面的语句，会发生第二行swap了</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">UPDATE test t1,test t2 SET t1.a=t1.b,t2.b=t2.a where t1.id =t2.id and t1.a&gt;0;</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p><img src="https://github.com/aluenkinglee/aluenkinglee.github.io/blob/source/source/images/2013-06-14-mysqljiao-huan-liang-lie/12.png?raw=true" alt="交换之后" title="交换之后" /></p>
-
-<p>在尝试一下就会变成原样。</p>
-
-<p>问题解决了。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">select id,place_lat,place_lon from nearbyinfo where place_lat &gt;100;
-</span><span class="line">UPDATE nearbyinfo t1,nearbyinfo t2 SET t1.place_lat=t1.place_lon,t2.place_lon=t2.place_lat where t1.id = t2.id and t1.place_lat&gt;100;
-</span><span class="line">select id,place_lat,place_lon from nearbyinfo where id in (1025,4974,4814,2685);</span></code></pre></td></tr></table></div></figure></notextile></div>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[近期总结]]></title>
-    <link href="http://aluenkinglee.com/blog/2013/04/17/jin-qi-zong-jie/"/>
-    <updated>2013-04-17T17:13:00+08:00</updated>
-    <id>http://aluenkinglee.com/blog/2013/04/17/jin-qi-zong-jie</id>
-    <content type="html"><![CDATA[<p>一直以来对数据挖掘，推荐的算法比较感兴趣，可是大家也都知道如果只是看课本上的那些理论性的公式和说辞会给人一种很空泛的感觉，所以个人感觉迫切需要做这方面的实践。可惜做这些的最最最遗憾缺少的就是数据的问题。所以我的给自己整点数据。</p>
-
-<p>还好这学期算是有时间，相对于上个学期一周n多的课程和大作业来说算是幸福多的了。（而且那个时候还要给师兄们各种帮忙，要写android程序版本中的几个activity，呵呵，不过很有意思，师兄有一个是做LBS信息匿名处理服务的，挺有意思，对比微博，人人中的定位&gt;.&lt;就会发现这个很有必要的，获取一个人的坐标信息还是很容易的。）所以就琢磨这弄点数据自己来搞，一开始我是想获得微博的数据，具体来说是获得某个人过去说过的话，然后分析什么样的人，什么样的性格，心理怎么样。（我认为计算机和其他学科的交叉才是王道，说到底，计算机，算法毕竟只是一种计算的工具和技术，和其他学科（比如地理，心理学，生物学）的交叉才会有更多新的发现，现在数据量都很多，人工时处理不了的。机器学习和数据挖掘的应用领域啦~）
-<!-- more -->
-不过跟老板交涉的结果是，嗯，想法是不错，可惜缺少可以定量分析心理学的依据，毕竟你不是研究过心理学的，没有话语权,论文不好发，没个几年时间你不好毕业&gt;&lt;。。好吧，从此我就踏上了LBSNs的不归路，呵呵。话说虽然Foursquare现在半死不活的，但是我个人认为不是LBS的不成功，而是Foursquare本省商业模式的问题，这个得专门写一篇文章，不在这里跑题了。</p>
-
-<p>在LBSN中除了可以分析用户的行为轨迹，感觉这里面没有可以继续深入的了，因为在继续做下去就是匿名，而且很多人都已经做过了。基于地理位置上的数据挖掘和推荐貌似还不是很多(资料查的少的缘故，不敢妄下定论)。</p>
-
-<p>通过新浪微博API调用获取地理位置信息</p>
-
-<h6 id="section">目的</h6>
-
-<p>获取带地理标签的微博数据，为以后分析数据使用。</p>
-
-<h6 id="section-1">相关工作</h6>
-
-<p><code>目前获取微博信息的方法有两种</code> </p>
-
-<ol>
-  <li>
-    <p>编写网络爬虫抓取带地理标签的微博</p>
-  </li>
-  <li>
-    <p>通过OAuth2.0认证使用微博提供的API获取微博</p>
-  </li>
-</ol>
-
-<p><code>网络爬虫的基本工作流程如下</code> </p>
-
-<ol>
-  <li>
-    <p>首先选取一部分精心挑选的种子URL；</p>
-  </li>
-  <li>
-    <p>将这些URL放入待抓取URL队列；</p>
-  </li>
-  <li>
-    <p>从待抓取URL队列中取出待抓取在URL，解析DNS，并且得到主机的ip，并将URL对应的网页下载下来，存储进已下载网页库中。此外，将这些URL放进已抓取URL队列。</p>
-  </li>
-  <li>
-    <p>分析已抓取URL队列中的URL，分析其中的其他URL，并且将URL放入待抓取URL队列，从而进入下一个循环。</p>
-  </li>
-</ol>
-
-<p><code>抓取策略</code></p>
-
-<p>在爬虫系统中，待抓取URL队列是很重要的一部分。待抓取URL队列中的URL以什么样的顺序排列也是一个很重要的问题，因为这涉及到先抓取那个页面，后抓取哪个页面。而决定这些URL排列顺序的方法，叫做抓取策略。下面重点介绍几种常见的抓取策略：</p>
-
-<ul>
-  <li>
-    <p>深度优先遍历策略</p>
-  </li>
-  <li>
-    <p>宽度优先遍历策略</p>
-  </li>
-  <li>
-    <p>反向链接数策略</p>
-  </li>
-  <li>
-    <p>Partial PageRank策略</p>
-  </li>
-</ul>
-
-<p>可是在使用这种方法的过程中，发现了微博在使用cookie登陆的过程中有个加密的处理，这个加密算法一时没有弄明白，我不知道具体的加密步骤所以也反解不出来。所以就使用了另外的方法。</p>
-
-<p><code>使用OAuth2.0认证</code></p>
-
-<p>OAuth（开放授权）是一个开放标准，允许用户让第三方应用访问该用户在某一网站上存储的私密的资源（如照片，视频，联系人列表），而无需将用户名和密码提供给第三方应用。</p>
-
-<p>OAuth允许用户提供一个令牌，而不是用户名和密码来访问他们存放在特定服务提供者的数据。每一个令牌授权一个特定的网站（例如，视频编辑网站)在特定的时段（例如，接下来的2小时内）内访问特定的资源（例如仅仅是某一相册中的视频）。这样，OAuth让用户可以授权第三方网站访问他们存储在另外服务提供者的某些特定信息，而非所有内容。</p>
-
-<h6 id="section-2">认证和授权过程</h6>
-
-<p><code>在认证和授权的过程中涉及的三方包括</code></p>
-
-<ol>
-  <li>
-    <p>服务提供方，用户使用服务提供方来存储受保护的资源，如照片，视频，联系人列表。</p>
-  </li>
-  <li>
-    <p>用户 ，存放在服务提供方的受保护的资源的拥有者。</p>
-  </li>
-  <li>
-    <p>客户端 ，要访问服务提供方资源的第三方应用。在认证过程之前，客户端要向服务提供者申请客户端标识。</p>
-  </li>
-</ol>
-
-<p><code>使用OAuth进行认证和授权的过程如下所示</code></p>
-
-<ol>
-  <li>用户访问客户端的网站，想操作自己存放在服务提供方的资源。</li>
-  <li>客户端向服务提供方请求一个临时令牌。</li>
-  <li>服务提供方验证客户端的身份后，授予一个临时令牌。</li>
-  <li>客户端获得临时令牌后，将用户引导至服务提供方的授权页面请求用户授权。在这个过程中将临时令牌和客户端的回调连接发送给服务提供方。</li>
-  <li>用户在服务提供方的网页上输入用户名和密码，然后授权该客户端访问所请求的资源。</li>
-  <li>授权成功后，服务提供方引导用户返回客户端的网页。</li>
-  <li>客户端根据临时令牌从服务提供方那里获取访问令牌 。</li>
-  <li>服务提供方根据临时令牌和用户的授权情况授予客户端访问令牌。</li>
-  <li>客户端使用获取的访问令牌访问存放在服务提供方上的受保护的资源</li>
-</ol>
-
-<h6 id="section-3">方法</h6>
-
-<p>前期比较了两种方案，决定优先使用网路爬虫的方案。</p>
-
-<p>在使用爬虫的方案时，尽管在使用cookie模拟登陆renren.com，douban.com可以成功，但还是在weibo.com这遇到了另外一个头痛加密数据的问题，之前的工作没有办法得到应用。而且短时间内数据加密的方式解决不了。放弃。</p>
-
-<p>使用OAuth认证调用微博API的方案可以很方便的通过认证并且得到带有地理位置标签的数据。目前获得了35000条微博的数据。</p>
-
-<p>对其返回的数据分析发现，该数据结构足以满足需求，用户id，发布微博时间，发布地点，微博文本内容等。</p>
-
-<p>这些数据的来源是源自微博中周边微博这类地理位置的API。出于实验的目的，我把海淀区划分了15个区域，取区域内的标志性地点的经纬度（可以随时增加其他点），再以一个较低的频率（为了尽量避免取到重复数据）去取这15个点的周边微博（全部含有地理标签）。</p>
-
-<p>对于这些数据的想法，目前是把这些数据标示在地图上，先得到直观上的点的分布，再分析为什么会再此聚集，和什么属性相关。这是基本的想法。</p>
 ]]></content>
   </entry>
   

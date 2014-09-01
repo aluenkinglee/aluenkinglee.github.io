@@ -9,7 +9,8 @@
   <meta name="author" content="Aluen King Lee">
 
   
-  <meta name="description" content="线程的引入是为了提高CPU利用率。线程给操作系统带来的创建维护和管理负担要轻。因为与线程相关的信息比较少，交情的负担意味着线程的代价或开销比较少。当处理器除一个进程并激活另一个进程时，就要发生上下文切换。为了发生上下文切换，操作系统必须启动和重新启动每个进程所需的信息。 &hellip;">
+  <meta name="description" content="首先说明这只是一个思路方向性的大概说明介绍，更多关于业务方面的内容不方便介绍。 如何评价一个人的金融信用，这个可以搜集用户的一些基本数据，比如职业，大学，社交数据来进行评分判断，至于为什么选取这些特征，一个很显然的理由就是
+一个人越倾向使用社交应用，那么这个人就越可能是真实的，可信的。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -103,6 +104,425 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/">Use Svm to Classify Whether a Person Is Good or Bad on Credit Using Sns Data</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-12T17:21:00+08:00" pubdate data-updated="true">Jul 12<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>首先说明这只是一个思路方向性的大概说明介绍，更多关于业务方面的内容不方便介绍。</p>
+
+<p>如何评价一个人的金融信用，这个可以搜集用户的一些基本数据，比如职业，大学，社交数据来进行评分判断，至于为什么选取这些特征，一个很显然的理由就是
+一个人越倾向使用社交应用，那么这个人就越可能是真实的，可信的。职业学校和人的信用也是成一定关系但不是绝对就是向我们想当然的那样。</p>
+
+<p>之前的文章也断断续续的聊过伪匹配，分类的内容，是和此有一定关联。</p>
+
+<p>对于模型的构建，方式有很多，贝叶斯网络，逻辑回归模型，svm模型，甚至是神经网络模型都可以对此进行建模使用，但是哪个性能更好呢？不知道，只有分别做出之后
+比较才可以说明问题。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/07/09/wei-pi-pei/">伪匹配</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-09T17:13:00+08:00" pubdate data-updated="true">Jul 9<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/07/09/wei-pi-pei/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>这里提到的伪匹配的概念是指在网上搜索某些特征词，比如人名公司手机QQ号等内容时，网页反馈的结果：重要关键词在人看来是逻辑没有关联的时候就是伪匹配。</p>
+
+<p>比如说，某XX，公司名，地点很明显的构成一个记录的时候，在人看来是个写在一起的，那么结果就是匹配的。相反，要是搜索词相距很远，那么就是伪匹配。</p>
+
+<p>那么好，人工审核此类内容是否匹配时，是个无聊枯燥的工作内容，那么只好找机器帮忙，思路也很简单，分析样本伪匹配的原因是什么？和网页文档有什么不同？</p>
+
+<p>对目标网页的分析可以发现，搜索词在目标网页中有时是结构化存在的，就是搜索词处在不同的节点中，节点关系为树中的关系，或者是兄弟关系，或者是父子关系。
+同时还有非结构化的内容，比如搜索词是在同一个节点中，此时就不存在上述判断关系，只能由另外一种关系来处理。
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/07/09/wei-pi-pei/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/">朴素贝叶斯文本分类</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-27T13:11:00+08:00" pubdate data-updated="true">Jun 27<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>回顾朴素贝叶斯(NB)分类器:</p>
+
+<script type="math/tex; mode=display">
+p(y_k|x)=\frac{p(y_k)p(x|y_k)}{p(x)}\propto p(y_k)p(x|y_k)=p(y_k)\prod_{i=1}^{d}{p(x_i|y_k)}
+</script>
+
+<p>对于文本分类任务,即对一篇文章进行分类,是 NLP 中最常见的机器学习任务。一般情
+况下,类别从几个到几十不等,或者更多。使用朴素贝叶斯文分类器进行文本分类,我们需要首先考
+虑特征是什么,即x如何表示;<script type="math/tex">p(x_i|y_k )</script>的物理意义是什么,如何计算。
+对于特征方面,文本分类常规都是使用 bag-of-words 的特征,即以文章中出现的词作为
+特征,而不考虑词语出现的顺序。朴素贝叶斯文分类器也一般使用这种形式。那么特征空间的大小,
+就取决于词表(vocabulary)的大小,即语料集合中不重复词的个数。对于汉语来说,一般
+几万到百万不等。</p>
+
+<p>在 bag-of-words 的特征体系下,特征空间是确定了的,但是具体<script type="math/tex">x_i</script>的取值以及对应的
+<script type="math/tex">p(x_i |y_k )</script>的物理意义却可以有不同的考虑,对应着不同的参数计算公式及分类器训练和预测
+的实现。这取决于我们是否考虑词语在文章中出现的频次。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/06/03/lagrange-duality/">拉格朗日对偶</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-03T21:41:00+08:00" pubdate data-updated="true">Jun 3<span>rd</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/06/03/lagrange-duality/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>在解决约束最优化的额问题中，常常利用拉格朗日对偶性将原始问题转化为对偶问题，通过解对偶问题得到原始问题的解。该方法主要应用的SVM和最大熵模型中。</p>
+
+<p>先抛开上面的二次规划问题，先来看看存在等式约束的极值问题求法，比如下面的最优化问题：</p>
+
+<script type="math/tex; mode=display">
+\min _{ w }{ f\left( w \right)  } \\ s.t\quad h_{ i }\left( w \right) =0,\quad i=1,\cdots ,l
+</script>
+
+<p>目标函数是f(w)，下面是等式约束。通常解法是引入拉格朗日算子，这里使用<script type="math/tex">\beta</script>来表示算子，得到拉格朗日公式为</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/06/03/lagrange-duality/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/06/03/my-understanding-about-svm/">从逻辑回归分类到SVM分类</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-03T20:53:00+08:00" pubdate data-updated="true">Jun 3<span>rd</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/06/03/my-understanding-about-svm/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>上一章讲到了线性回归的一个典型算法，核心思想就是利用最小二乘法最为损失函数，不断使用梯度下降法（或者使用随机梯度下降法（stochastic gradient descent））来更新theta值。</p>
+
+<p>后来降到了分类，逻辑回归只不过有个很好的性质就是值分布在0到1之间，正好可以利用到分类上。logistic回归就是要学习得到θ，使得正例的特征远大于 0，负例的特征远
+小于 0，强调在全部训练实例上达到这个目标。为什么说逻辑回归是个线性模型？这是因为该模型是将特性的线性组合作为自变量，然后使用logistic函数（或者说是sigmoid函数）将自变量映射到（0-1）上，将值和概率结合之后从而应用到分类上。
+函数表示形式：</p>
+
+<script type="math/tex; mode=display">
+h_{ \theta  }\left( x \right) =g\left( \theta ^{ T }x \right) =\frac { 1 }{ 1+{e  }^{ -\theta^{T}x } }
+</script>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/06/03/my-understanding-about-svm/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/05/20/kill-process-on-some-port-under-linux-platform/">Linux下通过端口杀死进程</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-20T10:41:00+08:00" pubdate data-updated="true">May 20<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/05/20/kill-process-on-some-port-under-linux-platform/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>就是把一些常用命令记录下来拉。一直在用，可就是容易忘记命令。</p>
+
+<p>floodlight 控制器启动之后，因为不正常的关闭程序（ctrl+c）造成6633端口还在被占用。</p>
+
+<p>流程如下：</p>
+
+<ol>
+  <li>
+    <p>netstat -nlp 查看占用端口号的服务</p>
+  </li>
+  <li>
+    <p>找到该端口号的进程，可以使用grep</p>
+  </li>
+  <li>
+    <p>找到该进程id</p>
+  </li>
+  <li>
+    <p>kill pid</p>
+  </li>
+</ol>
+
+<h5 id="section">查看占用端口号的服务</h5>
+
+<p>可以使用netstat命令</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">Active Internet connections (only servers)
+</span><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+</span><span class="line">Active Internet connections (only servers)
+</span><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+</span><span class="line">tcp        0      0 0.0.0.0:6633            0.0.0.0:*               LISTEN      6267/java
+</span><span class="line">tcp        0      0 0.0.0.0:3307            0.0.0.0:*               LISTEN      12711/
+</span><span class="line">tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      3936/httpd
+</span><span class="line">tcp        0      0 0.0.0.0:21              0.0.0.0:*               LISTEN      3910/
+</span><span class="line">tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      3753/sshd
+</span><span class="line">tcp        0      0 0.0.0.0:25              0.0.0.0:*               LISTEN      3786/
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>######用管道符给grep处理</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"> netstat -nlp | grep 6633
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>既然取出一行了，那就容易了，再筛选一下，用awk分割取出其中一个</p>
+
+<h6 id="section-1">读取出端口号</h6>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">netstat -nlp | grep 6633 | awk <span class="s1">&#39;{print $7}&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>6267/java</p>
+
+<p>意思是取第七个字段，这里默认应该是用tab字符分割的，已经读取出来了，但是还得拿到/前面的数字</p>
+
+<h6 id="awk">取/前面的数字就可以了，这里还是可以用awk处理</h6>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">netstat -nlp | grep 6633 | awk <span class="s1">&#39;{print $7}&#39;</span> | awk -F<span class="s2">&quot;/&quot;</span> <span class="s1">&#39;{ print $1 }&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>6267</p>
+
+<h6 id="kill">把这个数字传给kill就可以</h6>
+
+<p>kill命令不能跟在管道符后面继续处理了，会出错的.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nb">kill</span> <span class="o">[</span><span class="s1">&#39;] netstat -nlp | grep 6633 | awk &#39;</span><span class="o">{</span>print <span class="nv">$7</span><span class="o">}</span><span class="s1">&#39; | awk -F&quot;/&quot; &#39;</span><span class="o">{</span> print <span class="nv">$1</span> <span class="o">}</span><span class="s1">&#39; [&#39;</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<blockquote>
+  <blockquote>
+    <p>其它类似的命令</p>
+  </blockquote>
+</blockquote>
+
+<ol>
+  <li>查看端口属于哪个程序？端口被哪个进程占用</li>
+</ol>
+
+<p>也可以使用lsof命令。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nv">$ </span>lsof -i :6633
+</span><span class="line">
+</span><span class="line">COMMAND   PID   USER      FD   TYPE    DEVICE  SIZE/OFF NODE NAME
+</span><span class="line">java    7838   kinglee   50r   IPv6  35452317       0t0  TCP *:6633 <span class="o">(</span>LISTEN<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="reference">reference</h4>
+
+<ol>
+  <li>
+    <p><a href="http://baike.baidu.com/link?url=idG3yCyykQj00QVBW_jreekVZWjIGU5urL553dG9o4ZYgwpbnjd7jJ2DVjxrm5EZ">netstat</a></p>
+  </li>
+  <li>
+    <p><a href="http://www.cnblogs.com/peter9/archive/2011/07/28/2362156.html">Linux下通过端口杀死进程</a></p>
+  </li>
+  <li>
+    <p><a href="http://blog.csdn.net/andy572633/article/details/7211546">linux下杀死进程（kill）的N种方法</a></p>
+  </li>
+</ol>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -414,6 +834,52 @@ next\left[ q \right] =\begin{Bmatrix} 0 & \quad if\quad { E }_{ q }\quad =\quad 
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2014/05/14/sort-list/">链表排序</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-14T13:51:00+08:00" pubdate data-updated="true">May 14<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/05/14/sort-list/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>链表不想数组那样是连续的即像数组那样随机访问，只能从前往后遍历。所以排序的方法只能是像插入排序，选择排序，和归并排序。</p>
+
+<p>下面就先说归并排序。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/05/14/sort-list/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2014/04/30/generative-method/">Generative Method</a></h1>
     
     
@@ -523,321 +989,6 @@ x|y=1\sim N(\mu_1,\Sigma)
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/30/discriminative-model-vs-generative-model/">Discriminative Model vs. Generative Model</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-04-30T17:17:00+08:00" pubdate data-updated="true">Apr 30<span>th</span>, 2014</time>
-        
-        
-          | <a href="/blog/2014/04/30/discriminative-model-vs-generative-model/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2 id="section">判别模型和生成模型分析</h2>
-
-<p>在学习复习ML内容时，中文检索生成模型搜到了该<a href="http://blog.sciencenet.cn/home.php?mod=space&amp;uid=248173&amp;do=blog&amp;id=227964">这里</a>本文主要参考该文章，并稍作整理。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/30/discriminative-model-vs-generative-model/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/29/dynamic-programming/">Dynamic Programming</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-04-29T19:34:00+08:00" pubdate data-updated="true">Apr 29<span>th</span>, 2014</time>
-        
-        
-          | <a href="/blog/2014/04/29/dynamic-programming/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>好几年了，没有特意去做与ACM相关的算法题了，时至今日，也确实忘得差不多了，不过，现在也到了该拾起来的时候了。</p>
-
-<h5 id="section">动态规划</h5>
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/29/dynamic-programming/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/28/some-commen-list-problems-in-the-interview/">Some Commen List Problems in the Interview</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-04-28T21:54:00+08:00" pubdate data-updated="true">Apr 28<span>th</span>, 2014</time>
-        
-        
-          | <a href="/blog/2014/04/28/some-commen-list-problems-in-the-interview/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>链表是最基本的数据结构，面试官也常常用链表来考察面试者的基本能力，而且链表相关的操作相对而言比较简单，也适合考察写代码的能力。链表的操作也离不开指针，指针又很容易导致出错。综合多方面的原因，链表题目在面试中占据着很重要的地位。本文对链表相关的面试题做了较为全面的整理，希望能对找工作的同学有所帮助。
-链表结点声明如下：</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/28/some-commen-list-problems-in-the-interview/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/21/feature-selection--infomation-gain/">特征选择-信息增益算法</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-04-21T15:41:00+08:00" pubdate data-updated="true">Apr 21<span>st</span>, 2014</time>
-        
-        
-          | <a href="/blog/2014/04/21/feature-selection--infomation-gain/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><strong>信息增益</strong>：特征 $A$ 对于训练数据集$D$的信息增益 $g\left( D,A \right)$,定义为集合 $D$ 的经验熵 $H\left( D \right)$ 与特征 $A$ 在给定条件下 $D$ 
-的经验条件熵c之差。
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/21/feature-selection--infomation-gain/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification/">A Scratch of Feature Selection in Traffic Classification</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-04-20T21:02:00+08:00" pubdate data-updated="true">Apr 20<span>th</span>, 2014</time>
-        
-        
-          | <a href="/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>特征选取在减轻识别流量监测方面起着很重要的作用。该方法可以显著提高计算流量分类的性能。但是，大部分的特征不能应用在实时在线的流量分类中（有些特征只能在获取完整个流量才能得到，比如传输的数据大小，流的传输时长等）。所以在抉择分类的时候，需要一个优化过的特征集合在更短的时间内完成流量的分类。另外一种方案就是使用新型的网络架构如SDN/OpenFlow在目前已有的特征选择方法中，Chi-squared, Fuzzy-rough and Consistency-based的特征选择方法最适合P2P流量选择（那现在的手机端流量分析怎么样？）这些算法在使用ML进行在线P2P检测时会给出较好的特征子集。
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/04/qi-yi-de-nei-cun-fu-gai/">“奇异”的内存覆盖</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-04T22:01:00+08:00" pubdate data-updated="true">Mar 4<span>th</span>, 2014</time>
-        
-        
-          | <a href="/blog/2014/03/04/qi-yi-de-nei-cun-fu-gai/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>犯了一个愚蠢的问题，让我碰到了这么个内容错误的bug</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/03/04/qi-yi-de-nei-cun-fu-gai/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/">理解TCP中的序列号和确认号</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-26T22:34:00+08:00" pubdate data-updated="true">Feb 26<span>th</span>, 2014</time>
-        
-        
-          | <a href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>之所以写这么一篇文章是因为被wireshark的序列号搞晕了，我不知道你们是否这样，当你读这篇article时，肯定你已经熟悉了TCP那个三次握手，
-或者是SYN,SYN|ACK,ACK. 而我要做的也就是这个，提取一个流的前N个packets，针对目前的需求，只需要在传输层截取UDP和TCP的前多少个流即可。
-所以我得分析网络层的这些协议底层到底是怎么回事，在结合libpcap完成流的提取任务。</p>
-
-<p>相对来说TCP还是个复杂的协议，而且值得清楚的认识以下。那么结合wireshark和代码来认识下TCP里面的东西。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -853,23 +1004,23 @@ x|y=1\sim N(\mu_1,\Sigma)
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2014/05/19/threading-why-import-it-into-os/">Threading:why Import It Into Os</a>
+        <a href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/">Use Svm to Classify Whether a Person Is Good or Bad on Credit Using Sns Data</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/05/19/my-understanding-about-kmp/">我对KMP算法的理解</a>
+        <a href="/blog/2014/07/09/wei-pi-pei/">伪匹配</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/04/30/generative-method/">Generative Method</a>
+        <a href="/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/">朴素贝叶斯文本分类</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/04/30/discriminative-model-vs-generative-model/">Discriminative Model vs. Generative Model</a>
+        <a href="/blog/2014/06/03/lagrange-duality/">拉格朗日对偶</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/04/29/dynamic-programming/">Dynamic Programming</a>
+        <a href="/blog/2014/06/03/my-understanding-about-svm/">从逻辑回归分类到SVM分类</a>
       </li>
     
   </ul>
