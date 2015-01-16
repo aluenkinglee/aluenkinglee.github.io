@@ -9,10 +9,7 @@
   <meta name="author" content="Aluen King Lee">
 
   
-  <meta name="description" content="线性回归模型和logistic回归是判别模型，也就是根据特征值来求结果的概率。形式化表
-示为在参数确定的情况下，求解条件概率。
-通俗的解释为在给定特征后预测结果出现的概率。 就按照Andrew Ng讲的那样，确定肿瘤是良性的还是恶性的，可以使用判别模型的方法是先
-从历史数据中学习到模型， &hellip;">
+  <meta name="description" content="链表不想数组那样是连续的即像数组那样随机访问，只能从前往后遍历。所以排序的方法只能是像插入排序，选择排序，和归并排序。 下面就先说归并排序。 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -107,6 +104,52 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/05/14/sort-list/">链表排序</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-14T13:51:00-07:00" pubdate data-updated="true">May 14<span>th</span>, 2014</time>
+        
+        
+          | <a href="/blog/2014/05/14/sort-list/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>链表不想数组那样是连续的即像数组那样随机访问，只能从前往后遍历。所以排序的方法只能是像插入排序，选择排序，和归并排序。</p>
+
+<p>下面就先说归并排序。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/05/14/sort-list/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -587,62 +630,6 @@ x|y=1\sim N(\mu_1,\Sigma)
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/01/05/machine-learning-linear-regression/">Machine Learning :linear Regression</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-01-05T12:00:00-08:00" pubdate data-updated="true">Jan 5<span>th</span>, 2014</time>
-        
-        
-          | <a href="/blog/2014/01/05/machine-learning-linear-regression/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>机器学习中，总体来说是分为两类问题：</p>
-
-<p>1.有监督的学习方法
-2.无监督的学习方法</p>
-
-<p>其他是这两者的综合，比如说半监督学习方法，强化学习（这个还未接触过）。</p>
-
-<p>本文呢，先从有监督的学习方法开始讲起，主要是记载学习过程中个人认为最重要的地方。</p>
-
-<p>对于监督学习中的两类问题，或者说三类吧，分别是：回归问题，分类问题和标注问题（tagging）。后面这个很有意思，不过在这里现说一下回归和分类的区别，假如我们要
-做一个连续变量的预测，比如说房价的预测，或者明日气温的预测，都是属于回归问题；而对于离散变量的预测，比如判断一个病人是否得了癌症，良性还是恶心，则是一个明显的分
-类问题。</p>
-
-<p>接下来的文章，大概是对Andrew Ng视频的一个简单的总结，会结合变成实例（octave和C++）来插叙。
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/01/05/machine-learning-linear-regression/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -660,6 +647,10 @@ x|y=1\sim N(\mu_1,\Sigma)
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/01/14/use-mongo-map-reduce-statistic-word-occurrence/">使用mongodb内置的mapreduce聚合函数统计词频</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he/">浅谈微博标签聚合</a>
       </li>
     
@@ -673,10 +664,6 @@ x|y=1\sim N(\mu_1,\Sigma)
     
       <li class="post">
         <a href="/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/">朴素贝叶斯文本分类</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/06/03/lagrange-duality/">拉格朗日对偶</a>
       </li>
     
   </ul>

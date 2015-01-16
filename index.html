@@ -9,10 +9,16 @@
   <meta name="author" content="Aluen King Lee">
 
   
-  <meta name="description" content="标注问题在机器学习中是一个监督学习的问题，当然在这里我们所要面对是微博中用户给自己添加标签的
-问题，并不是研究如何给用户添加标签。
-浏览微博中用户的个人资料时，你会发现大部分用户都给自己添加了自认为所属类别的标签，这个很正确，
-属于人工标注的典例。但是，细细浏览下每个人的标签我们会发现， &hellip;">
+  <meta name="description" content="有个需求需要对数据库中的某个字段进行频率统计，数据量较大，大概在2亿左右。 在之前先用一个简单的例子描述下问题。 比如我有一个mongo中的文档集合，比如说 1
+2
+3
+4
+5
+6
+7
+8
+9
+[ { summary:&quot;This is good&quot; }, { summary:& &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -107,6 +113,101 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/01/14/use-mongo-map-reduce-statistic-word-occurrence/">使用mongodb内置的mapreduce聚合函数统计词频</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-01-14T13:51:00-08:00" pubdate data-updated="true">Jan 14<span>th</span>, 2015</time>
+        
+        
+          | <a href="/blog/2015/01/14/use-mongo-map-reduce-statistic-word-occurrence/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>有个需求需要对数据库中的某个字段进行频率统计，数据量较大，大概在2亿左右。</p>
+
+<p>在之前先用一个简单的例子描述下问题。</p>
+
+<p>比如我有一个mongo中的文档集合，比如说</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">[
+</span><span class="line">    { summary:&quot;This is good&quot; },
+</span><span class="line">    { summary:&quot;This is bad&quot; },
+</span><span class="line">    { summary:&quot;Something that is neither good nor bad&quot; }
+</span><span class="line">]
+</span><span class="line">
+</span><span class="line">&gt;db.test.insert({ summary:&quot;This is good&quot; });
+</span><span class="line">&gt;db.test.insert({ summary:&quot;This is bad&quot; };
+</span><span class="line">&gt;db.test.insert({ summary:&quot;Something that is neither good nor bad&quot; });
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>现在要统计每个单词的出现次数，忽略大小写，最后按照升序排序，就像这样：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">[
+</span><span class="line">    &quot;is&quot;: 3,
+</span><span class="line">    &quot;bad&quot;: 2,
+</span><span class="line">    &quot;good&quot;: 2,
+</span><span class="line">    &quot;this&quot;: 2,
+</span><span class="line">    &quot;neither&quot;: 1,
+</span><span class="line">    &quot;nor&quot;: 1,
+</span><span class="line">    &quot;something&quot;: 1,
+</span><span class="line">    &quot;that&quot;: 1
+</span><span class="line">]
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>所以我们可以使用mongo中自带的聚合函数框架——mapreduce，然后我们自己根据需求
+写个map函数和reduce函数就可以了。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2015/01/14/use-mongo-map-reduce-statistic-word-occurrence/">read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -893,52 +994,6 @@ next\left[ q \right] =\begin{Bmatrix} 0 & \quad if\quad { E }_{ q }\quad =\quad 
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/05/14/sort-list/">链表排序</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-05-14T13:51:00-07:00" pubdate data-updated="true">May 14<span>th</span>, 2014</time>
-        
-        
-          | <a href="/blog/2014/05/14/sort-list/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>链表不想数组那样是连续的即像数组那样随机访问，只能从前往后遍历。所以排序的方法只能是像插入排序，选择排序，和归并排序。</p>
-
-<p>下面就先说归并排序。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/05/14/sort-list/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -954,6 +1009,10 @@ next\left[ q \right] =\begin{Bmatrix} 0 & \quad if\quad { E }_{ q }\quad =\quad 
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/01/14/use-mongo-map-reduce-statistic-word-occurrence/">使用mongodb内置的mapreduce聚合函数统计词频</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he/">浅谈微博标签聚合</a>
       </li>
     
@@ -967,10 +1026,6 @@ next\left[ q \right] =\begin{Bmatrix} 0 & \quad if\quad { E }_{ q }\quad =\quad 
     
       <li class="post">
         <a href="/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/">朴素贝叶斯文本分类</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/06/03/lagrange-duality/">拉格朗日对偶</a>
       </li>
     
   </ul>

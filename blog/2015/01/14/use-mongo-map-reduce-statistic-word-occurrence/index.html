@@ -1,0 +1,571 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>使用mongodb内置的mapreduce聚合函数统计词频 - 曾经渐行远，未免心戚戚</title>
+  <meta name="author" content="Aluen King Lee">
+
+  
+  <meta name="description" content="有个需求需要对数据库中的某个字段进行频率统计，数据量较大，大概在2亿左右。 在之前先用一个简单的例子描述下问题。 比如我有一个mongo中的文档集合，比如说 1
+2
+3
+4
+5
+6
+7
+8
+9
+[ { summary:&quot;This is good&quot; }, { summary:& &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.aluenkinglee.com/blog/2015/01/14/use-mongo-map-reduce-statistic-word-occurrence">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="曾经渐行远，未免心戚戚" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.useso.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.useso.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+<!-- mathjax config similar to math.stackexchange -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
+          MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
+                  data.math = data.math.replace(/^\s*<!\[CDATA\[\s*((?:\n|.)*)\s*\]\]>\s*$/m,"$1");
+                    });
+          });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">曾经渐行远，未免心戚戚</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.aluenkinglee.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">使用mongodb内置的mapreduce聚合函数统计词频</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-01-14T13:51:00-08:00" pubdate data-updated="true">Jan 14<span>th</span>, 2015</time>
+        
+        
+          | <a href="#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>有个需求需要对数据库中的某个字段进行频率统计，数据量较大，大概在2亿左右。</p>
+
+<p>在之前先用一个简单的例子描述下问题。</p>
+
+<p>比如我有一个mongo中的文档集合，比如说</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">[
+</span><span class="line">    { summary:&quot;This is good&quot; },
+</span><span class="line">    { summary:&quot;This is bad&quot; },
+</span><span class="line">    { summary:&quot;Something that is neither good nor bad&quot; }
+</span><span class="line">]
+</span><span class="line">
+</span><span class="line">&gt;db.test.insert({ summary:&quot;This is good&quot; });
+</span><span class="line">&gt;db.test.insert({ summary:&quot;This is bad&quot; };
+</span><span class="line">&gt;db.test.insert({ summary:&quot;Something that is neither good nor bad&quot; });
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>现在要统计每个单词的出现次数，忽略大小写，最后按照升序排序，就像这样：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">[
+</span><span class="line">    &quot;is&quot;: 3,
+</span><span class="line">    &quot;bad&quot;: 2,
+</span><span class="line">    &quot;good&quot;: 2,
+</span><span class="line">    &quot;this&quot;: 2,
+</span><span class="line">    &quot;neither&quot;: 1,
+</span><span class="line">    &quot;nor&quot;: 1,
+</span><span class="line">    &quot;something&quot;: 1,
+</span><span class="line">    &quot;that&quot;: 1
+</span><span class="line">]
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>所以我们可以使用mongo中自带的聚合函数框架——mapreduce，然后我们自己根据需求
+写个map函数和reduce函数就可以了。</p>
+
+<!-- more -->
+
+<p>关于<a href="http://docs.mongodb.org/manual/core/map-reduce/">Map-Reduce</a>可以看到更加
+详细的介绍，尤其适用于服务器端的文档处理率操作。</p>
+
+<p>然后看是map函数，每个doc会传给这个<code>map</code>函数，这个这个函数会查找<code>summary</code>这个字段，若存在，则变小写，根据空格分割字符串，每个字置为1.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="kd">var</span> <span class="nx">map</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">summary</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">summary</span><span class="p">;</span>
+</span><span class="line">    <span class="k">if</span> <span class="p">(</span><span class="nx">summary</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="c1">// quick lowercase to normalize per your requirements</span>
+</span><span class="line">        <span class="nx">summary</span> <span class="o">=</span> <span class="nx">summary</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">().</span><span class="nx">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">);</span>
+</span><span class="line">        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">summary</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">            <span class="c1">// might want to remove punctuation, etc. here</span>
+</span><span class="line">            <span class="k">if</span> <span class="p">(</span><span class="nx">summary</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span>  <span class="p">{</span>      <span class="c1">// make sure there&#39;s something</span>
+</span><span class="line">               <span class="nx">emit</span><span class="p">(</span><span class="nx">summary</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="mi">1</span><span class="p">);</span> <span class="c1">// store a 1 for each word</span>
+</span><span class="line">            <span class="p">}</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>然后在写<code>reduce</code>函数，它是把<code>map</code>函数得到的结果加起来，并最终返回每个字的结果。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="kd">var</span> <span class="nx">reduce</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">values</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line">    <span class="nx">values</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="nx">count</span> <span class="o">+=</span><span class="nx">v</span><span class="p">;</span>
+</span><span class="line">    <span class="p">});</span>
+</span><span class="line">    <span class="k">return</span> <span class="nx">count</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>最后命令行执行</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">&gt;db.test.mapReduce<span class="o">(</span>map, reduce, <span class="o">{</span>out: <span class="s2">&quot;word_count&quot;</span><span class="o">})</span>
+</span><span class="line">&gt;db.word_count.find<span class="o">()</span>.sort<span class="o">({</span>value：-1<span class="o">})</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>即可看到结果，如下所示：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">{ &quot;_id&quot; : &quot;is&quot;, &quot;value&quot; : 3 }
+</span><span class="line">{ &quot;_id&quot; : &quot;bad&quot;, &quot;value&quot; : 2 }
+</span><span class="line">{ &quot;_id&quot; : &quot;good&quot;, &quot;value&quot; : 2 }
+</span><span class="line">{ &quot;_id&quot; : &quot;this&quot;, &quot;value&quot; : 2 }
+</span><span class="line">{ &quot;_id&quot; : &quot;neither&quot;, &quot;value&quot; : 1 }
+</span><span class="line">{ &quot;_id&quot; : &quot;or&quot;, &quot;value&quot; : 1 }
+</span><span class="line">{ &quot;_id&quot; : &quot;something&quot;, &quot;value&quot; : 1 }
+</span><span class="line">{ &quot;_id&quot; : &quot;that&quot;, &quot;value&quot; : 1 }
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="section">统计重复字段</h3>
+
+<p>比如说要统计<code>taobao_id</code>这个字段，其他字段在这里用<code>summary</code>代指，这里面有的doc没有<code>taobao_id</code>字段，有的为空，这种情况会随软件版本升级出现类似情况。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line">{ &quot;summary&quot; : &quot;this is good&quot;, &quot;taobao_id&quot; : &quot;ad23x@#sa&quot; }
+</span><span class="line">{ &quot;summary&quot; : &quot;this is bad&quot;, &quot;taobao_id&quot; : &quot;ad23x@#sa&quot; }
+</span><span class="line">{ &quot;summary&quot; : &quot;this is holy shit!&quot;, &quot;taobao_id&quot; : &quot;ad23x@#2323sa&quot; }
+</span><span class="line">{ &quot;summary&quot; : &quot;you are so fucking clever&quot;, &quot;taobao_id&quot; : &quot;ad123x@#2323sa&quot; }
+</span><span class="line">{ &quot;summary&quot; : &quot;you r idiot&quot;, &quot;taobao_id&quot; : &quot;&quot; }
+</span><span class="line">{ &quot;summary&quot; : &quot;it is deliciouse&quot; }
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><code>map</code>函数如下:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kd">var</span> <span class="nx">map</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">taobao_id</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">taobao_id</span><span class="p">;</span>
+</span><span class="line">    <span class="c1">// make sure there is the field.</span>
+</span><span class="line">    <span class="k">if</span><span class="p">(</span><span class="nx">taobao_id</span><span class="p">)</span>
+</span><span class="line">    	<span class="c1">// store a 1 for this taobao_id</span>
+</span><span class="line">        <span class="nx">emit</span><span class="p">(</span><span class="nx">taobao_id</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><code>reduce</code>函数如下：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kd">var</span> <span class="nx">reduce</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span><span class="nx">values</span><span class="p">){</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line">    <span class="nx">values</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">v</span><span class="p">){</span>
+</span><span class="line">        <span class="nx">count</span><span class="o">+=</span><span class="nx">v</span><span class="p">;</span>
+</span><span class="line">    <span class="p">});</span>
+</span><span class="line">    <span class="k">return</span> <span class="nx">count</span><span class="p">;</span>
+</span><span class="line"><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>结果如下：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">&gt; db.so.mapReduce<span class="o">(</span>map,reduce,<span class="o">{</span>out:<span class="s2">&quot;taobao_id_count&quot;</span><span class="o">})</span>
+</span><span class="line"><span class="o">{</span>
+</span><span class="line">	<span class="s2">&quot;result&quot;</span> : <span class="s2">&quot;taobao_id_count&quot;</span>,
+</span><span class="line">	<span class="s2">&quot;timeMillis&quot;</span> : 58,
+</span><span class="line">	<span class="s2">&quot;counts&quot;</span> : <span class="o">{</span>
+</span><span class="line">		<span class="s2">&quot;input&quot;</span> : 6,
+</span><span class="line">		<span class="s2">&quot;emit&quot;</span> : 4,
+</span><span class="line">		<span class="s2">&quot;reduce&quot;</span> : 1,
+</span><span class="line">		<span class="s2">&quot;output&quot;</span> : 3
+</span><span class="line">	<span class="o">}</span>,
+</span><span class="line">	<span class="s2">&quot;ok&quot;</span> : 1,
+</span><span class="line"><span class="o">}</span>
+</span><span class="line">&gt; db.taobao_id_count.find<span class="o">()</span>
+</span><span class="line"><span class="o">{</span> <span class="s2">&quot;_id&quot;</span> : <span class="s2">&quot;ad123x@#2323sa&quot;</span>, <span class="s2">&quot;value&quot;</span> : 1 <span class="o">}</span>
+</span><span class="line"><span class="o">{</span> <span class="s2">&quot;_id&quot;</span> : <span class="s2">&quot;ad23x@#2323sa&quot;</span>, <span class="s2">&quot;value&quot;</span> : 1 <span class="o">}</span>
+</span><span class="line"><span class="o">{</span> <span class="s2">&quot;_id&quot;</span> : <span class="s2">&quot;ad23x@#sa&quot;</span>, <span class="s2">&quot;value&quot;</span> : 2 <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>在服务器上运行得到
+如下结果</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="text"><span class="line"> &quot;result&quot; : &quot;taobao_id_count&quot;,
+</span><span class="line">    &quot;counts&quot; : {
+</span><span class="line">        &quot;input&quot; : NumberLong(166299476),
+</span><span class="line">        &quot;emit&quot; : NumberLong(98911196),
+</span><span class="line">        &quot;reduce&quot; : NumberLong(2492253),
+</span><span class="line">        &quot;output&quot; : NumberLong(95269211)
+</span><span class="line">    },
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>字段说明：
+总共存在有1.6亿个doc（其实这个数还是不准，多谢俊德指出db.device.count()的个数为227186295）；</p>
+
+<p>其中存在taobao_id的doc数为98911196个；</p>
+
+<p>总共规约的个数（即taobao_id重复的个数大于1的）为2492253个；</p>
+
+<p>最后的结果有95269211个。</p>
+
+<p>没有taobao_id的doc数大约为7千万。</p>
+
+<p>重复的taobao_id个数为使用如下命令得出，大约花费1分钟
+db.taobao_id_count.count({“value”:{$gt:1}})
+2234285</p>
+
+<p>结果验证：
+db.taobao_id_count.find({“value”:2})
+得到一堆在重复个数为2的taobao_id集合。
+在重复个数为2的taobao_id中，用它的taobao_id在device总集中查找，看返回结果是否为两个。db.device.find({“taobao_id”:”+/quUacD9KYQAAcmQQglxvvO”})
+结果只有两个结果</p>
+
+<blockquote>
+  <blockquote>
+    <p>Referrence</p>
+  </blockquote>
+</blockquote>
+
+<ol>
+  <li>
+    <p><a href="http://docs.mongodb.org/manual/tutorial/write-scripts-for-the-mongo-shell/">write scripts for the mongo shell</a></p>
+  </li>
+  <li>
+    <p><a href="http://jackyrong.iteye.com/blog/1408548">快速例子学习mongodb的mapreduce</a></p>
+  </li>
+  <li>
+    <p><a href="http://stackoverflow.com/questions/16174591/mongo-count-the-number-of-word-occurences-in-a-set-of-documents">词频统计</a></p>
+  </li>
+  <li>
+    <p><a href="http://docs.mongodb.org/manual/core/map-reduce/">map reduce</a></p>
+  </li>
+</ol>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Aluen King Lee</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-01-14T13:51:00-08:00" pubdate data-updated="true">Jan 14<span>th</span>, 2015</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/map-reduce/'>map-reduce</a>, <a class='category' href='/blog/categories/mongodb/'>mongodb</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he/" title="Previous Post: 浅谈微博标签聚合">&laquo; 浅谈微博标签聚合</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+
+  <section>
+    <h1>Comments</h1>
+    <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"aluenkinglee"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END --></div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/01/14/use-mongo-map-reduce-statistic-word-occurrence/">使用mongodb内置的mapreduce聚合函数统计词频</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he/">浅谈微博标签聚合</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/">Use Svm to Classify Whether a Person Is Good or Bad on Credit Using Sns Data</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/09/wei-pi-pei/">伪匹配</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/">朴素贝叶斯文本分类</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+<section>
+  <h1>My Douban</h1>
+  <div>
+  <!--添加到这-->
+  <script type="text/javascript" src="http://www.douban.com/service/badge/aluenkinglee/?selection=random&amp;picsize=small&amp;show=dolist&amp;n=8&amp;cat=book&amp;columns=3"></script>
+  </div>
+</section> 
+<section>
+<h1>Recent Comments</h1>
+<ul class="ds-recent-comments" data-num-items="10" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="18"></ul>
+
+</section> 
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Aluen King Lee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
