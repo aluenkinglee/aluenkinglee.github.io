@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: 文本分类 | 曾经渐行远，未免心戚戚]]></title>
-  <link href="http://aluenkinglee.com/blog/categories/wen-ben-fen-lei/atom.xml" rel="self"/>
-  <link href="http://aluenkinglee.com/"/>
-  <updated>2014-09-02T03:59:52+08:00</updated>
-  <id>http://aluenkinglee.com/</id>
+  <link href="http://www.aluenkinglee.com/blog/categories/wen-ben-fen-lei/atom.xml" rel="self"/>
+  <link href="http://www.aluenkinglee.com/"/>
+  <updated>2015-01-15T19:06:21-08:00</updated>
+  <id>http://www.aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[朴素贝叶斯文本分类]]></title>
-    <link href="http://aluenkinglee.com/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/"/>
-    <updated>2014-06-27T13:11:00+08:00</updated>
-    <id>http://aluenkinglee.com/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei</id>
+    <link href="http://www.aluenkinglee.com/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/"/>
+    <updated>2014-06-27T13:11:00-07:00</updated>
+    <id>http://www.aluenkinglee.com/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei</id>
     <content type="html"><![CDATA[<p>回顾朴素贝叶斯(NB)分类器:</p>
 
 <script type="math/tex; mode=display">

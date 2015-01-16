@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: 拉格朗日对偶 | 曾经渐行远，未免心戚戚]]></title>
-  <link href="http://aluenkinglee.com/blog/categories/la-ge-lang-ri-dui-ou/atom.xml" rel="self"/>
-  <link href="http://aluenkinglee.com/"/>
-  <updated>2014-09-02T03:59:52+08:00</updated>
-  <id>http://aluenkinglee.com/</id>
+  <link href="http://www.aluenkinglee.com/blog/categories/la-ge-lang-ri-dui-ou/atom.xml" rel="self"/>
+  <link href="http://www.aluenkinglee.com/"/>
+  <updated>2015-01-15T19:06:21-08:00</updated>
+  <id>http://www.aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[拉格朗日对偶]]></title>
-    <link href="http://aluenkinglee.com/blog/2014/06/03/lagrange-duality/"/>
-    <updated>2014-06-03T21:41:00+08:00</updated>
-    <id>http://aluenkinglee.com/blog/2014/06/03/lagrange-duality</id>
+    <link href="http://www.aluenkinglee.com/blog/2014/06/03/lagrange-duality/"/>
+    <updated>2014-06-03T21:41:00-07:00</updated>
+    <id>http://www.aluenkinglee.com/blog/2014/06/03/lagrange-duality</id>
     <content type="html"><![CDATA[<p>在解决约束最优化的额问题中，常常利用拉格朗日对偶性将原始问题转化为对偶问题，通过解对偶问题得到原始问题的解。该方法主要应用的SVM和最大熵模型中。</p>
 
 <p>先抛开上面的二次规划问题，先来看看存在等式约束的极值问题求法，比如下面的最优化问题：</p>

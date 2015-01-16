@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: 金融信用 | 曾经渐行远，未免心戚戚]]></title>
-  <link href="http://aluenkinglee.com/blog/categories/jin-rong-xin-yong/atom.xml" rel="self"/>
-  <link href="http://aluenkinglee.com/"/>
-  <updated>2014-09-02T03:59:52+08:00</updated>
-  <id>http://aluenkinglee.com/</id>
+  <link href="http://www.aluenkinglee.com/blog/categories/jin-rong-xin-yong/atom.xml" rel="self"/>
+  <link href="http://www.aluenkinglee.com/"/>
+  <updated>2015-01-15T19:06:21-08:00</updated>
+  <id>http://www.aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[use svm to classify whether a person is good or bad on credit using sns data]]></title>
-    <link href="http://aluenkinglee.com/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/"/>
-    <updated>2014-07-12T17:21:00+08:00</updated>
-    <id>http://aluenkinglee.com/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data</id>
+    <link href="http://www.aluenkinglee.com/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/"/>
+    <updated>2014-07-12T17:21:00-07:00</updated>
+    <id>http://www.aluenkinglee.com/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data</id>
     <content type="html"><![CDATA[<p>首先说明这只是一个思路方向性的大概说明介绍，更多关于业务方面的内容不方便介绍。</p>
 
 <p>如何评价一个人的金融信用，这个可以搜集用户的一些基本数据，比如职业，大学，社交数据来进行评分判断，至于为什么选取这些特征，一个很显然的理由就是

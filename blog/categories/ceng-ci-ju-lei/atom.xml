@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: 层次聚类 | 曾经渐行远，未免心戚戚]]></title>
-  <link href="http://aluenkinglee.com/blog/categories/ceng-ci-ju-lei/atom.xml" rel="self"/>
-  <link href="http://aluenkinglee.com/"/>
-  <updated>2014-09-02T03:59:52+08:00</updated>
-  <id>http://aluenkinglee.com/</id>
+  <link href="http://www.aluenkinglee.com/blog/categories/ceng-ci-ju-lei/atom.xml" rel="self"/>
+  <link href="http://www.aluenkinglee.com/"/>
+  <updated>2015-01-15T19:06:21-08:00</updated>
+  <id>http://www.aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[浅谈微博标签聚合]]></title>
-    <link href="http://aluenkinglee.com/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he/"/>
-    <updated>2014-09-02T00:47:00+08:00</updated>
-    <id>http://aluenkinglee.com/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he</id>
+    <link href="http://www.aluenkinglee.com/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he/"/>
+    <updated>2014-09-02T00:47:00-07:00</updated>
+    <id>http://www.aluenkinglee.com/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he</id>
     <content type="html"><![CDATA[<p>标注问题在机器学习中是一个监督学习的问题，当然在这里我们所要面对是微博中用户给自己添加标签的
 问题，并不是研究如何给用户添加标签。
 浏览微博中用户的个人资料时，你会发现大部分用户都给自己添加了自认为所属类别的标签，这个很正确，

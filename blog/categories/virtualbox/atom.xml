@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: virtualbox | 曾经渐行远，未免心戚戚]]></title>
-  <link href="http://aluenkinglee.com/blog/categories/virtualbox/atom.xml" rel="self"/>
-  <link href="http://aluenkinglee.com/"/>
-  <updated>2014-09-02T03:59:52+08:00</updated>
-  <id>http://aluenkinglee.com/</id>
+  <link href="http://www.aluenkinglee.com/blog/categories/virtualbox/atom.xml" rel="self"/>
+  <link href="http://www.aluenkinglee.com/"/>
+  <updated>2015-01-15T19:06:21-08:00</updated>
+  <id>http://www.aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[virtualbox网络环境和登录]]></title>
-    <link href="http://aluenkinglee.com/blog/2013/10/20/virtualbox-network-environment-and-login/"/>
-    <updated>2013-10-20T22:46:00+08:00</updated>
-    <id>http://aluenkinglee.com/blog/2013/10/20/virtualbox-network-environment-and-login</id>
+    <link href="http://www.aluenkinglee.com/blog/2013/10/20/virtualbox-network-environment-and-login/"/>
+    <updated>2013-10-20T22:46:00-07:00</updated>
+    <id>http://www.aluenkinglee.com/blog/2013/10/20/virtualbox-network-environment-and-login</id>
     <content type="html"><![CDATA[<p>最近由于实验室需要研究SDN的一些东西，再此先来搭配下环境。
 对于虚拟机的一些选择，可以看这里:
 <a href="http://mininet.org/vm-setup-notes/">vm-setup-notes</a> 

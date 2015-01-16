@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: co-write | 曾经渐行远，未免心戚戚]]></title>
-  <link href="http://aluenkinglee.com/blog/categories/co-write/atom.xml" rel="self"/>
-  <link href="http://aluenkinglee.com/"/>
-  <updated>2014-09-02T03:59:52+08:00</updated>
-  <id>http://aluenkinglee.com/</id>
+  <link href="http://www.aluenkinglee.com/blog/categories/co-write/atom.xml" rel="self"/>
+  <link href="http://www.aluenkinglee.com/"/>
+  <updated>2015-01-15T19:06:21-08:00</updated>
+  <id>http://www.aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[在不同PC上协同写作同一个Octopress博客]]></title>
-    <link href="http://aluenkinglee.com/blog/2013/11/13/co-write-same-octopress-blog-on-different-pc/"/>
-    <updated>2013-11-13T15:20:00+08:00</updated>
-    <id>http://aluenkinglee.com/blog/2013/11/13/co-write-same-octopress-blog-on-different-pc</id>
+    <link href="http://www.aluenkinglee.com/blog/2013/11/13/co-write-same-octopress-blog-on-different-pc/"/>
+    <updated>2013-11-13T15:20:00-08:00</updated>
+    <id>http://www.aluenkinglee.com/blog/2013/11/13/co-write-same-octopress-blog-on-different-pc</id>
     <content type="html"><![CDATA[<p>因为需要在不同的地方写博客，在加上之前错误的操作，所以有了这篇文章。</p>
 
 <p>假设已经学会了然后安装Octopress博客。</p>

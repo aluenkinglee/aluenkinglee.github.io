@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Machine-Learning | 曾经渐行远，未免心戚戚]]></title>
-  <link href="http://aluenkinglee.com/blog/categories/machine-learning/atom.xml" rel="self"/>
-  <link href="http://aluenkinglee.com/"/>
-  <updated>2014-09-02T03:59:52+08:00</updated>
-  <id>http://aluenkinglee.com/</id>
+  <link href="http://www.aluenkinglee.com/blog/categories/machine-learning/atom.xml" rel="self"/>
+  <link href="http://www.aluenkinglee.com/"/>
+  <updated>2015-01-15T19:06:21-08:00</updated>
+  <id>http://www.aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Machine Learning :linear regression]]></title>
-    <link href="http://aluenkinglee.com/blog/2014/01/05/machine-learning-linear-regression/"/>
-    <updated>2014-01-05T12:00:00+08:00</updated>
-    <id>http://aluenkinglee.com/blog/2014/01/05/machine-learning-linear-regression</id>
+    <link href="http://www.aluenkinglee.com/blog/2014/01/05/machine-learning-linear-regression/"/>
+    <updated>2014-01-05T12:00:00-08:00</updated>
+    <id>http://www.aluenkinglee.com/blog/2014/01/05/machine-learning-linear-regression</id>
     <content type="html"><![CDATA[<p>机器学习中，总体来说是分为两类问题：</p>
 
 <p>1.有监督的学习方法

@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: predeclaration | 曾经渐行远，未免心戚戚]]></title>
-  <link href="http://aluenkinglee.com/blog/categories/predeclaration/atom.xml" rel="self"/>
-  <link href="http://aluenkinglee.com/"/>
-  <updated>2014-09-02T03:59:52+08:00</updated>
-  <id>http://aluenkinglee.com/</id>
+  <link href="http://www.aluenkinglee.com/blog/categories/predeclaration/atom.xml" rel="self"/>
+  <link href="http://www.aluenkinglee.com/"/>
+  <updated>2015-01-15T19:06:21-08:00</updated>
+  <id>http://www.aluenkinglee.com/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[C++前置声明和复制控制]]></title>
-    <link href="http://aluenkinglee.com/blog/2013/10/24/c-plus-plus-forward-declaration-and-copy-control/"/>
-    <updated>2013-10-24T05:33:00+08:00</updated>
-    <id>http://aluenkinglee.com/blog/2013/10/24/c-plus-plus-forward-declaration-and-copy-control</id>
+    <link href="http://www.aluenkinglee.com/blog/2013/10/24/c-plus-plus-forward-declaration-and-copy-control/"/>
+    <updated>2013-10-24T05:33:00-07:00</updated>
+    <id>http://www.aluenkinglee.com/blog/2013/10/24/c-plus-plus-forward-declaration-and-copy-control</id>
     <content type="html"><![CDATA[<p>突然有兴致想起了看会C++，因为最近一直是python，java，python的节奏…在这样下去，C++水平恐怕就停留在了只会编算法的地儿了…</p>
 
 <p>随手一翻，看到了复制控制。对于这章，印象里的记忆是：
