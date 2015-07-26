@@ -20,7 +20,9 @@ date_format: "ordinal"
 subscribe_rss: /atom.xml
 subscribe_email:
 # RSS feeds can list your email address if you like
-email:
+email: aluenkinglee@gmail.com
+github_user: aluenkinglee
+douban_user: aluenkinglee
 
 # ----------------------- #
 #    Jekyll & Plugins     #

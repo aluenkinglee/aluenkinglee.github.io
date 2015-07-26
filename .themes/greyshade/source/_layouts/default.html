@@ -3,12 +3,13 @@
 
 <body>
 	<div class="container">
-		<div class="left-col">
+		<div class="left-col panel-cover panel-cover--collapsed">
 			<div class="intrude-less">
 			<header id="header" class="inner">{% include header.html %}</header>
 			</div>
-            <div class="panel-cover panel-cover--collapsed panel-cover--overlay cover-slate"></div>
-		</div>	
+            <!-- add this div will prevent the link.. -->
+			<!--<div class="panel-cover&#45;&#45;overlay"></div>-->
+		</div>
 		<div class="mid-col">
 			{% unless page.banner == false %}
 				{% include banner.html %}
