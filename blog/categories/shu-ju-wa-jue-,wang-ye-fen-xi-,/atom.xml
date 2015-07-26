@@ -2,22 +2,22 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: 数据挖掘，网页分析， | 曾经渐行远，未免心戚戚]]></title>
-  <link href="http://www.aluenkinglee.com/blog/categories/shu-ju-wa-jue-,wang-ye-fen-xi-,/atom.xml" rel="self"/>
-  <link href="http://www.aluenkinglee.com/"/>
-  <updated>2015-01-15T22:37:58-08:00</updated>
-  <id>http://www.aluenkinglee.com/</id>
+  <link href="http://aluenkinglee.github.io/blog/categories/shu-ju-wa-jue-,wang-ye-fen-xi-,/atom.xml" rel="self"/>
+  <link href="http://aluenkinglee.github.io/"/>
+  <updated>2015-07-26T20:05:32+08:00</updated>
+  <id>http://aluenkinglee.github.io/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
-    
+    <email><![CDATA[aluenkinglee@gmail.com]]></email>
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
     <title type="html"><![CDATA[伪匹配]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2014/07/09/wei-pi-pei/"/>
-    <updated>2014-07-09T17:13:00-07:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2014/07/09/wei-pi-pei</id>
+    <link href="http://aluenkinglee.github.io/blog/2014/07/09/wei-pi-pei/"/>
+    <updated>2014-07-09T17:13:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2014/07/09/wei-pi-pei</id>
     <content type="html"><![CDATA[<p>这里提到的伪匹配的概念是指在网上搜索某些特征词，比如人名公司手机QQ号等内容时，网页反馈的结果：重要关键词在人看来是逻辑没有关联的时候就是伪匹配。</p>
 
 <p>比如说，某XX，公司名，地点很明显的构成一个记录的时候，在人看来是个写在一起的，那么结果就是匹配的。相反，要是搜索词相距很远，那么就是伪匹配。</p>

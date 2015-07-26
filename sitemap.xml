@@ -1,175 +1,185 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://www.aluenkinglee.com/blog/2011/03/14/gitde-an-zhuang-he-shi-yong/</loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
+        <loc>http://aluenkinglee.github.io/blog/2011/03/14/gitde-an-zhuang-he-shi-yong/</loc>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
     </url>
     <url>
         <loc>
-            http://www.aluenkinglee.com/blog/2013/03/15/some-important-details-in-python-personal/
+            http://aluenkinglee.github.io/blog/2013/03/15/some-important-details-in-python-personal/
         </loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
     </url>
     <url>
         <loc>
-            http://www.aluenkinglee.com/blog/2013/03/15/puzzles-of-vars-properties-in-python/
+            http://aluenkinglee.github.io/blog/2013/03/15/puzzles-of-vars-properties-in-python/
         </loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
     </url>
     <url>
         <loc>
-            http://www.aluenkinglee.com/blog/2013/04/16/pythonchu-li-dai-you-shi-qu-de-de-zi-fu-chuan/
+            http://aluenkinglee.github.io/blog/2013/04/16/pythonchu-li-dai-you-shi-qu-de-de-zi-fu-chuan/
         </loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
     </url>
     <url>
-        <loc>http://www.aluenkinglee.com/blog/2013/04/17/jin-qi-zong-jie/</loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
+        <loc>http://aluenkinglee.github.io/blog/2013/04/17/jin-qi-zong-jie/</loc>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
     </url>
     <url>
-        <loc>http://www.aluenkinglee.com/blog/2013/06/14/mysqljiao-huan-liang-lie/</loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
+        <loc>http://aluenkinglee.github.io/blog/2013/06/14/mysqljiao-huan-liang-lie/</loc>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
     </url>
     <url>
         <loc>
-            http://www.aluenkinglee.com/blog/2013/10/20/virtualbox-network-environment-and-login/
+            http://aluenkinglee.github.io/blog/2013/10/20/virtualbox-network-environment-and-login/
         </loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
     </url>
     <url>
         <loc>
-            http://www.aluenkinglee.com/blog/2013/10/24/c-plus-plus-forward-declaration-and-copy-control/
+            http://aluenkinglee.github.io/blog/2013/10/24/c-plus-plus-forward-declaration-and-copy-control/
         </loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
     </url>
     <url>
         <loc>
-            http://www.aluenkinglee.com/blog/2013/11/13/use-mathjax-in-octopress-to-write-beautiful-latex/
+            http://aluenkinglee.github.io/blog/2013/11/13/use-mathjax-in-octopress-to-write-beautiful-latex/
         </loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
     </url>
     <url>
         <loc>
-            http://www.aluenkinglee.com/blog/2013/11/13/co-write-same-octopress-blog-on-different-pc/
+            http://aluenkinglee.github.io/blog/2013/11/13/co-write-same-octopress-blog-on-different-pc/
         </loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
     </url>
     <url>
-        <loc>http://www.aluenkinglee.com/blog/2013/11/13/install-nox-on-debian-bug-fixed/</loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
+        <loc>http://aluenkinglee.github.io/blog/2013/11/13/install-nox-on-debian-bug-fixed/</loc>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
     </url>
     <url>
-        <loc>http://www.aluenkinglee.com/blog/2013/12/31/ke-ai-de-armadillo/</loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
-    </url>
-    <url>
-        <loc>http://www.aluenkinglee.com/blog/2014/01/05/machine-learning-linear-regression/</loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
-    </url>
-    <url>
-        <loc>http://www.aluenkinglee.com/blog/2014/02/24/c-plus-plus-de-hashtablena-xie-shi/</loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
+        <loc>http://aluenkinglee.github.io/blog/2013/12/31/ke-ai-de-armadillo/</loc>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
     </url>
     <url>
         <loc>
-            http://www.aluenkinglee.com/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/
+            http://aluenkinglee.github.io/blog/2014/01/05/machine-learning-linear-regression/
         </loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
-    </url>
-    <url>
-        <loc>http://www.aluenkinglee.com/blog/2014/03/04/qi-yi-de-nei-cun-fu-gai/</loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
     </url>
     <url>
         <loc>
-            http://www.aluenkinglee.com/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification/
+            http://aluenkinglee.github.io/blog/2014/02/24/c-plus-plus-de-hashtablena-xie-shi/
         </loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
-    </url>
-    <url>
-        <loc>http://www.aluenkinglee.com/blog/2014/04/21/feature-selection--infomation-gain/</loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
     </url>
     <url>
         <loc>
-            http://www.aluenkinglee.com/blog/2014/04/28/some-commen-list-problems-in-the-interview/
+            http://aluenkinglee.github.io/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/
         </loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
     </url>
     <url>
-        <loc>http://www.aluenkinglee.com/blog/2014/04/29/dynamic-programming/</loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
+        <loc>http://aluenkinglee.github.io/blog/2014/03/04/qi-yi-de-nei-cun-fu-gai/</loc>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
     </url>
     <url>
         <loc>
-            http://www.aluenkinglee.com/blog/2014/04/30/discriminative-model-vs-generative-model/
+            http://aluenkinglee.github.io/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification/
         </loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
-    </url>
-    <url>
-        <loc>http://www.aluenkinglee.com/blog/2014/04/30/generative-method/</loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
-    </url>
-    <url>
-        <loc>http://www.aluenkinglee.com/blog/2014/05/14/sort-list/</loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
-    </url>
-    <url>
-        <loc>http://www.aluenkinglee.com/blog/2014/05/19/my-understanding-about-kmp/</loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
-    </url>
-    <url>
-        <loc>http://www.aluenkinglee.com/blog/2014/05/19/threading-why-import-it-into-os/</loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
     </url>
     <url>
         <loc>
-            http://www.aluenkinglee.com/blog/2014/05/20/kill-process-on-some-port-under-linux-platform/
+            http://aluenkinglee.github.io/blog/2014/04/21/feature-selection--infomation-gain/
         </loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
-    </url>
-    <url>
-        <loc>http://www.aluenkinglee.com/blog/2014/06/03/my-understanding-about-svm/</loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
-    </url>
-    <url>
-        <loc>http://www.aluenkinglee.com/blog/2014/06/03/lagrange-duality/</loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
-    </url>
-    <url>
-        <loc>http://www.aluenkinglee.com/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/</loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
-    </url>
-    <url>
-        <loc>http://www.aluenkinglee.com/blog/2014/07/09/wei-pi-pei/</loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
     </url>
     <url>
         <loc>
-            http://www.aluenkinglee.com/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/
+            http://aluenkinglee.github.io/blog/2014/04/28/some-commen-list-problems-in-the-interview/
         </loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
     </url>
     <url>
-        <loc>http://www.aluenkinglee.com/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he/</loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
+        <loc>http://aluenkinglee.github.io/blog/2014/04/29/dynamic-programming/</loc>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
     </url>
     <url>
         <loc>
-            http://www.aluenkinglee.com/blog/2015/01/14/use-mongo-map-reduce-statistic-word-occurrence/
+            http://aluenkinglee.github.io/blog/2014/04/30/discriminative-model-vs-generative-model/
         </loc>
-        <lastmod>2015-01-15T22:10:13-08:00</lastmod>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
     </url>
     <url>
-        <loc>http://www.aluenkinglee.com/robots.txt</loc>
-        <lastmod>2015-01-15T00:00:19-08:00</lastmod>
+        <loc>http://aluenkinglee.github.io/blog/2014/04/30/generative-method/</loc>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
     </url>
     <url>
-        <loc>http://www.aluenkinglee.com/</loc>
-        <lastmod>2015-01-15T22:10:13-08:00</lastmod>
+        <loc>http://aluenkinglee.github.io/blog/2014/05/14/sort-list/</loc>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
     </url>
     <url>
-        <loc>http://www.aluenkinglee.com/blog/archives/</loc>
-        <lastmod>2015-01-15T22:10:13-08:00</lastmod>
+        <loc>http://aluenkinglee.github.io/blog/2014/05/19/my-understanding-about-kmp/</loc>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://aluenkinglee.github.io/blog/2014/05/19/threading-why-import-it-into-os/</loc>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://aluenkinglee.github.io/blog/2014/05/20/kill-process-on-some-port-under-linux-platform/
+        </loc>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://aluenkinglee.github.io/blog/2014/06/03/my-understanding-about-svm/</loc>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://aluenkinglee.github.io/blog/2014/06/03/lagrange-duality/</loc>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://aluenkinglee.github.io/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/</loc>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://aluenkinglee.github.io/blog/2014/07/09/wei-pi-pei/</loc>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://aluenkinglee.github.io/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/
+        </loc>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://aluenkinglee.github.io/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he/</loc>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://aluenkinglee.github.io/blog/2015/01/14/use-mongo-map-reduce-statistic-word-occurrence/
+        </loc>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://aluenkinglee.github.io/blog/archives/</loc>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://aluenkinglee.github.io/blog/categories/</loc>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://aluenkinglee.github.io/</loc>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://aluenkinglee.github.io/robots.txt</loc>
+        <lastmod>2015-07-26T20:04:09+08:00</lastmod>
     </url>
 </urlset>

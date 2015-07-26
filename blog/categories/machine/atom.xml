@@ -2,22 +2,22 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Machine | 曾经渐行远，未免心戚戚]]></title>
-  <link href="http://www.aluenkinglee.com/blog/categories/machine/atom.xml" rel="self"/>
-  <link href="http://www.aluenkinglee.com/"/>
-  <updated>2015-01-15T22:37:58-08:00</updated>
-  <id>http://www.aluenkinglee.com/</id>
+  <link href="http://aluenkinglee.github.io/blog/categories/machine/atom.xml" rel="self"/>
+  <link href="http://aluenkinglee.github.io/"/>
+  <updated>2015-07-26T20:05:32+08:00</updated>
+  <id>http://aluenkinglee.github.io/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
-    
+    <email><![CDATA[aluenkinglee@gmail.com]]></email>
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
     <title type="html"><![CDATA[generative method]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2014/04/30/generative-method/"/>
-    <updated>2014-04-30T22:52:00-07:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2014/04/30/generative-method</id>
+    <link href="http://aluenkinglee.github.io/blog/2014/04/30/generative-method/"/>
+    <updated>2014-04-30T22:52:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2014/04/30/generative-method</id>
     <content type="html"><![CDATA[<p>线性回归模型和logistic回归是判别模型，也就是根据特征值来求结果的概率。形式化表
 示为<script type="math/tex">p(y|x;\theta)</script>在参数<script type="math/tex">\theta</script>确定的情况下，求解条件概率<script type="math/tex">p(y|x)</script>。
 通俗的解释为在给定特征后预测结果出现的概率。</p>
@@ -99,9 +99,9 @@ x|y=1\sim N(\mu_1,\Sigma)
   
   <entry>
     <title type="html"><![CDATA[Discriminative Model Vs. Generative Model]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2014/04/30/discriminative-model-vs-generative-model/"/>
-    <updated>2014-04-30T17:17:00-07:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2014/04/30/discriminative-model-vs-generative-model</id>
+    <link href="http://aluenkinglee.github.io/blog/2014/04/30/discriminative-model-vs-generative-model/"/>
+    <updated>2014-04-30T17:17:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2014/04/30/discriminative-model-vs-generative-model</id>
     <content type="html"><![CDATA[<h2 id="section">判别模型和生成模型分析</h2>
 
 <p>在学习复习ML内容时，中文检索生成模型搜到了该<a href="http://blog.sciencenet.cn/home.php?mod=space&amp;uid=248173&amp;do=blog&amp;id=227964">这里</a>本文主要参考该文章，并稍作整理。</p>
@@ -307,9 +307,9 @@ x|y=1\sim N(\mu_1,\Sigma)
   
   <entry>
     <title type="html"><![CDATA[可爱的Armadillo]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2013/12/31/ke-ai-de-armadillo/"/>
-    <updated>2013-12-31T10:25:00-08:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2013/12/31/ke-ai-de-armadillo</id>
+    <link href="http://aluenkinglee.github.io/blog/2013/12/31/ke-ai-de-armadillo/"/>
+    <updated>2013-12-31T10:25:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2013/12/31/ke-ai-de-armadillo</id>
     <content type="html"><![CDATA[<p>最近又重新看了一下coursera上的<a href="https://class.coursera.org/ml-004/lecture/index">机器学习</a>(Andrew Ng讲的)，比起之前上老师的课和<a href="http://book.douban.com/subject/1102235/" title="机器学习">机器学习</a>这本书来说，简直好太多。当初选修这个课程的时候明显感到编程实践环节太少，很不适应，只有一个大作业而已。好在这里的Quara和Programming Excises很给力。</p>
 
 <p>我的设想是这样，octave作为一种快速验证想法的工具不适合应用在实际的生产环境中的，毕竟计算速度还是可以依靠集群和并行化来加快大数据处理。在此参考了C++的<a href="http://en.wikipedia.org/wiki/Comparison_of_linear_algebra_libraries">线性代数库</a>之后选择了Armadillo,毕竟经常更新并且从官网资料来看，和octave代码相似便于移植，再说，从它本身和其他的对比来看，速度也是相当快的。</p>

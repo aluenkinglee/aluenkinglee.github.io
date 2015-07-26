@@ -2,22 +2,22 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: 动态规划 | 曾经渐行远，未免心戚戚]]></title>
-  <link href="http://www.aluenkinglee.com/blog/categories/dong-tai-gui-hua/atom.xml" rel="self"/>
-  <link href="http://www.aluenkinglee.com/"/>
-  <updated>2015-01-15T22:37:58-08:00</updated>
-  <id>http://www.aluenkinglee.com/</id>
+  <link href="http://aluenkinglee.github.io/blog/categories/dong-tai-gui-hua/atom.xml" rel="self"/>
+  <link href="http://aluenkinglee.github.io/"/>
+  <updated>2015-07-26T20:05:32+08:00</updated>
+  <id>http://aluenkinglee.github.io/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
-    
+    <email><![CDATA[aluenkinglee@gmail.com]]></email>
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
     <title type="html"><![CDATA[我对KMP算法的理解]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2014/05/19/my-understanding-about-kmp/"/>
-    <updated>2014-05-19T22:56:00-07:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2014/05/19/my-understanding-about-kmp</id>
+    <link href="http://aluenkinglee.github.io/blog/2014/05/19/my-understanding-about-kmp/"/>
+    <updated>2014-05-19T22:56:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2014/05/19/my-understanding-about-kmp</id>
     <content type="html"><![CDATA[<p>和朴素的字符串匹配算法相比，KMP加快匹配的关键在于当某个位置不匹配了，不在模版不再是向右滑动一个位置，而是跟匹配处相关的一个值。这样，在字符串的匹配时间就是和搜索串长度相关的一个值<script type="math/tex">O(n)</script>。</p>
 
 <p>至于相关的资料，参阅了<a href="http://blog.csdn.net/v_july_v/article/details/7041827">六之再续：KMP算法之总结篇（12.09修订，必懂KMP</a>，只是这个个人感觉有点凌乱。</p>
@@ -140,9 +140,9 @@ void kmp_match(const char* T, const char* P)
   
   <entry>
     <title type="html"><![CDATA[dynamic programming]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2014/04/29/dynamic-programming/"/>
-    <updated>2014-04-29T19:34:00-07:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2014/04/29/dynamic-programming</id>
+    <link href="http://aluenkinglee.github.io/blog/2014/04/29/dynamic-programming/"/>
+    <updated>2014-04-29T19:34:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2014/04/29/dynamic-programming</id>
     <content type="html"><![CDATA[<p>好几年了，没有特意去做与ACM相关的算法题了，时至今日，也确实忘得差不多了，不过，现在也到了该拾起来的时候了。</p>
 
 <h5 id="section">动态规划</h5>

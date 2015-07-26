@@ -2,22 +2,22 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: git | 曾经渐行远，未免心戚戚]]></title>
-  <link href="http://www.aluenkinglee.com/blog/categories/git/atom.xml" rel="self"/>
-  <link href="http://www.aluenkinglee.com/"/>
-  <updated>2015-01-15T22:37:58-08:00</updated>
-  <id>http://www.aluenkinglee.com/</id>
+  <link href="http://aluenkinglee.github.io/blog/categories/git/atom.xml" rel="self"/>
+  <link href="http://aluenkinglee.github.io/"/>
+  <updated>2015-07-26T20:05:32+08:00</updated>
+  <id>http://aluenkinglee.github.io/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
-    
+    <email><![CDATA[aluenkinglee@gmail.com]]></email>
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
     <title type="html"><![CDATA[git的安装和使用]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2011/03/14/gitde-an-zhuang-he-shi-yong/"/>
-    <updated>2011-03-14T15:11:00-07:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2011/03/14/gitde-an-zhuang-he-shi-yong</id>
+    <link href="http://aluenkinglee.github.io/blog/2011/03/14/gitde-an-zhuang-he-shi-yong/"/>
+    <updated>2011-03-14T15:11:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2011/03/14/gitde-an-zhuang-he-shi-yong</id>
     <content type="html"><![CDATA[<p>git之前一直使用的，但是n久没用居然忘记怎么使用了。。。中途使用过程中居然还出现了</p>
 
 <p><code>bash

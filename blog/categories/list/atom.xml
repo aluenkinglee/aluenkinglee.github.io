@@ -2,22 +2,22 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: list | 曾经渐行远，未免心戚戚]]></title>
-  <link href="http://www.aluenkinglee.com/blog/categories/list/atom.xml" rel="self"/>
-  <link href="http://www.aluenkinglee.com/"/>
-  <updated>2015-01-15T22:37:58-08:00</updated>
-  <id>http://www.aluenkinglee.com/</id>
+  <link href="http://aluenkinglee.github.io/blog/categories/list/atom.xml" rel="self"/>
+  <link href="http://aluenkinglee.github.io/"/>
+  <updated>2015-07-26T20:05:32+08:00</updated>
+  <id>http://aluenkinglee.github.io/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
-    
+    <email><![CDATA[aluenkinglee@gmail.com]]></email>
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
     <title type="html"><![CDATA[链表排序]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2014/05/14/sort-list/"/>
-    <updated>2014-05-14T13:51:00-07:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2014/05/14/sort-list</id>
+    <link href="http://aluenkinglee.github.io/blog/2014/05/14/sort-list/"/>
+    <updated>2014-05-14T13:51:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2014/05/14/sort-list</id>
     <content type="html"><![CDATA[<p>链表不想数组那样是连续的即像数组那样随机访问，只能从前往后遍历。所以排序的方法只能是像插入排序，选择排序，和归并排序。</p>
 
 <p>下面就先说归并排序。</p>
@@ -108,9 +108,9 @@ public ListNode sortList(ListNode head) {
   
   <entry>
     <title type="html"><![CDATA[some commen list problems in the interview]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2014/04/28/some-commen-list-problems-in-the-interview/"/>
-    <updated>2014-04-28T21:54:00-07:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2014/04/28/some-commen-list-problems-in-the-interview</id>
+    <link href="http://aluenkinglee.github.io/blog/2014/04/28/some-commen-list-problems-in-the-interview/"/>
+    <updated>2014-04-28T21:54:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2014/04/28/some-commen-list-problems-in-the-interview</id>
     <content type="html"><![CDATA[<p>链表是最基本的数据结构，面试官也常常用链表来考察面试者的基本能力，而且链表相关的操作相对而言比较简单，也适合考察写代码的能力。链表的操作也离不开指针，指针又很容易导致出错。综合多方面的原因，链表题目在面试中占据着很重要的地位。本文对链表相关的面试题做了较为全面的整理，希望能对找工作的同学有所帮助。
 链表结点声明如下：</p>
 

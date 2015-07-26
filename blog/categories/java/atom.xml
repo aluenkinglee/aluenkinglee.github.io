@@ -2,22 +2,22 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: java | 曾经渐行远，未免心戚戚]]></title>
-  <link href="http://www.aluenkinglee.com/blog/categories/java/atom.xml" rel="self"/>
-  <link href="http://www.aluenkinglee.com/"/>
-  <updated>2015-01-15T22:37:58-08:00</updated>
-  <id>http://www.aluenkinglee.com/</id>
+  <link href="http://aluenkinglee.github.io/blog/categories/java/atom.xml" rel="self"/>
+  <link href="http://aluenkinglee.github.io/"/>
+  <updated>2015-07-26T20:05:32+08:00</updated>
+  <id>http://aluenkinglee.github.io/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
-    
+    <email><![CDATA[aluenkinglee@gmail.com]]></email>
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
     <title type="html"><![CDATA[链表排序]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2014/05/14/sort-list/"/>
-    <updated>2014-05-14T13:51:00-07:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2014/05/14/sort-list</id>
+    <link href="http://aluenkinglee.github.io/blog/2014/05/14/sort-list/"/>
+    <updated>2014-05-14T13:51:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2014/05/14/sort-list</id>
     <content type="html"><![CDATA[<p>链表不想数组那样是连续的即像数组那样随机访问，只能从前往后遍历。所以排序的方法只能是像插入排序，选择排序，和归并排序。</p>
 
 <p>下面就先说归并排序。</p>

@@ -1,35 +1,36 @@
 
-<!DOCTYPE html>
-<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
-<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  <title>曾经渐行远，未免心戚戚</title>
-  <meta name="author" content="Aluen King Lee">
+<!DOCTYPE HTML>
 
-  
-  <meta name="description" content="链表不想数组那样是连续的即像数组那样随机访问，只能从前往后遍历。所以排序的方法只能是像插入排序，选择排序，和归并排序。 下面就先说归并排序。 ">
-  
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>曾经渐行远，未免心戚戚</title>
+	<meta name="author" content="Aluen King Lee">
+
+	
+	<meta name="description" content="May 14th, 2014 algorithm, java, list, sort 链表排序 链表不想数组那样是连续的即像数组那样随机访问，只能从前往后遍历。所以排序的方法只能是像插入排序，选择排序，和归并排序。 下面就先说归并排序。 read on &rarr; Apr 30th, 2014 &hellip;">
+	
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
   <meta name="MobileOptimized" content="320">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  
-  <link rel="canonical" href="http://www.aluenkinglee.com/blog/page/2">
-  <link href="/favicon.png" rel="icon">
-  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="曾经渐行远，未免心戚戚" type="application/atom+xml">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+	<link href="/atom.xml" rel="alternate" title="曾经渐行远，未免心戚戚" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://aluenkinglee.github.io/blog/page/2/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href='http://fonts.useso.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<!--使用useso替换google的-->
 <link href="http://fonts.useso.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.useso.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 
+<!--支持 latex -->
 <!-- mathjax config similar to math.stackexchange -->
 <script type="text/x-mathjax-config">
 MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
@@ -37,6 +38,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
                   data.math = data.math.replace(/^\s*<!\[CDATA\[\s*((?:\n|.)*)\s*\]\]>\s*$/m,"$1");
                     });
           });
+
 </script>
 
 <script type="text/x-mathjax-config">
@@ -46,6 +48,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
       processEscapes: true
     }
   });
+
 </script>
 
 <script type="text/x-mathjax-config">
@@ -54,6 +57,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
         skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
       }
     });
+
 </script>
 
 <script type="text/x-mathjax-config">
@@ -63,58 +67,97 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
             all[i].SourceElement().parentNode.className += ' has-jax';
         }
     });
+
 </script>
 
 <script type="text/javascript"
-   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
 
   
 
 </head>
 
-<body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">曾经渐行远，未免心戚戚</a></h1>
-  
-    <h2>A blogging framework for hackers.</h2>
-  
-</hgroup>
+
+<body>
+	<div class="container">
+		<div class="left-col panel-cover panel-cover--collapsed">
+			<div class="intrude-less">
+			<header id="header" class="inner"><!-- 不使用gravatar图片了 -->
+<!--<div class="profilepic">-->
+	<!---->
+	<!--<script src="/javascripts/md5.js"></script>-->
+	<!--<script type="text/javascript">-->
+		<!--$(function(){-->
+			<!--$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("aluenkinglee@gmail.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");-->
+		<!--});-->
+	<!--</script>-->
+	<!---->
+<!--</div>-->
+<header>
+    <div class="panel-main">
+        <div class="profilepic">
+            <a href="/"><img src="/images/profile.png" alt="Profile Picture" style="width: 100px;"></a>
+        </div>
+        <div class="panel-main__content">
+            <h1 class="panel-title"><a href="http://www.aluenkinglee.com/blog" title="link to homepage for Aluen King Lee">Aluen</a></h1>
+            <!--<hr class="panel-cover__divider">-->
+            <p class="panel-cover__description">On the way to be a maker</p>
+            <!--<hr class="panel-cover__divider&#45;&#45;secondary">-->
+        </div>
+    </div>
 
 </header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
 </ul>
-  
-<form action="http://google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:www.aluenkinglee.com" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
-</ul>
-
 </nav>
-  <div id="main">
-    <div id="content">
-      <div class="blog-index">
-  
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/05/14/sort-list/">链表排序</a></h1>
-    
-    
-      <p class="meta">
-        
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:aluenkinglee@gmail.com" title="Email">Email</a>
+		
+		
+		
+		
+		
+			<a class="github" href="https://github.com/aluenkinglee" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+			<a class="douban" href="https://www.douban.com/people/aluenkinglee" title="Douban">Douban</a>
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>
+			</div>
+            <!-- add this div will prevent the link.. -->
+			<!--<div class="panel-cover&#45;&#45;overlay"></div>-->
+		</div>
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner">
+<div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
 
 
 
@@ -126,63 +169,57 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   
 
 
-<time datetime="2014-05-14T13:51:00-07:00" pubdate data-updated="true">May 14<span>th</span>, 2014</time>
-        
-        
-          | <a href="/blog/2014/05/14/sort-list/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
+<time datetime="2014-05-14T13:51:00+08:00" data-updated="true" itemprop="datePublished">May 14<span>th</span>, 2014</time></div>
+		<div class="tags">
 
 
-  <div class="entry-content"><p>链表不想数组那样是连续的即像数组那样随机访问，只能从前往后遍历。所以排序的方法只能是像插入排序，选择排序，和归并排序。</p>
+	<a class='category' href='/blog/categories/algorithm/'>algorithm</a>, <a class='category' href='/blog/categories/java/'>java</a>, <a class='category' href='/blog/categories/list/'>list</a>, <a class='category' href='/blog/categories/sort/'>sort</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/05/14/sort-list/" itemprop="url">链表排序</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>链表不想数组那样是连续的即像数组那样随机访问，只能从前往后遍历。所以排序的方法只能是像插入排序，选择排序，和归并排序。</p>
 
 <p>下面就先说归并排序。</p>
 
+
+		
+		<a href="/blog/2014/05/14/sort-list/" class="more-link">read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-30T22:52:00+08:00" data-updated="true" itemprop="datePublished">Apr 30<span>th</span>, 2014</time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/machine/'>Machine</a>, <a class='category' href='/blog/categories/learning/'>learning</a>, <a class='category' href='/blog/categories/zheng-li/'>整理</a>, <a class='category' href='/blog/categories/ji-qi-xue-xi/'>机器学习</a>, <a class='category' href='/blog/categories/sheng-cheng-xue-xi/'>生成学习</a>
+
+
 </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/05/14/sort-list/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/30/generative-method/">Generative Method</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-04-30T22:52:00-07:00" pubdate data-updated="true">Apr 30<span>th</span>, 2014</time>
-        
-        
-          | <a href="/blog/2014/04/30/generative-method/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>线性回归模型和logistic回归是判别模型，也就是根据特征值来求结果的概率。形式化表
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/30/generative-method/" itemprop="url">Generative Method</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>线性回归模型和logistic回归是判别模型，也就是根据特征值来求结果的概率。形式化表
 示为<script type="math/tex">p(y|x;\theta)</script>在参数<script type="math/tex">\theta</script>确定的情况下，求解条件概率<script type="math/tex">p(y|x)</script>。
 通俗的解释为在给定特征后预测结果出现的概率。</p>
 
@@ -258,203 +295,165 @@ x|y=0\sim N(\mu_0,\Sigma)\\
 x|y=1\sim N(\mu_1,\Sigma)
 </script>
 
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-30T17:17:00+08:00" data-updated="true" itemprop="datePublished">Apr 30<span>th</span>, 2014</time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/machine/'>Machine</a>, <a class='category' href='/blog/categories/learning/'>learning</a>, <a class='category' href='/blog/categories/zheng-li/'>整理</a>, <a class='category' href='/blog/categories/ji-qi-xue-xi/'>机器学习</a>
+
+
 </div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/30/discriminative-model-vs-generative-model/">Discriminative Model vs. Generative Model</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-04-30T17:17:00-07:00" pubdate data-updated="true">Apr 30<span>th</span>, 2014</time>
-        
-        
-          | <a href="/blog/2014/04/30/discriminative-model-vs-generative-model/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2 id="section">判别模型和生成模型分析</h2>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/30/discriminative-model-vs-generative-model/" itemprop="url">Discriminative Model vs. Generative Model</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h2 id="section">判别模型和生成模型分析</h2>
 
 <p>在学习复习ML内容时，中文检索生成模型搜到了该<a href="http://blog.sciencenet.cn/home.php?mod=space&amp;uid=248173&amp;do=blog&amp;id=227964">这里</a>本文主要参考该文章，并稍作整理。</p>
 
+
+		
+		<a href="/blog/2014/04/30/discriminative-model-vs-generative-model/" class="more-link">read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-29T19:34:00+08:00" data-updated="true" itemprop="datePublished">Apr 29<span>th</span>, 2014</time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/dong-tai-gui-hua/'>动态规划</a>
+
+
 </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/30/discriminative-model-vs-generative-model/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/29/dynamic-programming/">Dynamic Programming</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-04-29T19:34:00-07:00" pubdate data-updated="true">Apr 29<span>th</span>, 2014</time>
-        
-        
-          | <a href="/blog/2014/04/29/dynamic-programming/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>好几年了，没有特意去做与ACM相关的算法题了，时至今日，也确实忘得差不多了，不过，现在也到了该拾起来的时候了。</p>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/29/dynamic-programming/" itemprop="url">Dynamic Programming</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>好几年了，没有特意去做与ACM相关的算法题了，时至今日，也确实忘得差不多了，不过，现在也到了该拾起来的时候了。</p>
 
 <h5 id="section">动态规划</h5>
+
+		
+		<a href="/blog/2014/04/29/dynamic-programming/" class="more-link">read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-28T21:54:00+08:00" data-updated="true" itemprop="datePublished">Apr 28<span>th</span>, 2014</time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/interview/'>interview</a>, <a class='category' href='/blog/categories/list/'>list</a>, <a class='category' href='/blog/categories/lian-biao/'>链表</a>, <a class='category' href='/blog/categories/mian-shi/'>面试</a>
+
+
 </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/29/dynamic-programming/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/28/some-commen-list-problems-in-the-interview/">Some Commen List Problems in the Interview</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-04-28T21:54:00-07:00" pubdate data-updated="true">Apr 28<span>th</span>, 2014</time>
-        
-        
-          | <a href="/blog/2014/04/28/some-commen-list-problems-in-the-interview/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>链表是最基本的数据结构，面试官也常常用链表来考察面试者的基本能力，而且链表相关的操作相对而言比较简单，也适合考察写代码的能力。链表的操作也离不开指针，指针又很容易导致出错。综合多方面的原因，链表题目在面试中占据着很重要的地位。本文对链表相关的面试题做了较为全面的整理，希望能对找工作的同学有所帮助。
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/28/some-commen-list-problems-in-the-interview/" itemprop="url">Some Commen List Problems in the Interview</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>链表是最基本的数据结构，面试官也常常用链表来考察面试者的基本能力，而且链表相关的操作相对而言比较简单，也适合考察写代码的能力。链表的操作也离不开指针，指针又很容易导致出错。综合多方面的原因，链表题目在面试中占据着很重要的地位。本文对链表相关的面试题做了较为全面的整理，希望能对找工作的同学有所帮助。
 链表结点声明如下：</p>
 
+
+		
+		<a href="/blog/2014/04/28/some-commen-list-problems-in-the-interview/" class="more-link">read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-21T15:41:00+08:00" data-updated="true" itemprop="datePublished">Apr 21<span>st</span>, 2014</time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/xin-xi-zeng-yi-suan-fa/'>信息增益算法</a>, <a class='category' href='/blog/categories/te-zheng-xuan-ze/'>特征选择</a>
+
+
 </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/28/some-commen-list-problems-in-the-interview/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/21/feature-selection--infomation-gain/">特征选择-信息增益算法</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-04-21T15:41:00-07:00" pubdate data-updated="true">Apr 21<span>st</span>, 2014</time>
-        
-        
-          | <a href="/blog/2014/04/21/feature-selection--infomation-gain/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><strong>信息增益</strong>：特征 $A$ 对于训练数据集$D$的信息增益 $g\left( D,A \right)$,定义为集合 $D$ 的经验熵 $H\left( D \right)$ 与特征 $A$ 在给定条件下 $D$ 
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/21/feature-selection--infomation-gain/" itemprop="url">特征选择-信息增益算法</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p><strong>信息增益</strong>：特征 $A$ 对于训练数据集$D$的信息增益 $g\left( D,A \right)$,定义为集合 $D$ 的经验熵 $H\left( D \right)$ 与特征 $A$ 在给定条件下 $D$ 
 的经验条件熵c之差。
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/21/feature-selection--infomation-gain/">read on &rarr;</a>
-    </footer>
-  
+
+		
+		<a href="/blog/2014/04/21/feature-selection--infomation-gain/" class="more-link">read on &rarr;</a>
+	</div>
+
+</article>
 
 
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification/">A Scratch of Feature Selection in Traffic Classification</a></h1>
-    
-    
-      <p class="meta">
-        
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
 
 
 
@@ -466,82 +465,30 @@ x|y=1\sim N(\mu_1,\Sigma)
   
 
 
-<time datetime="2014-04-20T21:02:00-07:00" pubdate data-updated="true">Apr 20<span>th</span>, 2014</time>
-        
-        
-          | <a href="/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
+<time datetime="2014-04-20T21:02:00+08:00" data-updated="true" itemprop="datePublished">Apr 20<span>th</span>, 2014</time></div>
+		<div class="tags">
 
 
-  <div class="entry-content"><p>特征选取在减轻识别流量监测方面起着很重要的作用。该方法可以显著提高计算流量分类的性能。但是，大部分的特征不能应用在实时在线的流量分类中（有些特征只能在获取完整个流量才能得到，比如传输的数据大小，流的传输时长等）。所以在抉择分类的时候，需要一个优化过的特征集合在更短的时间内完成流量的分类。另外一种方案就是使用新型的网络架构如SDN/OpenFlow在目前已有的特征选择方法中，Chi-squared, Fuzzy-rough and Consistency-based的特征选择方法最适合P2P流量选择（那现在的手机端流量分析怎么样？）这些算法在使用ML进行在线P2P检测时会给出较好的特征子集。
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification/">read on &rarr;</a>
-    </footer>
-  
+	<a class='category' href='/blog/categories/ji-qi-xue-xi/'>机器学习</a>, <a class='category' href='/blog/categories/te-zheng-xuan-ze/'>特征选择</a>
 
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/04/qi-yi-de-nei-cun-fu-gai/">“奇异”的内存覆盖</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-04T22:01:00-08:00" pubdate data-updated="true">Mar 4<span>th</span>, 2014</time>
-        
-        
-          | <a href="/blog/2014/03/04/qi-yi-de-nei-cun-fu-gai/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>犯了一个愚蠢的问题，让我碰到了这么个内容错误的bug</p>
 
 </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/03/04/qi-yi-de-nei-cun-fu-gai/">read on &rarr;</a>
-    </footer>
-  
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification/" itemprop="url">A Scratch of Feature Selection in Traffic Classification</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>特征选取在减轻识别流量监测方面起着很重要的作用。该方法可以显著提高计算流量分类的性能。但是，大部分的特征不能应用在实时在线的流量分类中（有些特征只能在获取完整个流量才能得到，比如传输的数据大小，流的传输时长等）。所以在抉择分类的时候，需要一个优化过的特征集合在更短的时间内完成流量的分类。另外一种方案就是使用新型的网络架构如SDN/OpenFlow在目前已有的特征选择方法中，Chi-squared, Fuzzy-rough and Consistency-based的特征选择方法最适合P2P流量选择（那现在的手机端流量分析怎么样？）这些算法在使用ML进行在线P2P检测时会给出较好的特征子集。
+
+		
+		<a href="/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification/" class="more-link">read on &rarr;</a>
+	</div>
+
+</article>
 
 
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/">理解TCP中的序列号和确认号</a></h1>
-    
-    
-      <p class="meta">
-        
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
 
 
 
@@ -553,65 +500,91 @@ x|y=1\sim N(\mu_1,\Sigma)
   
 
 
-<time datetime="2014-02-26T22:34:00-08:00" pubdate data-updated="true">Feb 26<span>th</span>, 2014</time>
-        
-        
-          | <a href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
+<time datetime="2014-03-04T22:01:00+08:00" data-updated="true" itemprop="datePublished">Mar 4<span>th</span>, 2014</time></div>
+		<div class="tags">
 
 
-  <div class="entry-content"><p>之所以写这么一篇文章是因为被wireshark的序列号搞晕了，我不知道你们是否这样，当你读这篇article时，肯定你已经熟悉了TCP那个三次握手，
+	<a class='category' href='/blog/categories/c-plus-plus/'>C++</a>, <a class='category' href='/blog/categories/libpcap/'>libpcap</a>, <a class='category' href='/blog/categories/new/'>new[]</a>, <a class='category' href='/blog/categories/nei-cun-fu-gai/'>内存覆盖</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/03/04/qi-yi-de-nei-cun-fu-gai/" itemprop="url">“奇异”的内存覆盖</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>犯了一个愚蠢的问题，让我碰到了这么个内容错误的bug</p>
+
+
+		
+		<a href="/blog/2014/03/04/qi-yi-de-nei-cun-fu-gai/" class="more-link">read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-26T22:34:00+08:00" data-updated="true" itemprop="datePublished">Feb 26<span>th</span>, 2014</time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/c/'>C</a>, <a class='category' href='/blog/categories/tcp/'>TCP</a>, <a class='category' href='/blog/categories/libpcap/'>libpcap</a>, <a class='category' href='/blog/categories/wireshark/'>wireshark</a>, <a class='category' href='/blog/categories/san-ci-wo-shou/'>三次握手</a>, <a class='category' href='/blog/categories/si-ci-wo-shou/'>四次握手</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/" itemprop="url">理解TCP中的序列号和确认号</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>之所以写这么一篇文章是因为被wireshark的序列号搞晕了，我不知道你们是否这样，当你读这篇article时，肯定你已经熟悉了TCP那个三次握手，
 或者是SYN,SYN|ACK,ACK. 而我要做的也就是这个，提取一个流的前N个packets，针对目前的需求，只需要在传输层截取UDP和TCP的前多少个流即可。
 所以我得分析网络层的这些协议底层到底是怎么回事，在结合libpcap完成流的提取任务。</p>
 
 <p>相对来说TCP还是个复杂的协议，而且值得清楚的认识以下。那么结合wireshark和代码来认识下TCP里面的东西。</p>
 
+
+		
+		<a href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/" class="more-link">read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-24T05:29:00+08:00" data-updated="true" itemprop="datePublished">Feb 24<span>th</span>, 2014</time></div>
+		<div class="tags">
+
 </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/02/24/c-plus-plus-de-hashtablena-xie-shi/">C++的hashtable那些事</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-24T05:29:00-08:00" pubdate data-updated="true">Feb 24<span>th</span>, 2014</time>
-        
-        
-          | <a href="/blog/2014/02/24/c-plus-plus-de-hashtablena-xie-shi/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>对于想知道hashtable原理的的人来说，多少对基本的数据结构和算法都有些了解，所以不再细说。</p>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/02/24/c-plus-plus-de-hashtablena-xie-shi/" itemprop="url">C++的hashtable那些事</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>对于想知道hashtable原理的的人来说，多少对基本的数据结构和算法都有些了解，所以不再细说。</p>
 
 <p>平常我们所说的一些容器来说，比如vector，list，stack之类，他们中的元素都是可以排序的，可以归为序列式容器，基于连续内存的vector可以实现随机存储，但是搜索的复杂度是O（n），list也是如此。
 在关联式容器中，每个数据有一个键值和一个实值。元素插入到关联式容器中，容器内部结构根据其键值依据某个特定的规则将这个元素放置于适当的位置，从而实现插入和搜索是对数平均时间（基于红黑树），甚至是尽可能的是常数级别（就是这里说的散列表），其效率依赖于数据的特性和规则的设计。关联式的容器没有所谓的头尾，不会有begin(),end(),push_back()等这样的行为。</p>
@@ -619,98 +592,33 @@ x|y=1\sim N(\mu_1,\Sigma)
 <p>数组是个很好的内建数据结构，你甚至可以把数组看成一个最简单的hash表，index是种键值，而内容则是value。是不是很好，常数级寻址。但是也有问题，通常我们面对的键值不仅仅是简单的无符号的整数之流，还有很多的string啊，复杂的类对象啊，而这些问题就是hash函数所要处理的问题。hash函数把这个对象映射到[0-表的长度-1]之间。但是，不能够保证每个元素的键值与函数值是一一对应的，因此极有可能出现对于不同的元素，却计算出了相同的函数值，这样就产生了“冲突”，换句话说，就是把不同的元素分在了相同的“类”之中。 总的来说，“直接定址”与“解决冲突”是哈希表的两大特点。首先，为什么会出现冲突？基于这种想法设计出来的结构无疑是一种空间换时间的典范，尽管现在硬件越来越牛逼，但并不意味着可以随便挥霍，矛盾就出现在空间的数据往往小于我们要处理的数据规模，所以我们不可能设计出一种一一对应的函数来。而解决冲突就是hash第二个要解决的问题。</p>
 
 <p>对于冲突的解决，往往有线性探测和二测探测以及开链法（类似list），前两种往往在数据规模小的情况下，即空间浪费的时候效率较高，这也意味着空间利用率不是很理想，而开链法，器负载系数大于1，就是索引的数组被极大利用了。
+
+		
+		<a href="/blog/2014/02/24/c-plus-plus-de-hashtablena-xie-shi/" class="more-link">read on &rarr;</a>
+	</div>
+
+</article>
+
 </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/02/24/c-plus-plus-de-hashtablena-xie-shi/">read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  <div class="pagination">
+<nav id="pagenavi">
     
-      <a class="prev" href="/blog/page/3/">&larr; Older</a>
+        <a href="/" class="prev">Prev</a>
     
-    <a href="/blog/archives">Blog Archives</a>
     
-    <a class="next" href="/">Newer &rarr;</a>
+        <a href="/blog/page/3/" class="next">Next</a>
     
-  </div>
-</div>
-<aside class="sidebar">
-  
-    <section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2015/01/14/use-mongo-map-reduce-statistic-word-occurrence/">使用mongodb内置的mapreduce聚合函数统计词频</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he/">浅谈微博标签聚合</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/">Use Svm to Classify Whether a Person Is Good or Bad on Credit Using Sns Data</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/07/09/wei-pi-pei/">伪匹配</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/">朴素贝叶斯文本分类</a>
-      </li>
-    
-  </ul>
-</section>
+    <div class="center"><a href="/blog/archives">Blog Archives</a></div>
+</nav></div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2015
+
+    Aluen King Lee
 
 
-
-
-<section>
-  <h1>My Douban</h1>
-  <div>
-  <!--添加到这-->
-  <script type="text/javascript" src="http://www.douban.com/service/badge/aluenkinglee/?selection=random&amp;picsize=small&amp;show=dolist&amp;n=8&amp;cat=book&amp;columns=3"></script>
-  </div>
-</section> 
-<section>
-<h1>Recent Comments</h1>
-<ul class="ds-recent-comments" data-num-items="10" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="18"></ul>
-
-<!--多说js加载开始，一个页面只需要加载一次 -->
-<script type="text/javascript">
-  var duoshuoQuery = {short_name:"aluenkinglee"};
-  (function() {
-    var ds = document.createElement('script');
-    ds.type = 'text/javascript';ds.async = true;
-    ds.src = 'http://static.duoshuo.com/embed.js';
-    ds.charset = 'UTF-8';
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
-  })();
-</script>
-<!--多说js加载结束，一个页面只需要加载一次 -->
-
-</section> 
-
-  
-</aside>
-
-    </div>
-  </div>
-  <footer role="contentinfo"><p>
-  Copyright &copy; 2015 - Aluen King Lee -
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
-</p>
-
-</footer>
-  
-
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
 
 
 

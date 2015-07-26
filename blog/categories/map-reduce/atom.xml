@@ -2,22 +2,22 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: map-reduce | 曾经渐行远，未免心戚戚]]></title>
-  <link href="http://www.aluenkinglee.com/blog/categories/map-reduce/atom.xml" rel="self"/>
-  <link href="http://www.aluenkinglee.com/"/>
-  <updated>2015-01-15T22:37:58-08:00</updated>
-  <id>http://www.aluenkinglee.com/</id>
+  <link href="http://aluenkinglee.github.io/blog/categories/map-reduce/atom.xml" rel="self"/>
+  <link href="http://aluenkinglee.github.io/"/>
+  <updated>2015-07-26T20:05:32+08:00</updated>
+  <id>http://aluenkinglee.github.io/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
-    
+    <email><![CDATA[aluenkinglee@gmail.com]]></email>
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
     <title type="html"><![CDATA[使用mongodb内置的mapreduce聚合函数统计词频]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2015/01/14/use-mongo-map-reduce-statistic-word-occurrence/"/>
-    <updated>2015-01-14T13:51:00-08:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2015/01/14/use-mongo-map-reduce-statistic-word-occurrence</id>
+    <link href="http://aluenkinglee.github.io/blog/2015/01/14/use-mongo-map-reduce-statistic-word-occurrence/"/>
+    <updated>2015-01-14T13:51:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2015/01/14/use-mongo-map-reduce-statistic-word-occurrence</id>
     <content type="html"><![CDATA[<p>有个需求需要对数据库中的某个字段进行频率统计，数据量较大，大概在2亿左右。</p>
 
 <p>在之前先用一个简单的例子描述下问题。</p>

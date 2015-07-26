@@ -2,22 +2,22 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: 总结 | 曾经渐行远，未免心戚戚]]></title>
-  <link href="http://www.aluenkinglee.com/blog/categories/zong-jie/atom.xml" rel="self"/>
-  <link href="http://www.aluenkinglee.com/"/>
-  <updated>2015-01-15T22:37:58-08:00</updated>
-  <id>http://www.aluenkinglee.com/</id>
+  <link href="http://aluenkinglee.github.io/blog/categories/zong-jie/atom.xml" rel="self"/>
+  <link href="http://aluenkinglee.github.io/"/>
+  <updated>2015-07-26T20:05:32+08:00</updated>
+  <id>http://aluenkinglee.github.io/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
-    
+    <email><![CDATA[aluenkinglee@gmail.com]]></email>
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
     <title type="html"><![CDATA[近期总结]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2013/04/17/jin-qi-zong-jie/"/>
-    <updated>2013-04-17T17:13:00-07:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2013/04/17/jin-qi-zong-jie</id>
+    <link href="http://aluenkinglee.github.io/blog/2013/04/17/jin-qi-zong-jie/"/>
+    <updated>2013-04-17T17:13:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2013/04/17/jin-qi-zong-jie</id>
     <content type="html"><![CDATA[<p>一直以来对数据挖掘，推荐的算法比较感兴趣，可是大家也都知道如果只是看课本上的那些理论性的公式和说辞会给人一种很空泛的感觉，所以个人感觉迫切需要做这方面的实践。可惜做这些的最最最遗憾缺少的就是数据的问题。所以我的给自己整点数据。</p>
 
 <p>还好这学期算是有时间，相对于上个学期一周n多的课程和大作业来说算是幸福多的了。（而且那个时候还要给师兄们各种帮忙，要写android程序版本中的几个activity，呵呵，不过很有意思，师兄有一个是做LBS信息匿名处理服务的，挺有意思，对比微博，人人中的定位&gt;.&lt;就会发现这个很有必要的，获取一个人的坐标信息还是很容易的。）所以就琢磨这弄点数据自己来搞，一开始我是想获得微博的数据，具体来说是获得某个人过去说过的话，然后分析什么样的人，什么样的性格，心理怎么样。（我认为计算机和其他学科的交叉才是王道，说到底，计算机，算法毕竟只是一种计算的工具和技术，和其他学科（比如地理，心理学，生物学）的交叉才会有更多新的发现，现在数据量都很多，人工时处理不了的。机器学习和数据挖掘的应用领域啦~）

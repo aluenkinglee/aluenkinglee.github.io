@@ -2,22 +2,22 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: 特征选择 | 曾经渐行远，未免心戚戚]]></title>
-  <link href="http://www.aluenkinglee.com/blog/categories/te-zheng-xuan-ze/atom.xml" rel="self"/>
-  <link href="http://www.aluenkinglee.com/"/>
-  <updated>2015-01-15T22:37:58-08:00</updated>
-  <id>http://www.aluenkinglee.com/</id>
+  <link href="http://aluenkinglee.github.io/blog/categories/te-zheng-xuan-ze/atom.xml" rel="self"/>
+  <link href="http://aluenkinglee.github.io/"/>
+  <updated>2015-07-26T20:05:32+08:00</updated>
+  <id>http://aluenkinglee.github.io/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
-    
+    <email><![CDATA[aluenkinglee@gmail.com]]></email>
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
     <title type="html"><![CDATA[特征选择-信息增益算法]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2014/04/21/feature-selection--infomation-gain/"/>
-    <updated>2014-04-21T15:41:00-07:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2014/04/21/feature-selection--infomation-gain</id>
+    <link href="http://aluenkinglee.github.io/blog/2014/04/21/feature-selection--infomation-gain/"/>
+    <updated>2014-04-21T15:41:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2014/04/21/feature-selection--infomation-gain</id>
     <content type="html"><![CDATA[<p><strong>信息增益</strong>：特征 $A$ 对于训练数据集$D$的信息增益 $g\left( D,A \right)$,定义为集合 $D$ 的经验熵 $H\left( D \right)$ 与特征 $A$ 在给定条件下 $D$ 
 的经验条件熵c之差。
 <!--more-->
@@ -73,9 +73,9 @@ g\left( D,A \right) =H\left( D \right) -H\left( { D }|{ A } \right)
   
   <entry>
     <title type="html"><![CDATA[a scratch of feature selection in traffic classification]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification/"/>
-    <updated>2014-04-20T21:02:00-07:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification</id>
+    <link href="http://aluenkinglee.github.io/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification/"/>
+    <updated>2014-04-20T21:02:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification</id>
     <content type="html"><![CDATA[<p>特征选取在减轻识别流量监测方面起着很重要的作用。该方法可以显著提高计算流量分类的性能。但是，大部分的特征不能应用在实时在线的流量分类中（有些特征只能在获取完整个流量才能得到，比如传输的数据大小，流的传输时长等）。所以在抉择分类的时候，需要一个优化过的特征集合在更短的时间内完成流量的分类。另外一种方案就是使用新型的网络架构如SDN/OpenFlow在目前已有的特征选择方法中，Chi-squared, Fuzzy-rough and Consistency-based的特征选择方法最适合P2P流量选择（那现在的手机端流量分析怎么样？）这些算法在使用ML进行在线P2P检测时会给出较好的特征子集。
 <!--more-->
 特征选取是寻找一个最小特征子集，可以快速有效的识别出实例的类别。如果利用一个特征进行分类聚类的结果与不使用它的结果没有很大的差别，则称整个特征时没有分类能力的。使用这些具备分类，聚类能力的特征，在分类的准确性和计算性能上都会得到提升。[1]主要研究的是在线流量分类中的流特征问题。然后考虑精度和性能的因素，选取了3中能够应用到P2P流量中的特征选择方法。</p>

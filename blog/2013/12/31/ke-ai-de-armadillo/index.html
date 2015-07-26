@@ -1,35 +1,36 @@
 
-<!DOCTYPE html>
-<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
-<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  <title>可爱的Armadillo - 曾经渐行远，未免心戚戚</title>
-  <meta name="author" content="Aluen King Lee">
+<!DOCTYPE HTML>
 
-  
-  <meta name="description" content="最近又重新看了一下coursera上的机器学习(Andrew Ng讲的)，比起之前上老师的课和机器学习这本书来说，简直好太多。当初选修这个课程的时候明显感到编程实践环节太少，很不适应，只有一个大作业而已。好在这里的Quara和Programming Excises很给力。 我的设想是这样， &hellip;">
-  
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>可爱的Armadillo - 曾经渐行远，未免心戚戚</title>
+	<meta name="author" content="Aluen King Lee">
+
+	
+	<meta name="description" content="可爱的Armadillo 最近又重新看了一下coursera上的机器学习(Andrew Ng讲的)，比起之前上老师的课和机器学习这本书来说，简直好太多。当初选修这个课程的时候明显感到编程实践环节太少，很不适应，只有一个大作业而已。好在这里的Quara和Programming Excises很给力 &hellip;">
+	
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
   <meta name="MobileOptimized" content="320">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  
-  <link rel="canonical" href="http://www.aluenkinglee.com/blog/2013/12/31/ke-ai-de-armadillo">
-  <link href="/favicon.png" rel="icon">
-  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="曾经渐行远，未免心戚戚" type="application/atom+xml">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+	<link href="/atom.xml" rel="alternate" title="曾经渐行远，未免心戚戚" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://aluenkinglee.github.io/blog/2013/12/31/ke-ai-de-armadillo/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href='http://fonts.useso.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<!--使用useso替换google的-->
 <link href="http://fonts.useso.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.useso.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 
+<!--支持 latex -->
 <!-- mathjax config similar to math.stackexchange -->
 <script type="text/x-mathjax-config">
 MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
@@ -37,6 +38,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
                   data.math = data.math.replace(/^\s*<!\[CDATA\[\s*((?:\n|.)*)\s*\]\]>\s*$/m,"$1");
                     });
           });
+
 </script>
 
 <script type="text/x-mathjax-config">
@@ -46,6 +48,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
       processEscapes: true
     }
   });
+
 </script>
 
 <script type="text/x-mathjax-config">
@@ -54,6 +57,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
         skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
       }
     });
+
 </script>
 
 <script type="text/x-mathjax-config">
@@ -63,77 +67,93 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
             all[i].SourceElement().parentNode.className += ' has-jax';
         }
     });
+
 </script>
 
 <script type="text/javascript"
-   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
 
   
 
 </head>
 
-<body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">曾经渐行远，未免心戚戚</a></h1>
-  
-    <h2>A blogging framework for hackers.</h2>
-  
-</hgroup>
+
+<body>
+	<div class="container">
+		<div class="left-col panel-cover panel-cover--collapsed">
+			<div class="intrude-less">
+			<header id="header" class="inner"><!-- 不使用gravatar图片了 -->
+<!--<div class="profilepic">-->
+	<!---->
+	<!--<script src="/javascripts/md5.js"></script>-->
+	<!--<script type="text/javascript">-->
+		<!--$(function(){-->
+			<!--$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("aluenkinglee@gmail.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");-->
+		<!--});-->
+	<!--</script>-->
+	<!---->
+<!--</div>-->
+<header>
+    <div class="panel-main">
+        <div class="profilepic">
+            <a href="/"><img src="/images/profile.png" alt="Profile Picture" style="width: 100px;"></a>
+        </div>
+        <div class="panel-main__content">
+            <h1 class="panel-title"><a href="http://www.aluenkinglee.com/blog" title="link to homepage for Aluen King Lee">Aluen</a></h1>
+            <!--<hr class="panel-cover__divider">-->
+            <p class="panel-cover__description">On the way to be a maker</p>
+            <!--<hr class="panel-cover__divider&#45;&#45;secondary">-->
+        </div>
+    </div>
 
 </header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
 </ul>
-  
-<form action="http://google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:www.aluenkinglee.com" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
-</ul>
-
 </nav>
-  <div id="main">
-    <div id="content">
-      <div>
-<article class="hentry" role="article">
-  
-  <header>
-    
-      <h1 class="entry-title">可爱的Armadillo</h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-31T10:25:00-08:00" pubdate data-updated="true">Dec 31<span>st</span>, 2013</time>
-        
-        
-          | <a href="#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-<div class="entry-content"><p>最近又重新看了一下coursera上的<a href="https://class.coursera.org/ml-004/lecture/index">机器学习</a>(Andrew Ng讲的)，比起之前上老师的课和<a href="http://book.douban.com/subject/1102235/" title="机器学习">机器学习</a>这本书来说，简直好太多。当初选修这个课程的时候明显感到编程实践环节太少，很不适应，只有一个大作业而已。好在这里的Quara和Programming Excises很给力。</p>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:aluenkinglee@gmail.com" title="Email">Email</a>
+		
+		
+		
+		
+		
+			<a class="github" href="https://github.com/aluenkinglee" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+			<a class="douban" href="https://www.douban.com/people/aluenkinglee" title="Douban">Douban</a>
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>
+			</div>
+            <!-- add this div will prevent the link.. -->
+			<!--<div class="panel-cover&#45;&#45;overlay"></div>-->
+		</div>
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">可爱的Armadillo</h1>
+	<div class="entry-content" itemprop="articleBody"><p>最近又重新看了一下coursera上的<a href="https://class.coursera.org/ml-004/lecture/index">机器学习</a>(Andrew Ng讲的)，比起之前上老师的课和<a href="http://book.douban.com/subject/1102235/" title="机器学习">机器学习</a>这本书来说，简直好太多。当初选修这个课程的时候明显感到编程实践环节太少，很不适应，只有一个大作业而已。好在这里的Quara和Programming Excises很给力。</p>
 
 <p>我的设想是这样，octave作为一种快速验证想法的工具不适合应用在实际的生产环境中的，毕竟计算速度还是可以依靠集群和并行化来加快大数据处理。在此参考了C++的<a href="http://en.wikipedia.org/wiki/Comparison_of_linear_algebra_libraries">线性代数库</a>之后选择了Armadillo,毕竟经常更新并且从官网资料来看，和octave代码相似便于移植，再说，从它本身和其他的对比来看，速度也是相当快的。</p>
 
@@ -175,136 +195,30 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 <p>接下来，应该就会把之前看过的视频和资料的东西在整理一下，并借用这个库实现应该实现的部分。</p>
 </div>
 
-
-  <footer>
-    <p class="meta">
-      
-  
-
-<span class="byline author vcard">Posted by <span class="fn">Aluen King Lee</span></span>
-
-      
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-31T10:25:00-08:00" pubdate data-updated="true">Dec 31<span>st</span>, 2013</time>
-      
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/armadillo/'>Armadillo</a>, <a class='category' href='/blog/categories/c-plus-plus/'>C++</a>, <a class='category' href='/blog/categories/learning/'>Learning</a>, <a class='category' href='/blog/categories/machine/'>Machine</a>, <a class='category' href='/blog/categories/armadillolian-jie-cuo-wu/'>armadillo链接错误</a>, <a class='category' href='/blog/categories/lapack/'>lapack</a>, <a class='category' href='/blog/categories/openblas/'>openblas</a>
-  
-</span>
-
-
-    </p>
-    
-      <div class="sharing">
-  
-  
-  
-</div>
-
-    
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2013/11/13/install-nox-on-debian-bug-fixed/" title="Previous Post: install nox on debian-bug fixed">&laquo; install nox on debian-bug fixed</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2014/01/05/machine-learning-linear-regression/" title="Next Post: Machine Learning :linear regression">Machine Learning :linear regression &raquo;</a>
-      
-    </p>
-  </footer>
 </article>
 
-
-  <section>
-    <h1>Comments</h1>
-    <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
-	<div class="ds-thread"></div>
-<script type="text/javascript">
-var duoshuoQuery = {short_name:"aluenkinglee"};
-	(function() {
-		var ds = document.createElement('script');
-		ds.type = 'text/javascript';ds.async = true;
-		ds.src = 'http://static.duoshuo.com/embed.js';
-		ds.charset = 'UTF-8';
-		(document.getElementsByTagName('head')[0] 
-		|| document.getElementsByTagName('body')[0]).appendChild(ds);
-	})();
-	</script>
-<!-- Duoshuo Comment END --></div>
-  </section>
-
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
 </div>
 
-<aside class="sidebar">
-  
-    <section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2015/01/14/use-mongo-map-reduce-statistic-word-occurrence/">使用mongodb内置的mapreduce聚合函数统计词频</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he/">浅谈微博标签聚合</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/">Use Svm to Classify Whether a Person Is Good or Bad on Credit Using Sns Data</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/07/09/wei-pi-pei/">伪匹配</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/">朴素贝叶斯文本分类</a>
-      </li>
-    
-  </ul>
-</section>
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2015
+
+    Aluen King Lee
 
 
-
-
-<section>
-  <h1>My Douban</h1>
-  <div>
-  <!--添加到这-->
-  <script type="text/javascript" src="http://www.douban.com/service/badge/aluenkinglee/?selection=random&amp;picsize=small&amp;show=dolist&amp;n=8&amp;cat=book&amp;columns=3"></script>
-  </div>
-</section> 
-<section>
-<h1>Recent Comments</h1>
-<ul class="ds-recent-comments" data-num-items="10" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="18"></ul>
-
-</section> 
-
-  
-</aside>
-
-
-    </div>
-  </div>
-  <footer role="contentinfo"><p>
-  Copyright &copy; 2015 - Aluen King Lee -
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
-</p>
-
-</footer>
-  
-
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
 
 
 

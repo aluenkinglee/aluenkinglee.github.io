@@ -2,22 +2,22 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: 信息增益算法 | 曾经渐行远，未免心戚戚]]></title>
-  <link href="http://www.aluenkinglee.com/blog/categories/xin-xi-zeng-yi-suan-fa/atom.xml" rel="self"/>
-  <link href="http://www.aluenkinglee.com/"/>
-  <updated>2015-01-15T22:37:58-08:00</updated>
-  <id>http://www.aluenkinglee.com/</id>
+  <link href="http://aluenkinglee.github.io/blog/categories/xin-xi-zeng-yi-suan-fa/atom.xml" rel="self"/>
+  <link href="http://aluenkinglee.github.io/"/>
+  <updated>2015-07-26T20:05:32+08:00</updated>
+  <id>http://aluenkinglee.github.io/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
-    
+    <email><![CDATA[aluenkinglee@gmail.com]]></email>
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
     <title type="html"><![CDATA[特征选择-信息增益算法]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2014/04/21/feature-selection--infomation-gain/"/>
-    <updated>2014-04-21T15:41:00-07:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2014/04/21/feature-selection--infomation-gain</id>
+    <link href="http://aluenkinglee.github.io/blog/2014/04/21/feature-selection--infomation-gain/"/>
+    <updated>2014-04-21T15:41:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2014/04/21/feature-selection--infomation-gain</id>
     <content type="html"><![CDATA[<p><strong>信息增益</strong>：特征 $A$ 对于训练数据集$D$的信息增益 $g\left( D,A \right)$,定义为集合 $D$ 的经验熵 $H\left( D \right)$ 与特征 $A$ 在给定条件下 $D$ 
 的经验条件熵c之差。
 <!--more-->

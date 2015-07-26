@@ -2,22 +2,22 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: 时间格式 | 曾经渐行远，未免心戚戚]]></title>
-  <link href="http://www.aluenkinglee.com/blog/categories/shi-jian-ge-shi/atom.xml" rel="self"/>
-  <link href="http://www.aluenkinglee.com/"/>
-  <updated>2015-01-15T22:37:58-08:00</updated>
-  <id>http://www.aluenkinglee.com/</id>
+  <link href="http://aluenkinglee.github.io/blog/categories/shi-jian-ge-shi/atom.xml" rel="self"/>
+  <link href="http://aluenkinglee.github.io/"/>
+  <updated>2015-07-26T20:05:32+08:00</updated>
+  <id>http://aluenkinglee.github.io/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
-    
+    <email><![CDATA[aluenkinglee@gmail.com]]></email>
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
     <title type="html"><![CDATA[Python处理带有时区的的字符串]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2013/04/16/pythonchu-li-dai-you-shi-qu-de-de-zi-fu-chuan/"/>
-    <updated>2013-04-16T15:54:00-07:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2013/04/16/pythonchu-li-dai-you-shi-qu-de-de-zi-fu-chuan</id>
+    <link href="http://aluenkinglee.github.io/blog/2013/04/16/pythonchu-li-dai-you-shi-qu-de-de-zi-fu-chuan/"/>
+    <updated>2013-04-16T15:54:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2013/04/16/pythonchu-li-dai-you-shi-qu-de-de-zi-fu-chuan</id>
     <content type="html"><![CDATA[<p>最近在处理一些微博的数据，其中从服务器返回来的json串最后转换成了python中的字典，
 只是可惜时间也被变成了字符串格式，好在python文档足够全且简单，可以使用datetime
 中的strptime来解决，尽管如此还是在时区那卡了会</p>

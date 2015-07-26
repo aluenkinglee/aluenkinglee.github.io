@@ -2,22 +2,22 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: python | 曾经渐行远，未免心戚戚]]></title>
-  <link href="http://www.aluenkinglee.com/blog/categories/python/atom.xml" rel="self"/>
-  <link href="http://www.aluenkinglee.com/"/>
-  <updated>2015-01-15T22:37:58-08:00</updated>
-  <id>http://www.aluenkinglee.com/</id>
+  <link href="http://aluenkinglee.github.io/blog/categories/python/atom.xml" rel="self"/>
+  <link href="http://aluenkinglee.github.io/"/>
+  <updated>2015-07-26T20:05:32+08:00</updated>
+  <id>http://aluenkinglee.github.io/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
-    
+    <email><![CDATA[aluenkinglee@gmail.com]]></email>
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
     <title type="html"><![CDATA[MySql交换两列]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2013/06/14/mysqljiao-huan-liang-lie/"/>
-    <updated>2013-06-14T15:35:00-07:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2013/06/14/mysqljiao-huan-liang-lie</id>
+    <link href="http://aluenkinglee.github.io/blog/2013/06/14/mysqljiao-huan-liang-lie/"/>
+    <updated>2013-06-14T15:35:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2013/06/14/mysqljiao-huan-liang-lie</id>
     <content type="html"><![CDATA[<p>事情的起因是这个发现数据库中出现了某两列数据正好颠倒了，大部分数据都是正常的，
 这些错误的原因是数据源有问题，今天在进一步的做标签聚类的时候分析的时候发现这
 些占很小比例的误差，辛亏发现了，否则做出来的结果有可能会郁闷很久。</p>
@@ -82,9 +82,9 @@ select id,place_lat,place_lon from nearbyinfo where id in (1025,4974,4814,2685);
   
   <entry>
     <title type="html"><![CDATA[Python处理带有时区的的字符串]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2013/04/16/pythonchu-li-dai-you-shi-qu-de-de-zi-fu-chuan/"/>
-    <updated>2013-04-16T15:54:00-07:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2013/04/16/pythonchu-li-dai-you-shi-qu-de-de-zi-fu-chuan</id>
+    <link href="http://aluenkinglee.github.io/blog/2013/04/16/pythonchu-li-dai-you-shi-qu-de-de-zi-fu-chuan/"/>
+    <updated>2013-04-16T15:54:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2013/04/16/pythonchu-li-dai-you-shi-qu-de-de-zi-fu-chuan</id>
     <content type="html"><![CDATA[<p>最近在处理一些微博的数据，其中从服务器返回来的json串最后转换成了python中的字典，
 只是可惜时间也被变成了字符串格式，好在python文档足够全且简单，可以使用datetime
 中的strptime来解决，尽管如此还是在时区那卡了会</p>
@@ -160,9 +160,9 @@ Tue, 16 Apr 2013 08:33 AM 中国标准时间
   
   <entry>
     <title type="html"><![CDATA[python中关于变量属性的迷惑]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2013/03/15/puzzles-of-vars-properties-in-python/"/>
-    <updated>2013-03-15T17:06:00-07:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2013/03/15/puzzles-of-vars-properties-in-python</id>
+    <link href="http://aluenkinglee.github.io/blog/2013/03/15/puzzles-of-vars-properties-in-python/"/>
+    <updated>2013-03-15T17:06:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2013/03/15/puzzles-of-vars-properties-in-python</id>
     <content type="html"><![CDATA[<p>当初使用C++，java的时候，变量的属性（可访问性，scope这类的意思）如public，private，protected，static这类很好理解。</p>
 
 <p>但是Python中默认的成员函数，成员变量都是公开的(public),而且python中没有类似public,private等关键词来修饰成员函数，成员变量。</p>
@@ -225,9 +225,9 @@ __main__.A &lt;__main__.A instance at 0x01262AD0&gt; &lt;__main__.A instance at 
   
   <entry>
     <title type="html"><![CDATA[Python中得一些重要的细节]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2013/03/15/some-important-details-in-python-personal/"/>
-    <updated>2013-03-15T16:17:00-07:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2013/03/15/some-important-details-in-python-personal</id>
+    <link href="http://aluenkinglee.github.io/blog/2013/03/15/some-important-details-in-python-personal/"/>
+    <updated>2013-03-15T16:17:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2013/03/15/some-important-details-in-python-personal</id>
     <content type="html"><![CDATA[<p>字符串可以被下表索引，和C一样，第一个字符同样是0。</p>
 
 <p>Python中并没有单独的字符类型，一个字符就是长度为1的字符串。</p>

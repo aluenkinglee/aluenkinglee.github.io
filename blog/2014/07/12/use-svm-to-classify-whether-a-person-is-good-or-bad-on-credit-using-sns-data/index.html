@@ -1,36 +1,36 @@
 
-<!DOCTYPE html>
-<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
-<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  <title>use svm to classify whether a person is good or bad on credit using sns data - 曾经渐行远，未免心戚戚</title>
-  <meta name="author" content="Aluen King Lee">
+<!DOCTYPE HTML>
 
-  
-  <meta name="description" content="首先说明这只是一个思路方向性的大概说明介绍，更多关于业务方面的内容不方便介绍。 如何评价一个人的金融信用，这个可以搜集用户的一些基本数据，比如职业，大学，社交数据来进行评分判断，至于为什么选取这些特征，一个很显然的理由就是
-一个人越倾向使用社交应用，那么这个人就越可能是真实的，可信的。 &hellip;">
-  
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>use svm to classify whether a person is good or bad on credit using sns data - 曾经渐行远，未免心戚戚</title>
+	<meta name="author" content="Aluen King Lee">
+
+	
+	<meta name="description" content="Use Svm to Classify Whether a Person Is Good or Bad on Credit Using Sns Data 首先说明这只是一个思路方向性的大概说明介绍，更多关于业务方面的内容不方便介绍。 如何评价一个人的金融信用，这个可以搜集用户的一些基本数据， &hellip;">
+	
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
   <meta name="MobileOptimized" content="320">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  
-  <link rel="canonical" href="http://www.aluenkinglee.com/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data">
-  <link href="/favicon.png" rel="icon">
-  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="曾经渐行远，未免心戚戚" type="application/atom+xml">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+	<link href="/atom.xml" rel="alternate" title="曾经渐行远，未免心戚戚" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://aluenkinglee.github.io/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href='http://fonts.useso.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<!--使用useso替换google的-->
 <link href="http://fonts.useso.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.useso.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 
+<!--支持 latex -->
 <!-- mathjax config similar to math.stackexchange -->
 <script type="text/x-mathjax-config">
 MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
@@ -38,6 +38,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
                   data.math = data.math.replace(/^\s*<!\[CDATA\[\s*((?:\n|.)*)\s*\]\]>\s*$/m,"$1");
                     });
           });
+
 </script>
 
 <script type="text/x-mathjax-config">
@@ -47,6 +48,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
       processEscapes: true
     }
   });
+
 </script>
 
 <script type="text/x-mathjax-config">
@@ -55,6 +57,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
         skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
       }
     });
+
 </script>
 
 <script type="text/x-mathjax-config">
@@ -64,77 +67,93 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
             all[i].SourceElement().parentNode.className += ' has-jax';
         }
     });
+
 </script>
 
 <script type="text/javascript"
-   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
 
   
 
 </head>
 
-<body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">曾经渐行远，未免心戚戚</a></h1>
-  
-    <h2>A blogging framework for hackers.</h2>
-  
-</hgroup>
+
+<body>
+	<div class="container">
+		<div class="left-col panel-cover panel-cover--collapsed">
+			<div class="intrude-less">
+			<header id="header" class="inner"><!-- 不使用gravatar图片了 -->
+<!--<div class="profilepic">-->
+	<!---->
+	<!--<script src="/javascripts/md5.js"></script>-->
+	<!--<script type="text/javascript">-->
+		<!--$(function(){-->
+			<!--$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("aluenkinglee@gmail.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");-->
+		<!--});-->
+	<!--</script>-->
+	<!---->
+<!--</div>-->
+<header>
+    <div class="panel-main">
+        <div class="profilepic">
+            <a href="/"><img src="/images/profile.png" alt="Profile Picture" style="width: 100px;"></a>
+        </div>
+        <div class="panel-main__content">
+            <h1 class="panel-title"><a href="http://www.aluenkinglee.com/blog" title="link to homepage for Aluen King Lee">Aluen</a></h1>
+            <!--<hr class="panel-cover__divider">-->
+            <p class="panel-cover__description">On the way to be a maker</p>
+            <!--<hr class="panel-cover__divider&#45;&#45;secondary">-->
+        </div>
+    </div>
 
 </header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
 </ul>
-  
-<form action="http://google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:www.aluenkinglee.com" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
-</ul>
-
 </nav>
-  <div id="main">
-    <div id="content">
-      <div>
-<article class="hentry" role="article">
-  
-  <header>
-    
-      <h1 class="entry-title">Use Svm to Classify Whether a Person Is Good or Bad on Credit Using Sns Data</h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-07-12T17:21:00-07:00" pubdate data-updated="true">Jul 12<span>th</span>, 2014</time>
-        
-        
-          | <a href="#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-<div class="entry-content"><p>首先说明这只是一个思路方向性的大概说明介绍，更多关于业务方面的内容不方便介绍。</p>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:aluenkinglee@gmail.com" title="Email">Email</a>
+		
+		
+		
+		
+		
+			<a class="github" href="https://github.com/aluenkinglee" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+			<a class="douban" href="https://www.douban.com/people/aluenkinglee" title="Douban">Douban</a>
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>
+			</div>
+            <!-- add this div will prevent the link.. -->
+			<!--<div class="panel-cover&#45;&#45;overlay"></div>-->
+		</div>
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Use Svm to Classify Whether a Person Is Good or Bad on Credit Using Sns Data</h1>
+	<div class="entry-content" itemprop="articleBody"><p>首先说明这只是一个思路方向性的大概说明介绍，更多关于业务方面的内容不方便介绍。</p>
 
 <p>如何评价一个人的金融信用，这个可以搜集用户的一些基本数据，比如职业，大学，社交数据来进行评分判断，至于为什么选取这些特征，一个很显然的理由就是
 一个人越倾向使用社交应用，那么这个人就越可能是真实的，可信的。职业学校和人的信用也是成一定关系但不是绝对就是向我们想当然的那样。</p>
@@ -359,136 +378,30 @@ LibSVM采用交叉验证cross-validation accuracy的方法确定分类效果最�
 <p>数据可以到<a href="https://github.com/aluenkinglee/mlclass/tree/master/libsvm-3.18">这里</a></p>
 </div>
 
-
-  <footer>
-    <p class="meta">
-      
-  
-
-<span class="byline author vcard">Posted by <span class="fn">Aluen King Lee</span></span>
-
-      
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-07-12T17:21:00-07:00" pubdate data-updated="true">Jul 12<span>th</span>, 2014</time>
-      
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/libsvm/'>libsvm</a>, <a class='category' href='/blog/categories/svm/'>svm</a>, <a class='category' href='/blog/categories/ji-qi-xue-xi/'>机器学习</a>, <a class='category' href='/blog/categories/jin-rong-xin-yong/'>金融信用</a>
-  
-</span>
-
-
-    </p>
-    
-      <div class="sharing">
-  
-  
-  
-</div>
-
-    
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2014/07/09/wei-pi-pei/" title="Previous Post: 伪匹配">&laquo; 伪匹配</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he/" title="Next Post: 浅谈微博标签聚合">浅谈微博标签聚合 &raquo;</a>
-      
-    </p>
-  </footer>
 </article>
 
-
-  <section>
-    <h1>Comments</h1>
-    <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
-	<div class="ds-thread"></div>
-<script type="text/javascript">
-var duoshuoQuery = {short_name:"aluenkinglee"};
-	(function() {
-		var ds = document.createElement('script');
-		ds.type = 'text/javascript';ds.async = true;
-		ds.src = 'http://static.duoshuo.com/embed.js';
-		ds.charset = 'UTF-8';
-		(document.getElementsByTagName('head')[0] 
-		|| document.getElementsByTagName('body')[0]).appendChild(ds);
-	})();
-	</script>
-<!-- Duoshuo Comment END --></div>
-  </section>
-
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
 </div>
 
-<aside class="sidebar">
-  
-    <section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2015/01/14/use-mongo-map-reduce-statistic-word-occurrence/">使用mongodb内置的mapreduce聚合函数统计词频</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he/">浅谈微博标签聚合</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/">Use Svm to Classify Whether a Person Is Good or Bad on Credit Using Sns Data</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/07/09/wei-pi-pei/">伪匹配</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/">朴素贝叶斯文本分类</a>
-      </li>
-    
-  </ul>
-</section>
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2015
+
+    Aluen King Lee
 
 
-
-
-<section>
-  <h1>My Douban</h1>
-  <div>
-  <!--添加到这-->
-  <script type="text/javascript" src="http://www.douban.com/service/badge/aluenkinglee/?selection=random&amp;picsize=small&amp;show=dolist&amp;n=8&amp;cat=book&amp;columns=3"></script>
-  </div>
-</section> 
-<section>
-<h1>Recent Comments</h1>
-<ul class="ds-recent-comments" data-num-items="10" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="18"></ul>
-
-</section> 
-
-  
-</aside>
-
-
-    </div>
-  </div>
-  <footer role="contentinfo"><p>
-  Copyright &copy; 2015 - Aluen King Lee -
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
-</p>
-
-</footer>
-  
-
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
 
 
 

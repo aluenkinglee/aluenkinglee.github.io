@@ -1,37 +1,36 @@
 
-<!DOCTYPE html>
-<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
-<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  <title>Blog Archive - 曾经渐行远，未免心戚戚</title>
-  <meta name="author" content="Aluen King Lee">
+<!DOCTYPE HTML>
 
-  
-  <meta name="description" content="Blog Archive 2015 使用mongodb内置的mapreduce聚合函数统计词频
-Jan 14 2015 posted in map-reduce, mongodb 2014 浅谈微博标签聚合
-Sep 02 2014 posted in 层次聚类, 微博标签, 机器学习 use &hellip;">
-  
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Blog Archives - 曾经渐行远，未免心戚戚</title>
+	<meta name="author" content="Aluen King Lee">
+
+	
+	<meta name="description" content="2015 Jan 14 map-reduce, mongodb 使用mongodb内置的mapreduce聚合函数统计词频 2014 Sep 2 层次聚类, 微博标签, 机器学习 浅谈微博标签聚合 Jul 12 libsvm, svm, 机器学习, 金融信用 use svm to &hellip;">
+	
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
   <meta name="MobileOptimized" content="320">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  
-  <link rel="canonical" href="http://www.aluenkinglee.com/blog/archives">
-  <link href="/favicon.png" rel="icon">
-  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="曾经渐行远，未免心戚戚" type="application/atom+xml">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+	<link href="/atom.xml" rel="alternate" title="曾经渐行远，未免心戚戚" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://aluenkinglee.github.io/blog/archives/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href='http://fonts.useso.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<!--使用useso替换google的-->
 <link href="http://fonts.useso.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.useso.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 
+<!--支持 latex -->
 <!-- mathjax config similar to math.stackexchange -->
 <script type="text/x-mathjax-config">
 MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
@@ -39,6 +38,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
                   data.math = data.math.replace(/^\s*<!\[CDATA\[\s*((?:\n|.)*)\s*\]\]>\s*$/m,"$1");
                     });
           });
+
 </script>
 
 <script type="text/x-mathjax-config">
@@ -48,6 +48,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
       processEscapes: true
     }
   });
+
 </script>
 
 <script type="text/x-mathjax-config">
@@ -56,6 +57,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
         skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
       }
     });
+
 </script>
 
 <script type="text/x-mathjax-config">
@@ -65,584 +67,741 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
             all[i].SourceElement().parentNode.className += ' has-jax';
         }
     });
+
 </script>
 
 <script type="text/javascript"
-   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
 
   
 
 </head>
 
-<body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">曾经渐行远，未免心戚戚</a></h1>
-  
-    <h2>A blogging framework for hackers.</h2>
-  
-</hgroup>
+
+<body>
+	<div class="container">
+		<div class="left-col panel-cover panel-cover--collapsed">
+			<div class="intrude-less">
+			<header id="header" class="inner"><!-- 不使用gravatar图片了 -->
+<!--<div class="profilepic">-->
+	<!---->
+	<!--<script src="/javascripts/md5.js"></script>-->
+	<!--<script type="text/javascript">-->
+		<!--$(function(){-->
+			<!--$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("aluenkinglee@gmail.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");-->
+		<!--});-->
+	<!--</script>-->
+	<!---->
+<!--</div>-->
+<header>
+    <div class="panel-main">
+        <div class="profilepic">
+            <a href="/"><img src="/images/profile.png" alt="Profile Picture" style="width: 100px;"></a>
+        </div>
+        <div class="panel-main__content">
+            <h1 class="panel-title"><a href="http://www.aluenkinglee.com/blog" title="link to homepage for Aluen King Lee">Aluen</a></h1>
+            <!--<hr class="panel-cover__divider">-->
+            <p class="panel-cover__description">On the way to be a maker</p>
+            <!--<hr class="panel-cover__divider&#45;&#45;secondary">-->
+        </div>
+    </div>
 
 </header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
 </ul>
-  
-<form action="http://google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:www.aluenkinglee.com" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
-</ul>
-
 </nav>
-  <div id="main">
-    <div id="content">
-      <div>
-<article role="article">
-  
-  <header>
-    <h1 class="entry-title">Blog Archive</h1>
-    
-  </header>
-  
-  <div id="blog-archives">
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:aluenkinglee@gmail.com" title="Email">Email</a>
+		
+		
+		
+		
+		
+			<a class="github" href="https://github.com/aluenkinglee" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+			<a class="douban" href="https://www.douban.com/people/aluenkinglee" title="Douban">Douban</a>
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>
+			</div>
+            <!-- add this div will prevent the link.. -->
+			<!--<div class="panel-cover&#45;&#45;overlay"></div>-->
+		</div>
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><div itemscope itemtype="http://schema.org/Blog">
+
+	
 
 
+	
+	
+	<section class="archives"><h1 class="year">2015</h1>
 
-  
-  <h2>2015</h2>
-
-<article>
-  
-<h1><a href="/blog/2015/01/14/use-mongo-map-reduce-statistic-word-occurrence/">使用mongodb内置的mapreduce聚合函数统计词频</a></h1>
-<time datetime="2015-01-14T13:51:00-08:00" pubdate><span class='month'>Jan</span> <span class='day'>14</span> <span class='year'>2015</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/map-reduce/'>map-reduce</a>, <a class='category' href='/blog/categories/mongodb/'>mongodb</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2015-01-14T13:51:00+08:00" itemprop="datePublished">Jan 14</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/map-reduce/'>map-reduce</a>, <a class='category' href='/blog/categories/mongodb/'>mongodb</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2015/01/14/use-mongo-map-reduce-statistic-word-occurrence/">使用mongodb内置的mapreduce聚合函数统计词频</a></h1>
 </article>
 
+	
 
 
-  
-  <h2>2014</h2>
+	
+	
+		</section>
+	
+	<section class="archives"><h1 class="year">2014</h1>
 
-<article>
-  
-<h1><a href="/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he/">浅谈微博标签聚合</a></h1>
-<time datetime="2014-09-02T00:47:00-07:00" pubdate><span class='month'>Sep</span> <span class='day'>02</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/ceng-ci-ju-lei/'>层次聚类</a>, <a class='category' href='/blog/categories/wei-bo-biao-qian/'>微博标签</a>, <a class='category' href='/blog/categories/ji-qi-xue-xi/'>机器学习</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-09-02T00:47:00+08:00" itemprop="datePublished">Sep  2</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/ceng-ci-ju-lei/'>层次聚类</a>, <a class='category' href='/blog/categories/wei-bo-biao-qian/'>微博标签</a>, <a class='category' href='/blog/categories/ji-qi-xue-xi/'>机器学习</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he/">浅谈微博标签聚合</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/">use svm to classify whether a person is good or bad on credit using sns data</a></h1>
-<time datetime="2014-07-12T17:21:00-07:00" pubdate><span class='month'>Jul</span> <span class='day'>12</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/libsvm/'>libsvm</a>, <a class='category' href='/blog/categories/svm/'>svm</a>, <a class='category' href='/blog/categories/ji-qi-xue-xi/'>机器学习</a>, <a class='category' href='/blog/categories/jin-rong-xin-yong/'>金融信用</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-07-12T17:21:00+08:00" itemprop="datePublished">Jul 12</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/libsvm/'>libsvm</a>, <a class='category' href='/blog/categories/svm/'>svm</a>, <a class='category' href='/blog/categories/ji-qi-xue-xi/'>机器学习</a>, <a class='category' href='/blog/categories/jin-rong-xin-yong/'>金融信用</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/">use svm to classify whether a person is good or bad on credit using sns data</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/07/09/wei-pi-pei/">伪匹配</a></h1>
-<time datetime="2014-07-09T17:13:00-07:00" pubdate><span class='month'>Jul</span> <span class='day'>09</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/jsoup/'>jsoup</a>, <a class='category' href='/blog/categories/shu-ju-wa-jue-,wang-ye-fen-xi-,/'>数据挖掘，网页分析，</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-07-09T17:13:00+08:00" itemprop="datePublished">Jul  9</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/jsoup/'>jsoup</a>, <a class='category' href='/blog/categories/shu-ju-wa-jue-,wang-ye-fen-xi-,/'>数据挖掘，网页分析，</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/07/09/wei-pi-pei/">伪匹配</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/">朴素贝叶斯文本分类</a></h1>
-<time datetime="2014-06-27T13:11:00-07:00" pubdate><span class='month'>Jun</span> <span class='day'>27</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/wen-ben-fen-lei/'>文本分类</a>, <a class='category' href='/blog/categories/po-su-bei-xie-si/'>朴素贝叶斯</a>, <a class='category' href='/blog/categories/ji-qi-xue-xi/'>机器学习</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-06-27T13:11:00+08:00" itemprop="datePublished">Jun 27</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/wen-ben-fen-lei/'>文本分类</a>, <a class='category' href='/blog/categories/po-su-bei-xie-si/'>朴素贝叶斯</a>, <a class='category' href='/blog/categories/ji-qi-xue-xi/'>机器学习</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/">朴素贝叶斯文本分类</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/06/03/lagrange-duality/">拉格朗日对偶</a></h1>
-<time datetime="2014-06-03T21:41:00-07:00" pubdate><span class='month'>Jun</span> <span class='day'>03</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/la-ge-lang-ri-dui-ou/'>拉格朗日对偶</a>, <a class='category' href='/blog/categories/ji-qi-xue-xi/'>机器学习</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-06-03T21:41:00+08:00" itemprop="datePublished">Jun  3</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/la-ge-lang-ri-dui-ou/'>拉格朗日对偶</a>, <a class='category' href='/blog/categories/ji-qi-xue-xi/'>机器学习</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/06/03/lagrange-duality/">拉格朗日对偶</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/06/03/my-understanding-about-svm/">从逻辑回归分类到SVM分类</a></h1>
-<time datetime="2014-06-03T20:53:00-07:00" pubdate><span class='month'>Jun</span> <span class='day'>03</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/svm/'>SVM</a>, <a class='category' href='/blog/categories/ji-qi-xue-xi/'>机器学习</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-06-03T20:53:00+08:00" itemprop="datePublished">Jun  3</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/svm/'>SVM</a>, <a class='category' href='/blog/categories/ji-qi-xue-xi/'>机器学习</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/06/03/my-understanding-about-svm/">从逻辑回归分类到SVM分类</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/05/20/kill-process-on-some-port-under-linux-platform/">Linux下通过端口杀死进程</a></h1>
-<time datetime="2014-05-20T10:41:00-07:00" pubdate><span class='month'>May</span> <span class='day'>20</span> <span class='year'>2014</span></time>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-05-20T10:41:00+08:00" itemprop="datePublished">May 20</time></span>
+		<br>
+		<span class="tags">
 
-
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/05/20/kill-process-on-some-port-under-linux-platform/">Linux下通过端口杀死进程</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/05/19/threading-why-import-it-into-os/">threading:why import it into os</a></h1>
-<time datetime="2014-05-19T23:14:00-07:00" pubdate><span class='month'>May</span> <span class='day'>19</span> <span class='year'>2014</span></time>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-05-19T23:14:00+08:00" itemprop="datePublished">May 19</time></span>
+		<br>
+		<span class="tags">
 
-
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/05/19/threading-why-import-it-into-os/">threading:why import it into os</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/05/19/my-understanding-about-kmp/">我对KMP算法的理解</a></h1>
-<time datetime="2014-05-19T22:56:00-07:00" pubdate><span class='month'>May</span> <span class='day'>19</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/kmp/'>KMP</a>, <a class='category' href='/blog/categories/dong-tai-gui-hua/'>动态规划</a>, <a class='category' href='/blog/categories/shu-ju-jie-gou/'>数据结构</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-05-19T22:56:00+08:00" itemprop="datePublished">May 19</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/kmp/'>KMP</a>, <a class='category' href='/blog/categories/dong-tai-gui-hua/'>动态规划</a>, <a class='category' href='/blog/categories/shu-ju-jie-gou/'>数据结构</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/05/19/my-understanding-about-kmp/">我对KMP算法的理解</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/05/14/sort-list/">链表排序</a></h1>
-<time datetime="2014-05-14T13:51:00-07:00" pubdate><span class='month'>May</span> <span class='day'>14</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/algorithm/'>algorithm</a>, <a class='category' href='/blog/categories/java/'>java</a>, <a class='category' href='/blog/categories/list/'>list</a>, <a class='category' href='/blog/categories/sort/'>sort</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-05-14T13:51:00+08:00" itemprop="datePublished">May 14</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/algorithm/'>algorithm</a>, <a class='category' href='/blog/categories/java/'>java</a>, <a class='category' href='/blog/categories/list/'>list</a>, <a class='category' href='/blog/categories/sort/'>sort</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/05/14/sort-list/">链表排序</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/04/30/generative-method/">generative method</a></h1>
-<time datetime="2014-04-30T22:52:00-07:00" pubdate><span class='month'>Apr</span> <span class='day'>30</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/machine/'>Machine</a>, <a class='category' href='/blog/categories/learning/'>learning</a>, <a class='category' href='/blog/categories/zheng-li/'>整理</a>, <a class='category' href='/blog/categories/ji-qi-xue-xi/'>机器学习</a>, <a class='category' href='/blog/categories/sheng-cheng-xue-xi/'>生成学习</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-04-30T22:52:00+08:00" itemprop="datePublished">Apr 30</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/machine/'>Machine</a>, <a class='category' href='/blog/categories/learning/'>learning</a>, <a class='category' href='/blog/categories/zheng-li/'>整理</a>, <a class='category' href='/blog/categories/ji-qi-xue-xi/'>机器学习</a>, <a class='category' href='/blog/categories/sheng-cheng-xue-xi/'>生成学习</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/30/generative-method/">generative method</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/04/30/discriminative-model-vs-generative-model/">Discriminative Model Vs. Generative Model</a></h1>
-<time datetime="2014-04-30T17:17:00-07:00" pubdate><span class='month'>Apr</span> <span class='day'>30</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/machine/'>Machine</a>, <a class='category' href='/blog/categories/learning/'>learning</a>, <a class='category' href='/blog/categories/zheng-li/'>整理</a>, <a class='category' href='/blog/categories/ji-qi-xue-xi/'>机器学习</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-04-30T17:17:00+08:00" itemprop="datePublished">Apr 30</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/machine/'>Machine</a>, <a class='category' href='/blog/categories/learning/'>learning</a>, <a class='category' href='/blog/categories/zheng-li/'>整理</a>, <a class='category' href='/blog/categories/ji-qi-xue-xi/'>机器学习</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/30/discriminative-model-vs-generative-model/">Discriminative Model Vs. Generative Model</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/04/29/dynamic-programming/">dynamic programming</a></h1>
-<time datetime="2014-04-29T19:34:00-07:00" pubdate><span class='month'>Apr</span> <span class='day'>29</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/dong-tai-gui-hua/'>动态规划</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-04-29T19:34:00+08:00" itemprop="datePublished">Apr 29</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/dong-tai-gui-hua/'>动态规划</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/29/dynamic-programming/">dynamic programming</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/04/28/some-commen-list-problems-in-the-interview/">some commen list problems in the interview</a></h1>
-<time datetime="2014-04-28T21:54:00-07:00" pubdate><span class='month'>Apr</span> <span class='day'>28</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/interview/'>interview</a>, <a class='category' href='/blog/categories/list/'>list</a>, <a class='category' href='/blog/categories/lian-biao/'>链表</a>, <a class='category' href='/blog/categories/mian-shi/'>面试</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-04-28T21:54:00+08:00" itemprop="datePublished">Apr 28</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/interview/'>interview</a>, <a class='category' href='/blog/categories/list/'>list</a>, <a class='category' href='/blog/categories/lian-biao/'>链表</a>, <a class='category' href='/blog/categories/mian-shi/'>面试</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/28/some-commen-list-problems-in-the-interview/">some commen list problems in the interview</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/04/21/feature-selection--infomation-gain/">特征选择-信息增益算法</a></h1>
-<time datetime="2014-04-21T15:41:00-07:00" pubdate><span class='month'>Apr</span> <span class='day'>21</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/xin-xi-zeng-yi-suan-fa/'>信息增益算法</a>, <a class='category' href='/blog/categories/te-zheng-xuan-ze/'>特征选择</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-04-21T15:41:00+08:00" itemprop="datePublished">Apr 21</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/xin-xi-zeng-yi-suan-fa/'>信息增益算法</a>, <a class='category' href='/blog/categories/te-zheng-xuan-ze/'>特征选择</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/21/feature-selection--infomation-gain/">特征选择-信息增益算法</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification/">a scratch of feature selection in traffic classification</a></h1>
-<time datetime="2014-04-20T21:02:00-07:00" pubdate><span class='month'>Apr</span> <span class='day'>20</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/ji-qi-xue-xi/'>机器学习</a>, <a class='category' href='/blog/categories/te-zheng-xuan-ze/'>特征选择</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-04-20T21:02:00+08:00" itemprop="datePublished">Apr 20</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/ji-qi-xue-xi/'>机器学习</a>, <a class='category' href='/blog/categories/te-zheng-xuan-ze/'>特征选择</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/20/a-scratch-of-feature-selection-in-traffic-classification/">a scratch of feature selection in traffic classification</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/03/04/qi-yi-de-nei-cun-fu-gai/">“奇异”的内存覆盖</a></h1>
-<time datetime="2014-03-04T22:01:00-08:00" pubdate><span class='month'>Mar</span> <span class='day'>04</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/c-plus-plus/'>C++</a>, <a class='category' href='/blog/categories/libpcap/'>libpcap</a>, <a class='category' href='/blog/categories/new/'>new[]</a>, <a class='category' href='/blog/categories/nei-cun-fu-gai/'>内存覆盖</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-03-04T22:01:00+08:00" itemprop="datePublished">Mar  4</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/c-plus-plus/'>C++</a>, <a class='category' href='/blog/categories/libpcap/'>libpcap</a>, <a class='category' href='/blog/categories/new/'>new[]</a>, <a class='category' href='/blog/categories/nei-cun-fu-gai/'>内存覆盖</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/03/04/qi-yi-de-nei-cun-fu-gai/">“奇异”的内存覆盖</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/">理解TCP中的序列号和确认号</a></h1>
-<time datetime="2014-02-26T22:34:00-08:00" pubdate><span class='month'>Feb</span> <span class='day'>26</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/c/'>C</a>, <a class='category' href='/blog/categories/tcp/'>TCP</a>, <a class='category' href='/blog/categories/libpcap/'>libpcap</a>, <a class='category' href='/blog/categories/wireshark/'>wireshark</a>, <a class='category' href='/blog/categories/san-ci-wo-shou/'>三次握手</a>, <a class='category' href='/blog/categories/si-ci-wo-shou/'>四次握手</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-02-26T22:34:00+08:00" itemprop="datePublished">Feb 26</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/c/'>C</a>, <a class='category' href='/blog/categories/tcp/'>TCP</a>, <a class='category' href='/blog/categories/libpcap/'>libpcap</a>, <a class='category' href='/blog/categories/wireshark/'>wireshark</a>, <a class='category' href='/blog/categories/san-ci-wo-shou/'>三次握手</a>, <a class='category' href='/blog/categories/si-ci-wo-shou/'>四次握手</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/">理解TCP中的序列号和确认号</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/02/24/c-plus-plus-de-hashtablena-xie-shi/">C++的hashtable那些事</a></h1>
-<time datetime="2014-02-24T05:29:00-08:00" pubdate><span class='month'>Feb</span> <span class='day'>24</span> <span class='year'>2014</span></time>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-02-24T05:29:00+08:00" itemprop="datePublished">Feb 24</time></span>
+		<br>
+		<span class="tags">
 
-
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/02/24/c-plus-plus-de-hashtablena-xie-shi/">C++的hashtable那些事</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/01/05/machine-learning-linear-regression/">Machine Learning :linear regression</a></h1>
-<time datetime="2014-01-05T12:00:00-08:00" pubdate><span class='month'>Jan</span> <span class='day'>05</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/armadillo/'>Armadillo</a>, <a class='category' href='/blog/categories/c-plus-plus/'>C++</a>, <a class='category' href='/blog/categories/machine-learning/'>Machine-Learning</a>, <a class='category' href='/blog/categories/linear-regression/'>linear-regression</a>, <a class='category' href='/blog/categories/octave/'>octave</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-01-05T12:00:00+08:00" itemprop="datePublished">Jan  5</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/armadillo/'>Armadillo</a>, <a class='category' href='/blog/categories/c-plus-plus/'>C++</a>, <a class='category' href='/blog/categories/machine-learning/'>Machine-Learning</a>, <a class='category' href='/blog/categories/linear-regression/'>linear-regression</a>, <a class='category' href='/blog/categories/octave/'>octave</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/01/05/machine-learning-linear-regression/">Machine Learning :linear regression</a></h1>
 </article>
 
+	
 
 
-  
-  <h2>2013</h2>
+	
+	
+		</section>
+	
+	<section class="archives"><h1 class="year">2013</h1>
 
-<article>
-  
-<h1><a href="/blog/2013/12/31/ke-ai-de-armadillo/">可爱的Armadillo</a></h1>
-<time datetime="2013-12-31T10:25:00-08:00" pubdate><span class='month'>Dec</span> <span class='day'>31</span> <span class='year'>2013</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/armadillo/'>Armadillo</a>, <a class='category' href='/blog/categories/c-plus-plus/'>C++</a>, <a class='category' href='/blog/categories/learning/'>Learning</a>, <a class='category' href='/blog/categories/machine/'>Machine</a>, <a class='category' href='/blog/categories/armadillolian-jie-cuo-wu/'>armadillo链接错误</a>, <a class='category' href='/blog/categories/lapack/'>lapack</a>, <a class='category' href='/blog/categories/openblas/'>openblas</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2013-12-31T10:25:00+08:00" itemprop="datePublished">Dec 31</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/armadillo/'>Armadillo</a>, <a class='category' href='/blog/categories/c-plus-plus/'>C++</a>, <a class='category' href='/blog/categories/learning/'>Learning</a>, <a class='category' href='/blog/categories/machine/'>Machine</a>, <a class='category' href='/blog/categories/armadillolian-jie-cuo-wu/'>armadillo链接错误</a>, <a class='category' href='/blog/categories/lapack/'>lapack</a>, <a class='category' href='/blog/categories/openblas/'>openblas</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/12/31/ke-ai-de-armadillo/">可爱的Armadillo</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2013/11/13/install-nox-on-debian-bug-fixed/">install nox on debian-bug fixed</a></h1>
-<time datetime="2013-11-13T22:44:00-08:00" pubdate><span class='month'>Nov</span> <span class='day'>13</span> <span class='year'>2013</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/sdn/'>SDN</a>, <a class='category' href='/blog/categories/nox/'>nox</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2013-11-13T22:44:00+08:00" itemprop="datePublished">Nov 13</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/sdn/'>SDN</a>, <a class='category' href='/blog/categories/nox/'>nox</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/11/13/install-nox-on-debian-bug-fixed/">install nox on debian-bug fixed</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2013/11/13/co-write-same-octopress-blog-on-different-pc/">在不同PC上协同写作同一个Octopress博客</a></h1>
-<time datetime="2013-11-13T15:20:00-08:00" pubdate><span class='month'>Nov</span> <span class='day'>13</span> <span class='year'>2013</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/octopress/'>Octopress</a>, <a class='category' href='/blog/categories/co-write/'>co-write</a>, <a class='category' href='/blog/categories/xie-tong-xie-zuo/'>协同写作</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2013-11-13T15:20:00+08:00" itemprop="datePublished">Nov 13</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/octopress/'>Octopress</a>, <a class='category' href='/blog/categories/co-write/'>co-write</a>, <a class='category' href='/blog/categories/xie-tong-xie-zuo/'>协同写作</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/11/13/co-write-same-octopress-blog-on-different-pc/">在不同PC上协同写作同一个Octopress博客</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2013/11/13/use-mathjax-in-octopress-to-write-beautiful-latex/">Use MathJax in Octopress to Write beautiful LaTex</a></h1>
-<time datetime="2013-11-13T12:37:00-08:00" pubdate><span class='month'>Nov</span> <span class='day'>13</span> <span class='year'>2013</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/latex/'>LaTex</a>, <a class='category' href='/blog/categories/octopress/'>Octopress</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2013-11-13T12:37:00+08:00" itemprop="datePublished">Nov 13</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/latex/'>LaTex</a>, <a class='category' href='/blog/categories/octopress/'>Octopress</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/11/13/use-mathjax-in-octopress-to-write-beautiful-latex/">Use MathJax in Octopress to Write beautiful LaTex</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2013/10/24/c-plus-plus-forward-declaration-and-copy-control/">C++前置声明和复制控制</a></h1>
-<time datetime="2013-10-24T05:33:00-07:00" pubdate><span class='month'>Oct</span> <span class='day'>24</span> <span class='year'>2013</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/c-plus-plus/'>C++</a>, <a class='category' href='/blog/categories/predeclaration/'>predeclaration</a>, <a class='category' href='/blog/categories/fu-zhi/'>复制</a>, <a class='category' href='/blog/categories/fu-zhi-kong-zhi/'>复制控制</a>, <a class='category' href='/blog/categories/fu-zhi/'>赋值</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2013-10-24T05:33:00+08:00" itemprop="datePublished">Oct 24</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/c-plus-plus/'>C++</a>, <a class='category' href='/blog/categories/predeclaration/'>predeclaration</a>, <a class='category' href='/blog/categories/fu-zhi/'>复制</a>, <a class='category' href='/blog/categories/fu-zhi-kong-zhi/'>复制控制</a>, <a class='category' href='/blog/categories/fu-zhi/'>赋值</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/10/24/c-plus-plus-forward-declaration-and-copy-control/">C++前置声明和复制控制</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2013/10/20/virtualbox-network-environment-and-login/">virtualbox网络环境和登录</a></h1>
-<time datetime="2013-10-20T22:46:00-07:00" pubdate><span class='month'>Oct</span> <span class='day'>20</span> <span class='year'>2013</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/sdn/'>SDN</a>, <a class='category' href='/blog/categories/ssh/'>SSH</a>, <a class='category' href='/blog/categories/virtualbox/'>virtualbox</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2013-10-20T22:46:00+08:00" itemprop="datePublished">Oct 20</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/sdn/'>SDN</a>, <a class='category' href='/blog/categories/ssh/'>SSH</a>, <a class='category' href='/blog/categories/virtualbox/'>virtualbox</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/10/20/virtualbox-network-environment-and-login/">virtualbox网络环境和登录</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2013/06/14/mysqljiao-huan-liang-lie/">MySql交换两列</a></h1>
-<time datetime="2013-06-14T15:35:00-07:00" pubdate><span class='month'>Jun</span> <span class='day'>14</span> <span class='year'>2013</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/mysql/'>mysql</a>, <a class='category' href='/blog/categories/python/'>python</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2013-06-14T15:35:00+08:00" itemprop="datePublished">Jun 14</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/mysql/'>mysql</a>, <a class='category' href='/blog/categories/python/'>python</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/06/14/mysqljiao-huan-liang-lie/">MySql交换两列</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2013/04/17/jin-qi-zong-jie/">近期总结</a></h1>
-<time datetime="2013-04-17T17:13:00-07:00" pubdate><span class='month'>Apr</span> <span class='day'>17</span> <span class='year'>2013</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/zong-jie/'>总结</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2013-04-17T17:13:00+08:00" itemprop="datePublished">Apr 17</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/zong-jie/'>总结</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/04/17/jin-qi-zong-jie/">近期总结</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2013/04/16/pythonchu-li-dai-you-shi-qu-de-de-zi-fu-chuan/">Python处理带有时区的的字符串</a></h1>
-<time datetime="2013-04-16T15:54:00-07:00" pubdate><span class='month'>Apr</span> <span class='day'>16</span> <span class='year'>2013</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/python/'>python</a>, <a class='category' href='/blog/categories/shi-jian-ge-shi/'>时间格式</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2013-04-16T15:54:00+08:00" itemprop="datePublished">Apr 16</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/python/'>python</a>, <a class='category' href='/blog/categories/shi-jian-ge-shi/'>时间格式</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/04/16/pythonchu-li-dai-you-shi-qu-de-de-zi-fu-chuan/">Python处理带有时区的的字符串</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2013/03/15/puzzles-of-vars-properties-in-python/">python中关于变量属性的迷惑</a></h1>
-<time datetime="2013-03-15T17:06:00-07:00" pubdate><span class='month'>Mar</span> <span class='day'>15</span> <span class='year'>2013</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/python/'>python</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2013-03-15T17:06:00+08:00" itemprop="datePublished">Mar 15</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/python/'>python</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/03/15/puzzles-of-vars-properties-in-python/">python中关于变量属性的迷惑</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2013/03/15/some-important-details-in-python-personal/">Python中得一些重要的细节</a></h1>
-<time datetime="2013-03-15T16:17:00-07:00" pubdate><span class='month'>Mar</span> <span class='day'>15</span> <span class='year'>2013</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/python/'>python</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2013-03-15T16:17:00+08:00" itemprop="datePublished">Mar 15</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/python/'>python</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/03/15/some-important-details-in-python-personal/">Python中得一些重要的细节</a></h1>
 </article>
 
+	
 
 
-  
-  <h2>2011</h2>
+	
+	
+		</section>
+	
+	<section class="archives"><h1 class="year">2011</h1>
 
-<article>
-  
-<h1><a href="/blog/2011/03/14/gitde-an-zhuang-he-shi-yong/">git的安装和使用</a></h1>
-<time datetime="2011-03-14T15:11:00-07:00" pubdate><span class='month'>Mar</span> <span class='day'>14</span> <span class='year'>2011</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/git/'>git</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2011-03-14T15:11:00+08:00" itemprop="datePublished">Mar 14</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/git/'>git</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2011/03/14/gitde-an-zhuang-he-shi-yong/">git的安装和使用</a></h1>
 </article>
 
-</div>
+  </section>
+</div></div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2015
 
-  
-</article>
-
-
-</div>
-
-<aside class="sidebar">
-  
-    <section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2015/01/14/use-mongo-map-reduce-statistic-word-occurrence/">使用mongodb内置的mapreduce聚合函数统计词频</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/09/02/qian-tan-wei-bo-biao-qian-ju-he/">浅谈微博标签聚合</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/07/12/use-svm-to-classify-whether-a-person-is-good-or-bad-on-credit-using-sns-data/">Use Svm to Classify Whether a Person Is Good or Bad on Credit Using Sns Data</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/07/09/wei-pi-pei/">伪匹配</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/06/27/po-su-bei-xie-si-wen-ben-fen-lei/">朴素贝叶斯文本分类</a>
-      </li>
-    
-  </ul>
-</section>
+    Aluen King Lee
 
 
-
-
-<section>
-  <h1>My Douban</h1>
-  <div>
-  <!--添加到这-->
-  <script type="text/javascript" src="http://www.douban.com/service/badge/aluenkinglee/?selection=random&amp;picsize=small&amp;show=dolist&amp;n=8&amp;cat=book&amp;columns=3"></script>
-  </div>
-</section> 
-<section>
-<h1>Recent Comments</h1>
-<ul class="ds-recent-comments" data-num-items="10" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="18"></ul>
-
-</section> 
-
-  
-</aside>
-
-
-    </div>
-  </div>
-  <footer role="contentinfo"><p>
-  Copyright &copy; 2015 - Aluen King Lee -
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
-</p>
-
-</footer>
-  
-
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	
 
 
 

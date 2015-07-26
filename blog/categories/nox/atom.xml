@@ -2,22 +2,22 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: nox | 曾经渐行远，未免心戚戚]]></title>
-  <link href="http://www.aluenkinglee.com/blog/categories/nox/atom.xml" rel="self"/>
-  <link href="http://www.aluenkinglee.com/"/>
-  <updated>2015-01-15T22:37:58-08:00</updated>
-  <id>http://www.aluenkinglee.com/</id>
+  <link href="http://aluenkinglee.github.io/blog/categories/nox/atom.xml" rel="self"/>
+  <link href="http://aluenkinglee.github.io/"/>
+  <updated>2015-07-26T20:05:32+08:00</updated>
+  <id>http://aluenkinglee.github.io/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
-    
+    <email><![CDATA[aluenkinglee@gmail.com]]></email>
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
     <title type="html"><![CDATA[install nox on debian-bug fixed]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2013/11/13/install-nox-on-debian-bug-fixed/"/>
-    <updated>2013-11-13T22:44:00-08:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2013/11/13/install-nox-on-debian-bug-fixed</id>
+    <link href="http://aluenkinglee.github.io/blog/2013/11/13/install-nox-on-debian-bug-fixed/"/>
+    <updated>2013-11-13T22:44:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2013/11/13/install-nox-on-debian-bug-fixed</id>
     <content type="html"><![CDATA[<p>首先需要声明的一点是，到目前（2013/11）Nox在所有SDN控制器中不是最火的（相比Pox，floodlight），但是作为最先开发的一个SDN而言，还是有研究意义的。</p>
 
 <!--more-->

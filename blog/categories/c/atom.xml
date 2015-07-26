@@ -2,22 +2,22 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: C | 曾经渐行远，未免心戚戚]]></title>
-  <link href="http://www.aluenkinglee.com/blog/categories/c/atom.xml" rel="self"/>
-  <link href="http://www.aluenkinglee.com/"/>
-  <updated>2015-01-15T22:37:58-08:00</updated>
-  <id>http://www.aluenkinglee.com/</id>
+  <link href="http://aluenkinglee.github.io/blog/categories/c/atom.xml" rel="self"/>
+  <link href="http://aluenkinglee.github.io/"/>
+  <updated>2015-07-26T20:05:32+08:00</updated>
+  <id>http://aluenkinglee.github.io/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
-    
+    <email><![CDATA[aluenkinglee@gmail.com]]></email>
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
     <title type="html"><![CDATA[理解TCP中的序列号和确认号]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/"/>
-    <updated>2014-02-26T22:34:00-08:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao</id>
+    <link href="http://aluenkinglee.github.io/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao/"/>
+    <updated>2014-02-26T22:34:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2014/02/26/li-jie-tcpzhong-de-xu-lie-hao-he-que-ren-hao</id>
     <content type="html"><![CDATA[<p>之所以写这么一篇文章是因为被wireshark的序列号搞晕了，我不知道你们是否这样，当你读这篇article时，肯定你已经熟悉了TCP那个三次握手，
 或者是SYN,SYN|ACK,ACK. 而我要做的也就是这个，提取一个流的前N个packets，针对目前的需求，只需要在传输层截取UDP和TCP的前多少个流即可。
 所以我得分析网络层的这些协议底层到底是怎么回事，在结合libpcap完成流的提取任务。</p>

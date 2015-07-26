@@ -2,22 +2,22 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: C++ | 曾经渐行远，未免心戚戚]]></title>
-  <link href="http://www.aluenkinglee.com/blog/categories/c-plus-plus/atom.xml" rel="self"/>
-  <link href="http://www.aluenkinglee.com/"/>
-  <updated>2015-01-15T22:37:58-08:00</updated>
-  <id>http://www.aluenkinglee.com/</id>
+  <link href="http://aluenkinglee.github.io/blog/categories/c-plus-plus/atom.xml" rel="self"/>
+  <link href="http://aluenkinglee.github.io/"/>
+  <updated>2015-07-26T20:05:32+08:00</updated>
+  <id>http://aluenkinglee.github.io/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
-    
+    <email><![CDATA[aluenkinglee@gmail.com]]></email>
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
     <title type="html"><![CDATA[“奇异”的内存覆盖]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2014/03/04/qi-yi-de-nei-cun-fu-gai/"/>
-    <updated>2014-03-04T22:01:00-08:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2014/03/04/qi-yi-de-nei-cun-fu-gai</id>
+    <link href="http://aluenkinglee.github.io/blog/2014/03/04/qi-yi-de-nei-cun-fu-gai/"/>
+    <updated>2014-03-04T22:01:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2014/03/04/qi-yi-de-nei-cun-fu-gai</id>
     <content type="html"><![CDATA[<p>犯了一个愚蠢的问题，让我碰到了这么个内容错误的bug</p>
 
 <!--more-->
@@ -178,9 +178,9 @@ windows是win7 + mingw）</p>
   
   <entry>
     <title type="html"><![CDATA[Machine Learning :linear regression]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2014/01/05/machine-learning-linear-regression/"/>
-    <updated>2014-01-05T12:00:00-08:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2014/01/05/machine-learning-linear-regression</id>
+    <link href="http://aluenkinglee.github.io/blog/2014/01/05/machine-learning-linear-regression/"/>
+    <updated>2014-01-05T12:00:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2014/01/05/machine-learning-linear-regression</id>
     <content type="html"><![CDATA[<p>机器学习中，总体来说是分为两类问题：</p>
 
 <p>1.有监督的学习方法
@@ -360,9 +360,9 @@ namespace ex1{
   
   <entry>
     <title type="html"><![CDATA[可爱的Armadillo]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2013/12/31/ke-ai-de-armadillo/"/>
-    <updated>2013-12-31T10:25:00-08:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2013/12/31/ke-ai-de-armadillo</id>
+    <link href="http://aluenkinglee.github.io/blog/2013/12/31/ke-ai-de-armadillo/"/>
+    <updated>2013-12-31T10:25:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2013/12/31/ke-ai-de-armadillo</id>
     <content type="html"><![CDATA[<p>最近又重新看了一下coursera上的<a href="https://class.coursera.org/ml-004/lecture/index">机器学习</a>(Andrew Ng讲的)，比起之前上老师的课和<a href="http://book.douban.com/subject/1102235/" title="机器学习">机器学习</a>这本书来说，简直好太多。当初选修这个课程的时候明显感到编程实践环节太少，很不适应，只有一个大作业而已。好在这里的Quara和Programming Excises很给力。</p>
 
 <p>我的设想是这样，octave作为一种快速验证想法的工具不适合应用在实际的生产环境中的，毕竟计算速度还是可以依靠集群和并行化来加快大数据处理。在此参考了C++的<a href="http://en.wikipedia.org/wiki/Comparison_of_linear_algebra_libraries">线性代数库</a>之后选择了Armadillo,毕竟经常更新并且从官网资料来看，和octave代码相似便于移植，再说，从它本身和其他的对比来看，速度也是相当快的。</p>
@@ -404,9 +404,9 @@ g++ example1.cpp -o example1 -O2 -llapack -lblas
   
   <entry>
     <title type="html"><![CDATA[C++前置声明和复制控制]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2013/10/24/c-plus-plus-forward-declaration-and-copy-control/"/>
-    <updated>2013-10-24T05:33:00-07:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2013/10/24/c-plus-plus-forward-declaration-and-copy-control</id>
+    <link href="http://aluenkinglee.github.io/blog/2013/10/24/c-plus-plus-forward-declaration-and-copy-control/"/>
+    <updated>2013-10-24T05:33:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2013/10/24/c-plus-plus-forward-declaration-and-copy-control</id>
     <content type="html"><![CDATA[<p>突然有兴致想起了看会C++，因为最近一直是python，java，python的节奏…在这样下去，C++水平恐怕就停留在了只会编算法的地儿了…</p>
 
 <p>随手一翻，看到了复制控制。对于这章，印象里的记忆是：

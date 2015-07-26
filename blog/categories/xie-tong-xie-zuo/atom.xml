@@ -2,22 +2,22 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: 协同写作 | 曾经渐行远，未免心戚戚]]></title>
-  <link href="http://www.aluenkinglee.com/blog/categories/xie-tong-xie-zuo/atom.xml" rel="self"/>
-  <link href="http://www.aluenkinglee.com/"/>
-  <updated>2015-01-15T22:37:58-08:00</updated>
-  <id>http://www.aluenkinglee.com/</id>
+  <link href="http://aluenkinglee.github.io/blog/categories/xie-tong-xie-zuo/atom.xml" rel="self"/>
+  <link href="http://aluenkinglee.github.io/"/>
+  <updated>2015-07-26T20:05:32+08:00</updated>
+  <id>http://aluenkinglee.github.io/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
-    
+    <email><![CDATA[aluenkinglee@gmail.com]]></email>
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
     <title type="html"><![CDATA[在不同PC上协同写作同一个Octopress博客]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2013/11/13/co-write-same-octopress-blog-on-different-pc/"/>
-    <updated>2013-11-13T15:20:00-08:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2013/11/13/co-write-same-octopress-blog-on-different-pc</id>
+    <link href="http://aluenkinglee.github.io/blog/2013/11/13/co-write-same-octopress-blog-on-different-pc/"/>
+    <updated>2013-11-13T15:20:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2013/11/13/co-write-same-octopress-blog-on-different-pc</id>
     <content type="html"><![CDATA[<p>因为需要在不同的地方写博客，在加上之前错误的操作，所以有了这篇文章。</p>
 
 <p>假设已经学会了然后安装Octopress博客。</p>

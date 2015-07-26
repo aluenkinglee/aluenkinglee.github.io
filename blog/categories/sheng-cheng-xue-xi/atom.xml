@@ -2,22 +2,22 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: 生成学习 | 曾经渐行远，未免心戚戚]]></title>
-  <link href="http://www.aluenkinglee.com/blog/categories/sheng-cheng-xue-xi/atom.xml" rel="self"/>
-  <link href="http://www.aluenkinglee.com/"/>
-  <updated>2015-01-15T22:37:58-08:00</updated>
-  <id>http://www.aluenkinglee.com/</id>
+  <link href="http://aluenkinglee.github.io/blog/categories/sheng-cheng-xue-xi/atom.xml" rel="self"/>
+  <link href="http://aluenkinglee.github.io/"/>
+  <updated>2015-07-26T20:05:32+08:00</updated>
+  <id>http://aluenkinglee.github.io/</id>
   <author>
     <name><![CDATA[Aluen King Lee]]></name>
-    
+    <email><![CDATA[aluenkinglee@gmail.com]]></email>
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
     <title type="html"><![CDATA[generative method]]></title>
-    <link href="http://www.aluenkinglee.com/blog/2014/04/30/generative-method/"/>
-    <updated>2014-04-30T22:52:00-07:00</updated>
-    <id>http://www.aluenkinglee.com/blog/2014/04/30/generative-method</id>
+    <link href="http://aluenkinglee.github.io/blog/2014/04/30/generative-method/"/>
+    <updated>2014-04-30T22:52:00+08:00</updated>
+    <id>http://aluenkinglee.github.io/blog/2014/04/30/generative-method</id>
     <content type="html"><![CDATA[<p>线性回归模型和logistic回归是判别模型，也就是根据特征值来求结果的概率。形式化表
 示为<script type="math/tex">p(y|x;\theta)</script>在参数<script type="math/tex">\theta</script>确定的情况下，求解条件概率<script type="math/tex">p(y|x)</script>。
 通俗的解释为在给定特征后预测结果出现的概率。</p>
